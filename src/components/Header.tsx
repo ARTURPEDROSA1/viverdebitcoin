@@ -11,10 +11,9 @@ export default function Header() {
                     <div className="brand-name">Viver de <span className="highlight">Bitcoin</span></div>
                 </Link>
             </div>
-            <nav className="main-nav">
-                <Link href="/" className="nav-item">Calculadora</Link>
+            <nav className="main-nav" style={{ marginLeft: '3rem' }}>
+                <Link href="/" className="nav-item">Calculadoras</Link>
                 <Link href="/sobre" className="nav-item">Sobre</Link>
-                <Link href="/contato" className="nav-item">Contato</Link>
             </nav>
             <ThemeToggle />
         </header>

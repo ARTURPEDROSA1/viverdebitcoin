@@ -100,6 +100,13 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+body.light-mode .hero-title {
+  background: linear-gradient(to right, var(--primary-green), #209150);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .hero-subtitle {
   font-size: 1.25rem;
   color: var(--gray-text);
