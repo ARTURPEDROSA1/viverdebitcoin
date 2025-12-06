@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Coin (Floating Above) -->
+    <circle cx="260" cy="180" r="90" fill="#f2994a"/>
+    <path fill="white" transform="translate(260, 180) scale(4.5) translate(-12, -12)" d="M12.915 13.844c1.694-.419 2.729-1.54 2.729-3.337 0-2.56-1.92-3.584-4.352-3.84V4H9.248v2.56H8.224V4H6.176v2.688H4.128v2.048h1.024c.512 0 .512.256.512.512v10.752c0 .256-.128.512-.512.512H4.128v2.048h2.048v2.56h1.024v-2.56h1.152c2.944 0 4.736-1.28 4.736-3.328 0-3.072-2.304-3.84-1.184-5.376zm-4.192-4.608h1.536c2.048 0 2.304 1.28 2.304 2.304 0 1.024-.512 2.048-2.304 2.048h-1.536v-4.352zm1.92 10.752h-1.92V15.63h1.92c2.048 0 2.432 1.28 2.432 2.176 0 .896-.512 2.176-2.432 2.176z"/>
+
+    <!-- Hand (Green, Flat Style, matching specificity of 'fingers up') -->
+    <g transform="translate(0, 50)">
+        <!-- Thumb -->
+        <rect x="80" y="280" width="50" height="100" rx="10" fill="#27ae60"/>
+        
+        <!-- Fingers Base -->
+        <path d="M120 320 H140 V240 C140 215, 175 215, 175 240 V290 H185 V220 C185 195, 220 195, 220 220 V290 H230 V200 C230 175, 265 175, 265 200 V290 H275 V230 C275 205, 310 205, 310 230 V320 C310 390, 260 440, 180 440 H120 V320 Z" fill="#27ae60"/>
+        
+        <!-- Smoothing connection between thumb and hand body -->
+        <path d="M120 360 L140 360 L140 400 L120 400 Z" fill="#27ae60"/>
+    </g>
+</svg>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viverdebitcoin - O seu portal de criptomoedas</title>
+    <meta name="description"
+        content="Acompanhe o mercado de Bitcoin e criptomoedas. Cotações, análises e ferramentas para seus investimentos.">
+    <link rel="icon" type="image/png" href="ViverdeBitcoinfavicon.png?v=3">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- Horizontal Market Marquee -->
+    <div class="market-marquee-container">
+        <div class="market-marquee-content" id="market-marquee">
+            <!-- Items injected by JS -->
+            <span class="marquee-item">Carregando dados do mercado...</span>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="logo-container">
+            <img src="ViverdeBitcoinLogo.png?v=3" alt="Viverdebitcoin Logo" class="brand-logo">
+            <span class="brand-name">Viverde<span class="highlight">bitcoin</span></span>
+        </div>
+        <nav class="main-nav">
+            <!-- Navigation placeholders -->
+            <a href="#" class="nav-item">Início</a>
+            <a href="sobre.html" class="nav-item">Sobre</a>
+            <a href="#" class="nav-item">Calculadoras</a>
+            <button id="theme-toggle" class="theme-toggle-btn">
+                <span>🌙</span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section" style="display: none;">
+            <!-- Removed as per user request -->
+        </section>
+
+        <section id="calculator" class="calculator-section">
+            <div class="calculator-container">
+                <h2 class="section-title">Calculadora de Bitcoin</h2>
+                <p class="section-desc">Descubra se você seria CLT ou Magnata?</p>
+
+                <div class="calculator-card">
+                    <div class="input-group">
+                        <label for="investment-amount">Valor do Investimento</label>
+                        <div class="amount-wrapper">
+                            <input type="number" id="investment-amount" placeholder="Ex: 1000" min="0">
+                            <select id="currency-selector">
+                                <option value="BRL">BRL (R$)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="EUR">EUR (€)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="investment-date">Data da Compra</label>
+                        <input type="date" id="investment-date">
+                    </div>
+
+                    <button id="calculate-btn" class="cta-button">Calcular Resultado</button>
+                    <p class="historical-note">Dados históricos disponíveis a partir de 17/09/2014</p>
+                    <div id="live-price-display" class="live-price">Carregando preço atual...</div>
+
+                    <div id="result-card" class="result-card hidden"
+                        style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem; background: transparent;">
+                        <div class="result-item">
+                            <span>Valor Hoje</span>
+                            <strong id="result-value">R$ 0,00</strong>
+                        </div>
+                        <div class="result-item">
+                            <span>Quantidade de Bitcoins</span>
+                            <strong id="result-btc-amount">0.00000000 BTC</strong>
+                        </div>
+                        <div class="result-item">
+                            <span>Lucro/Prejuízo</span>
+                            <strong id="result-profit">R$ 0,00</strong>
+                        </div>
+                        <div class="result-item">
+                            <span>ROI (Retorno)</span>
+                            <strong id="result-roi">0%</strong>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- View Switcher -->
+            <div class="view-switcher hidden" id="view-switcher-container">
+                <button class="view-btn active" onclick="switchView('chart')">Gráfico</button>
+                <button class="view-btn" onclick="switchView('table')">Tabela</button>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="chart-container hidden" id="roi-chart-container">
+                <canvas id="roi-chart"></canvas>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-container hidden" id="roi-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Valor (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roi-table-body">
+                        <!-- Rows injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Explanation Text -->
+            <div class="content-text-block"
+                style="margin-top: 3rem; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.8; color: var(--text-main);">
+                <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Calculadora do Arrependimento Bitcoin –
+                    Descubra Quanto Você Teria Lucrado se Tivesse Investido em Bitcoin no Passado</h3>
+
+                <p style="margin-bottom: 1rem;">A <strong>Calculadora do Arrependimento Bitcoin</strong> é uma
+                    ferramenta desenvolvida para ajudar você a descobrir quanto dinheiro teria hoje se tivesse comprado
+                    Bitcoin no passado.</p>
+
+                <p style="margin-bottom: 1rem;">Com base no preço histórico do Bitcoin, ela permite visualizar o custo
+                    de oportunidade de não ter começado a investir antes — algo extremamente útil para investidores,
+                    iniciantes e entusiastas que desejam entender o desempenho real do BTC ao longo dos anos.</p>
+
+                <p style="margin-bottom: 1rem;">Devido à volatilidade do Bitcoin, muitas oportunidades surgem ao longo
+                    do tempo. Por isso, esta calculadora funciona como um recurso rápido e preciso para analisar a
+                    valorização do BTC desde uma data específica até o preço atual.</p>
+
+                <h4 style="color: var(--primary-green); margin-top: 2rem; margin-bottom: 0.5rem;">Como funciona a
+                    Calculadora do Arrependimento Bitcoin</h4>
+                <ul style="margin-left: 20px; list-style-type: disc; margin-bottom: 1.5rem;">
+                    <li><strong>Insira o valor investido:</strong> Digite quanto você teria aplicado em Bitcoin (BRL,
+                        USD e EUR).</li>
+                    <li><strong>Selecione a data do investimento:</strong> Escolha o dia exato em que o investimento
+                        hipotético teria sido realizado.</li>
+                    <li><strong>Personalize a moeda:</strong> Para brasileiros no exterior, é possível visualizar
+                        valores em diferentes moedas.</li>
+                    <li><strong>Clique em “Calcular Resultado”:</strong> A ferramenta pesquisa o preço histórico do
+                        Bitcoin, calcula quantos BTC teriam sido comprados, e compara com o preço atual do Bitcoin.</li>
+                </ul>
+
+                <p style="margin-bottom: 0.5rem;"><strong>O resultado mostra:</strong></p>
+                <ul style="margin-left: 20px; list-style-type: disc; margin-bottom: 1.5rem;">
+                    <li>Lucro ou prejuízo potencial;</li>
+                    <li>Quantidade de Bitcoin adquirida na época;</li>
+                    <li>Valor atualizado desse Bitcoin hoje.</li>
+                </ul>
+
+                <p style="margin-bottom: 1rem;">Essa análise é ideal para quem busca entender o real impacto financeiro
+                    de um investimento passado em Bitcoin e avaliar como o BTC se comportou ao longo do tempo.</p>
+
+                <h4 style="color: var(--primary-green); margin-top: 2rem; margin-bottom: 0.5rem;">Por que usar uma
+                    Calculadora de Custo de Oportunidade em Bitcoin?</h4>
+                <ul style="margin-left: 20px; list-style-type: disc; margin-bottom: 1.5rem;">
+                    <li>Para descobrir quanto você teria hoje se tivesse comprado Bitcoin anos atrás.</li>
+                    <li>Para visualizar de forma clara a valorização histórica do Bitcoin.</li>
+                    <li>Para entender se comprar Bitcoin mais cedo teria sido mais lucrativo.</li>
+                    <li>Para educar novos investidores sobre a importância da constância e do longo prazo no mercado de
+                        criptomoedas.</li>
+                </ul>
+                <p style="margin-bottom: 2rem;">Ferramentas assim ajudam a reduzir arrependimentos futuros e a entender
+                    melhor as dinâmicas de preço do principal ativo digital do mundo.</p>
+
+                <div
+                    style="border-top: 1px solid var(--border-color); padding-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                    <p><strong>Disclaimer (Aviso Legal)</strong></p>
+                    <p>As informações apresentadas nesta página são educacionais e podem conter variações ou imprecisões
+                        históricas. Esta ferramenta não constitui recomendação de investimento, análise financeira ou
+                        garantia de resultados. Antes de investir em Bitcoin ou qualquer outro ativo, faça sua própria
+                        pesquisa (DYOR) e consulte profissionais especializados, se necessário.</p>
+                </div>
+            </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts for Logic & Data -->
+    <script src="historical_data.js"></script>
+    <script src="script.js"></script>
+
+    <footer>
+        <p>&copy; 2025 Viverdebitcoin. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+
+</html>

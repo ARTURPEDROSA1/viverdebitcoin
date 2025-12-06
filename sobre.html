@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Viverdebitcoin</title>
+    <meta name="description"
+        content="Saiba tudo sobre o Bitcoin: o que é, como funciona, sua história e por que é o futuro do dinheiro.">
+    <link rel="icon" type="image/png" href="ViverdeBitcoinfavicon.png?v=3">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .about-section {
+            padding: 4rem 5%;
+            color: var(--text-main);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .about-content h2 {
+            color: var(--primary-green);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .about-content h3 {
+            color: var(--bitcoin-orange);
+            margin-top: 2rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+
+        .about-content p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            color: var(--text-main);
+        }
+
+        .about-content ul {
+            margin-left: 20px;
+            margin-bottom: 1.5rem;
+            list-style-type: disc;
+        }
+
+        .about-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .highlight-box {
+            background: rgba(39, 174, 96, 0.1);
+            border-left: 4px solid var(--primary-green);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        /* Responsive Tables */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .about-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 600px;
+            /* Ensure table doesn't squish too much */
+        }
+
+        .about-table th,
+        .about-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .about-table th {
+            background-color: var(--card-bg);
+            color: var(--primary-green);
+            font-weight: 700;
+        }
+
+        /* Alternating row colors for readability */
+        .about-table tbody tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        body.light-mode .about-table tbody tr:nth-child(even) {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-strong {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        a {
+            color: var(--bitcoin-orange);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Horizontal Market Marquee -->
+    <div class="market-marquee-container">
+        <div class="market-marquee-content" id="market-marquee">
+            <!-- Items injected by JS -->
+            <span class="marquee-item">Carregando dados do mercado...</span>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="logo-container">
+            <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 12px;">
+                <img src="ViverdeBitcoinLogo.png?v=3" alt="Viverdebitcoin Logo" class="brand-logo">
+                <span class="brand-name">Viverde<span class="highlight">bitcoin</span></span>
+            </a>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-item">Início</a>
+            <a href="sobre.html" class="nav-item" style="color: var(--bitcoin-orange);">Sobre</a>
+            <a href="index.html#calculator" class="nav-item">Calculadoras</a>
+            <button id="theme-toggle" class="theme-toggle-btn">
+                <span>🌙</span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="about-section">
+            <h1 style="font-size: 2.5rem; color: var(--text-main); margin-bottom: 2rem; text-align: center;">Bitcoin
+                para Iniciantes — Do Zero ao Herói (Guia Completo)</h1>
+
+            <div class="about-content">
+                <!-- 1. O que é Bitcoin? -->
+                <h2>1. O que é Bitcoin?</h2>
+                <p>Bitcoin é um dinheiro digital descentralizado, criado para funcionar sem bancos, governos ou
+                    intermediários. Pode ser enviado para qualquer lugar do mundo, em poucos minutos.</p>
+                <ul>
+                    <li>É protegido por criptografia e por milhares de computadores espalhados pelo planeta.</li>
+                    <li>Tem oferta limitada a <strong>21 milhões de unidades</strong>, o que faz com que seja chamado de
+                        "ouro digital".</li>
+                </ul>
+                <p><strong>Bitcoin é uma mistura de tecnologia + escassez + liberdade financeira.</strong></p>
+
+                <!-- 2. Por que o Bitcoin foi criado? -->
+                <h2>2. Por que o Bitcoin foi criado?</h2>
+                <p>Em 2008, em plena crise financeira global, um autor anônimo chamado <strong>Satoshi Nakamoto</strong>
+                    publicou o whitepaper "Bitcoin: A Peer-to-Peer Electronic Cash System".</p>
+                <p>O objetivo era resolver três problemas do dinheiro tradicional:</p>
+                <ul>
+                    <li><strong>Inflação:</strong> governos podem imprimir moeda sem limite.</li>
+                    <li><strong>Dependência de bancos:</strong> você nunca tem controle total do seu dinheiro.</li>
+                    <li><strong>Falta de privacidade e censura:</strong> transações podem ser bloqueadas ou rastreadas.
+                    </li>
+                </ul>
+                <p>Bitcoin nasce como uma alternativa: um sistema monetário aberto, transparente e resistente à censura.
+                </p>
+
+                <!-- 3. Como o Bitcoin funciona -->
+                <h2>3. Como o Bitcoin funciona (explicação simples)</h2>
+                <p>Imagine um livro-caixa público gigante, que todos podem ver e auditar, mas ninguém consegue apagar ou
+                    alterar. Esse livro é a <strong>blockchain</strong>.</p>
+
+                <h3>Conceitos básicos:</h3>
+                <ul>
+                    <li><strong>Blockchain:</strong> registro público de todas as transações de Bitcoin.</li>
+                    <li><strong>Nós (nodes):</strong> computadores descentralizados que guardam uma cópia da blockchain
+                        e validam tudo.</li>
+                    <li><strong>Mineradores:</strong> empresas que competem para criar novos blocos e recebem Bitcoin
+                        como recompensa.</li>
+                    <li><strong>Carteira (wallet):</strong> aplicativo ou dispositivo que guarda suas chaves privadas
+                        (seus "acessos" ao BTC).</li>
+                    <li><strong>Satoshis:</strong> a menor unidade de Bitcoin. (1 BTC = 100.000.000 satoshis).</li>
+                </ul>
+
+                <!-- 4. A transação histórica das pizzas -->
+                <h2>4. A transação histórica das pizzas — as pizzas mais caras do mundo</h2>
+                <p>Em 2010, aconteceu a primeira compra real com Bitcoin: um programador pagou <strong>10.000
+                        BTC</strong> por duas pizzas. Na época, era apenas uma curiosidade.</p>
+                <div class="highlight-box">
+                    <p>Se atualizarmos para a cotação de hoje, se 1 BTC = <span
+                            id="dynamic-btc-price-pizza">Carregando...</span>, esses 10.000 BTC valeriam:</p>
+                    <p style="font-size: 1.2rem; font-weight: bold;">10.000 × <span
+                            id="dynamic-btc-price-pizza-calc">...</span> = <span
+                            id="dynamic-pizza-value">Carregando...</span></p>
+                    <p style="margin-top: 0.5rem;">Ou seja: <strong><span
+                                id="dynamic-pizza-billions">...</span></strong> em duas pizzas.</p>
+                </div>
+                <p>Por isso, essa compra ficou conhecida como as pizzas mais caras do mundo.</p>
+
+                <!-- 5. Halving do Bitcoin -->
+                <h2>5. Halving do Bitcoin: o coração da escassez programada</h2>
+                <p>O <strong>halving</strong> é um evento que acontece aproximadamente a cada 210.000 blocos, ou cerca
+                    de 4 anos, reduzindo pela metade a quantidade de novos Bitcoins que os mineradores recebem por
+                    bloco. Isso faz com que a oferta nova de BTC diminua com o tempo, aumentando a escassez.</p>
+
+                <h3>5.1. Bloco a cada 10 minutos e receita atual</h3>
+                <p>A rede foi desenhada para que, em média, um bloco seja minerado a cada 10 minutos.</p>
+                <p>Após o halving de 2024, a recompensa atual é de: <strong>3,125 BTC por bloco</strong></p>
+
+                <div class="highlight-box">
+                    <p>Usando a cotação atual:</p>
+                    <p><strong>1 BTC = <span id="dynamic-btc-price-mining">Carregando...</span></strong></p>
+
+                    <p style="margin-top: 1rem;">Receita por bloco (a cada 10 minutos) para os mineradores:</p>
+                    <p>3,125 × <span id="dynamic-btc-price-mining-calc">...</span> ≈ <strong><span
+                                id="dynamic-block-reward-value">Carregando...</span></strong> a cada 10 minutos.</p>
+
+                    <p style="margin-top: 0.5rem;">Ou seja, cerca de <strong><span
+                                id="dynamic-block-reward-millions">...</span></strong> em novos Bitcoins é emitido em
+                        média a cada 10 minutos hoje (sem contar taxas de transação).</p>
+                </div>
+
+                <h3>5.2. Tabela completa de Halving do Bitcoin até o final (aproximado)</h3>
+                <p>Abaixo, uma tabela simplificada com todas as reduções de recompensa, até perto do ano em que o último
+                    Bitcoin deve ser minerado (por volta de 2140).</p>
+                <p>Os anos futuros são aproximados (intervalos de ~4 anos).</p>
+
+                <div class="table-responsive">
+                    <table class="about-table">
+                        <thead>
+                            <tr>
+                                <th># Halving</th>
+                                <th>Ano aproximado</th>
+                                <th>Recompensa por bloco (BTC)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0 (início)</td>
+                                <td>2009</td>
+                                <td>50,00000000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>2012</td>
+                                <td>25,00000000</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>2016</td>
+                                <td>12,50000000</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>2020</td>
+                                <td>6,25000000</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>2024</td>
+                                <td>3,12500000</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>2028</td>
+                                <td>1,56250000</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>2032</td>
+                                <td>0,78125000</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>2036</td>
+                                <td>0,39062500</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>2040</td>
+                                <td>0,19531250</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>2044</td>
+                                <td>0,09765625</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>2048</td>
+                                <td>0,04882812</td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td>2052</td>
+                                <td>0,02441406</td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>2056</td>
+                                <td>0,01220703</td>
+                            </tr>
+                            <tr>
+                                <td>13</td>
+                                <td>2060</td>
+                                <td>0,00610352</td>
+                            </tr>
+                            <tr>
+                                <td>14</td>
+                                <td>2064</td>
+                                <td>0,00305176</td>
+                            </tr>
+                            <tr>
+                                <td>15</td>
+                                <td>2068</td>
+                                <td>0,00152588</td>
+                            </tr>
+                            <tr>
+                                <td>16</td>
+                                <td>2072</td>
+                                <td>0,00076294</td>
+                            </tr>
+                            <tr>
+                                <td>17</td>
+                                <td>2076</td>
+                                <td>0,00038147</td>
+                            </tr>
+                            <tr>
+                                <td>18</td>
+                                <td>2080</td>
+                                <td>0,00019073</td>
+                            </tr>
+                            <tr>
+                                <td>19</td>
+                                <td>2084</td>
+                                <td>0,00009537</td>
+                            </tr>
+                            <tr>
+                                <td>20</td>
+                                <td>2088</td>
+                                <td>0,00004768</td>
+                            </tr>
+                            <tr>
+                                <td>21</td>
+                                <td>2092</td>
+                                <td>0,00002384</td>
+                            </tr>
+                            <tr>
+                                <td>22</td>
+                                <td>2096</td>
+                                <td>0,00001192</td>
+                            </tr>
+                            <tr>
+                                <td>23</td>
+                                <td>2100</td>
+                                <td>0,00000596</td>
+                            </tr>
+                            <tr>
+                                <td>24</td>
+                                <td>2104</td>
+                                <td>0,00000298</td>
+                            </tr>
+                            <tr>
+                                <td>25</td>
+                                <td>2108</td>
+                                <td>0,00000149</td>
+                            </tr>
+                            <tr>
+                                <td>26</td>
+                                <td>2112</td>
+                                <td>0,00000075</td>
+                            </tr>
+                            <tr>
+                                <td>27</td>
+                                <td>2116</td>
+                                <td>0,00000037</td>
+                            </tr>
+                            <tr>
+                                <td>28</td>
+                                <td>2120</td>
+                                <td>0,00000019</td>
+                            </tr>
+                            <tr>
+                                <td>29</td>
+                                <td>2124</td>
+                                <td>0,00000009</td>
+                            </tr>
+                            <tr>
+                                <td>30</td>
+                                <td>2128</td>
+                                <td>0,00000005</td>
+                            </tr>
+                            <tr>
+                                <td>31</td>
+                                <td>2132</td>
+                                <td>0,00000002</td>
+                            </tr>
+                            <tr>
+                                <td>32</td>
+                                <td>2136</td>
+                                <td>0,00000001</td>
+                            </tr>
+                            <tr>
+                                <td>33 (final)</td>
+                                <td>2140</td>
+                                <td>~0,00000001</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Countdown to Next Halving -->
+                <div id="halving-countdown-container"
+                    style="text-align: center; margin: 2rem 0; background: rgba(39, 174, 96, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-green);">
+                    <h3 style="color: var(--primary-green); margin-bottom: 0.5rem; margin-top: 0;">Próximo Halving
+                        (Estimado 2028)</h3>
+                    <div id="halving-timer"
+                        style="font-size: 2rem; font-weight: bold; color: var(--text-main); font-family: monospace;">
+                        Carregando...</div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">O tempo exato
+                        depende da velocidade de mineração dos blocos.</p>
+                </div>
+                <p>Depois disso, não existirão novos Bitcoins sendo emitidos. Mineradores serão recompensados apenas
+                    pelas taxas de transação.</p>
+
+                <!-- 6. Linha do tempo -->
+                <h2>6. Linha do tempo do Bitcoin: do white paper ao último BTC</h2>
+                <ul>
+                    <li><strong>2008:</strong> Publicação do whitepaper por Satoshi Nakamoto.</li>
+                    <li><strong>2009:</strong> Bloco gênesis, início da rede, recompensa de 50 BTC por bloco.</li>
+                    <li><strong>2010:</strong> Compra das pizzas mais caras do mundo por 10.000 BTC.</li>
+                    <li><strong>2012:</strong> 1º halving: 25 BTC.</li>
+                    <li><strong>2016:</strong> 2º halving: 12,5 BTC.</li>
+                    <li><strong>2017:</strong> Bitcoin bate ~US$ 20.000 em seu primeiro grande ciclo de alta.</li>
+                    <li><strong>2020:</strong> 3º halving: 6,25 BTC. Entrada de empresas listadas em bolsa comprando BTC
+                        para tesouraria.</li>
+                    <li><strong>2021:</strong> El Salvador torna o Bitcoin moeda de curso legal.</li>
+                    <li><strong>2024:</strong> 4º halving: 3,125 BTC.</li>
+                    <li><strong>2025+:</strong> Governos criam reservas estratégicas de Bitcoin (EUA, China, Reino
+                        Unido, Butão, El Salvador).</li>
+                    <li><strong>~2140:</strong> Último satoshi será minerado. Oferta total atinge 21 milhões de BTC.
+                    </li>
+                </ul>
+
+                <!-- 7. Bitcoin e governos -->
+                <h2>7. Bitcoin e governos: quem são os maiores acumuladores?</h2>
+                <p>Os números mudam ao longo do tempo, mas com base nos dados mais recentes, vários governos já acumulam
+                    Bitcoin em suas reservas.</p>
+
+                <h3>7.1. Tabela – BTC por país (governos)</h3>
+                <div class="table-responsive">
+                    <table class="about-table">
+                        <thead>
+                            <tr>
+                                <th>País</th>
+                                <th>BTC acumulado (aprox.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Estados Unidos</td>
+                                <td>326.588 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>China</td>
+                                <td>190.000 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Reino Unido</td>
+                                <td>61.243 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Ucrânia</td>
+                                <td>46.351 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>El Salvador</td>
+                                <td>7.485 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Emirados Árabes</td>
+                                <td>6.420 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Butão</td>
+                                <td>6.227 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Coreia do Norte</td>
+                                <td>803 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Venezuela</td>
+                                <td>240 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Finlândia</td>
+                                <td>90 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>Alemanha</td>
+                                <td>0,007 BTC</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><em>Esses valores são aproximados e podem mudar com novas compras, vendas ou confisco de fundos.</em>
+                </p>
+
+                <!-- 8. Empresas Públicas -->
+                <h2>8. Empresas públicas com maior tesouraria em Bitcoin (Top 10 global)</h2>
+                <p>Além dos países, empresas listadas em bolsa também acumulam grandes quantidades de BTC como
+                    estratégia de reserva de valor. (Fonte: bitcointreasuries.net)</p>
+
+                <div class="table-responsive">
+                    <table class="about-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Empresa</th>
+                                <th>BTC em tesouraria (aprox.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><a href="https://www.strategy.com/" target="_blank"
+                                        rel="noopener noreferrer">Strategy, Inc. (MicroStrategy)</a></td>
+                                <td>650.000 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Marathon Digital</td>
+                                <td>53.250 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Twenty One (XXI)</td>
+                                <td>43.514 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Metaplanet, Inc.</td>
+                                <td>30.823 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Bitcoin Standard</td>
+                                <td>30.021 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Bullish</td>
+                                <td>24.300 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Riot Platforms, Inc.</td>
+                                <td>19.287 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>Trump Media & Technology</td>
+                                <td>15.000 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>Coinbase Global</td>
+                                <td>14.548 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>CleanSpark Inc</td>
+                                <td>13.011 BTC</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 9. Treasury companies do Brasil -->
+                <h2>9. Treasury companies do Brasil: OBTC3 e CASH3</h2>
+                <p>O Brasil já possui suas próprias Bitcoin Treasury Companies, seguindo o modelo da MicroStrategy.</p>
+
+                <h3>9.1. OBTC3 – <a href="https://www.oranjebtc.com/dashboard" target="_blank"
+                        rel="noopener noreferrer">OranjeBTC</a></h3>
+                <p>A OranjeBTC (OBTC3) tem como foco ser uma grande tesouraria de Bitcoin da América Latina, mantendo a
+                    maior parte de seus ativos em BTC. De acordo com o painel oficial da empresa, a tesouraria possui
+                    cerca de <strong>≈ 3.720 BTC</strong> em reservas.</p>
+
+                <h3>9.2. CASH3 – <a href="https://ri.meliuz.com.br/default.aspx?linguagem=pt" target="_blank"
+                        rel="noopener noreferrer">Méliuz</a></h3>
+                <p>A Méliuz (CASH3) adotou Bitcoin como estratégia oficial de tesouraria em 2025 e se tornou a primeira
+                    "Bitcoin Treasury Company" do Brasil.</p>
+                <p>Segundo reportagens recentes, a companhia já acumula aproximadamente <strong>≈ 595,67 BTC</strong> em
+                    tesouraria.</p>
+
+                <h3>9.3. Tabela – Treasury companies brasileiras</h3>
+                <div class="table-responsive">
+                    <table class="about-table">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Empresa</th>
+                                <th>BTC em tesouraria (aprox.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>OBTC3</td>
+                                <td>OranjeBTC</td>
+                                <td>~3.720 BTC</td>
+                            </tr>
+                            <tr>
+                                <td>CASH3</td>
+                                <td>Méliuz</td>
+                                <td>~595,67 BTC</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 10. Conclusão -->
+                <h2>10. Por que isso tudo importa?</h2>
+                <ul>
+                    <li><strong>Bitcoin é escasso:</strong> halving garantido até cerca de 2140, máximo de 21 milhões de
+                        BTC.</li>
+                    <li><strong>Governos e empresas</strong> estão acumulando Bitcoin como reserva estratégica de valor.
+                    </li>
+                    <li><strong>Blocos a cada 10 minutos</strong> hoje geram cerca de R$ 1,52 milhão em novos BTC, mas
+                        essa emissão vai caindo ao longo das décadas.</li>
+                    <li><strong>Tesourarias internacionais e brasileiras</strong> reforçam a narrativa de Bitcoin como
+                        ativo de reserva global.</li>
+                </ul>
+                <div class="highlight-box">
+                    <p style="margin-bottom: 0;">Tudo isso cria uma tese simples para o leitor leigo:<br>
+                        <em>"Se governos, grandes empresas e tesourarias estão comprando Bitcoin para o longo prazo,
+                            talvez valha a pena estudar, entender e considerar uma pequena exposição."</em>
+                    </p>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts for Logic & Data (Required for ticker/theme) -->
+    <!-- We can reuse script.js but we need to make sure it doesn't error out if calculator elements are missing -->
+    <!-- Assuming script.js checks for element existence before adding listeners -->
+    <script src="historical_data.js"></script>
+    <script src="script.js"></script>
+
+    <footer>
+        <p>&copy; 2025 Viverdebitcoin. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+
+</html>
