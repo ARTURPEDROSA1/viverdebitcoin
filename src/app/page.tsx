@@ -1,12 +1,11 @@
 import Calculator from '@/components/Calculator';
-import MarketTicker from '@/components/MarketTicker';
 
 export default function Home() {
   return (
     <main>
 
 
-      <MarketTicker />
+
 
       <section className="calculator-section" id="calculator">
         <Calculator />

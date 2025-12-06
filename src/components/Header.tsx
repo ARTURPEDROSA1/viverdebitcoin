@@ -12,7 +12,13 @@ export default function Header() {
                 </Link>
             </div>
             <nav className="main-nav" style={{ marginLeft: '3rem' }}>
-                <Link href="/" className="nav-item">Calculadoras</Link>
+                <div className="dropdown">
+                    <span className="nav-item" style={{ cursor: 'pointer' }}>Calculadoras ▾</span>
+                    <div className="dropdown-content">
+                        <Link href="/" className="nav-item">Bitcoin (ROI)</Link>
+                        <Link href="/calculadora-sats" className="nav-item">Aposentadoria Sats</Link>
+                    </div>
+                </div>
                 <Link href="/sobre" className="nav-item">Sobre</Link>
             </nav>
             <ThemeToggle />

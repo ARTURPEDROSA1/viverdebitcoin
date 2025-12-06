@@ -41,6 +41,8 @@ body {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1100;
 }
 
 .logo-container {
@@ -544,4 +546,42 @@ body.light-mode .marquee-label {
 
 body.light-mode .about-table tbody tr:nth-child(even) {
   background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Dropdown Menu */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--card-bg);
+  min-width: 200px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content .nav-item {
+  color: var(--text-main);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  margin: 0;
+  transition: background 0.2s;
+}
+
+.dropdown-content .nav-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--bitcoin-orange);
 }
