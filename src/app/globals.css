@@ -365,6 +365,11 @@ body.light-mode .table-container {
   color: var(--text-main);
 }
 
+.data-table th:not(:first-child),
+.data-table td:not(:first-child) {
+  text-align: right;
+}
+
 .data-table th {
   position: sticky;
   top: 0;
@@ -586,4 +591,16 @@ body.light-mode .about-table tbody tr:nth-child(even) {
 .dropdown-content .nav-item:hover {
   background-color: var(--bg-secondary);
   color: var(--bitcoin-orange);
+}
+
+/* Select Options Styling */
+select option {
+  background-color: #222;
+  color: #fff;
+  padding: 10px;
+}
+
+body.light-mode select option {
+  background-color: #fff;
+  color: #333;
 }

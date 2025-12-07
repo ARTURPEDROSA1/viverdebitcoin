@@ -15,9 +15,11 @@ export default function Header() {
                 <div className="dropdown">
                     <span className="nav-item" style={{ cursor: 'pointer' }}>Calculadoras ▾</span>
                     <div className="dropdown-content">
-                        <Link href="/calculadora-arrependimento" className="nav-item">Bitcoin (ROI)</Link>
+                        <Link href="/" className="nav-item">Aposentadoria BTC</Link>
                         <Link href="/calculadora-sats" className="nav-item">Aposentadoria Sats</Link>
-                        <Link href="/" className="nav-item">Planejador Macro</Link>
+                        <Link href="/calculadora-dca" className="nav-item">Bitcoin DCA</Link>
+                        <Link href="/calculadora-arrependimento" className="nav-item">Bitcoin ROI</Link>
+                        <Link href="/conversor-sats" className="nav-item">Conversor Sats</Link>
                     </div>
                 </div>
                 <Link href="/sobre" className="nav-item">Sobre</Link>

@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MarketTicker from '@/components/MarketTicker';
+import JsonLd from '@/components/JsonLd';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -54,9 +55,19 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Viver de Bitcoin",
+    "url": "https://viverdebitcoin.com",
+    "logo": "https://viverdebitcoin.com/ViverdeBitcoinLogo.png",
+    "description": "Ferramentas e calculadoras para investidores de Bitcoin."
+  };
+
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
+        <JsonLd data={jsonLdData} />
         <Header />
         <MarketTicker />
         {children}

@@ -35,6 +35,7 @@ export default function Calculator() {
     const [date, setDate] = useState('2014-09-17');
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
     const [livePriceUSD, setLivePriceUSD] = useState<number | null>(null);
+    const [isLightMode, setIsLightMode] = useState(false);
 
     const [result, setResult] = useState<{
         currentValue: number;
@@ -51,7 +52,15 @@ export default function Calculator() {
     const [chartHistory, setChartHistory] = useState<{ date: string, value: number }[]>([]);
 
     useEffect(() => {
+        // Theme Observer
+        const checkTheme = () => setIsLightMode(document.body.classList.contains('light-mode'));
+        checkTheme();
+        const observer = new MutationObserver(checkTheme);
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        return () => observer.disconnect();
+    }, []);
 
+    useEffect(() => {
         // Fetch Prices
         const fetchPrices = async () => {
             try {
@@ -70,6 +79,23 @@ export default function Calculator() {
         const interval = setInterval(fetchPrices, 30000);
         return () => clearInterval(interval);
     }, []);
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: {
+                grid: { color: isLightMode ? '#e5e5e5' : 'rgba(255,255,255,0.05)' },
+                ticks: { color: isLightMode ? '#666' : '#ccc' }
+            },
+            y: {
+                grid: { color: isLightMode ? '#e5e5e5' : 'rgba(255,255,255,0.05)' },
+                ticks: { color: isLightMode ? '#666' : '#ccc' }
+            }
+        },
+        color: isLightMode ? '#333' : '#fff'
+    };
 
     const getDateValue = (dataObj: HistoricalData, target: string) => {
         if (dataObj[target] !== undefined) return { date: target, value: dataObj[target] };
@@ -201,7 +227,7 @@ export default function Calculator() {
 
     return (
         <div className="calculator-container">
-            <h2 className="section-title">Calculadora de Bitcoin (ROI)</h2>
+            <h2 className="section-title">Calculadora Bitcoin ROI</h2>
             <p className="section-desc">Descubra se você seria CLT ou Magnata?</p>
 
             <div className="calculator-card">
@@ -292,15 +318,7 @@ export default function Calculator() {
 
                     {!showTable ? (
                         <div className="chart-container" id="roi-chart-container">
-                            <Line options={{
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: { legend: { display: false } },
-                                scales: {
-                                    x: { grid: { color: 'rgba(255,255,255,0.05)' } },
-                                    y: { grid: { color: 'rgba(255,255,255,0.05)' } }
-                                }
-                            }} data={chartData} />
+                            <Line options={chartOptions} data={chartData} />
                         </div>
                     ) : (
                         <div className="table-container active" id="roi-table-container">
