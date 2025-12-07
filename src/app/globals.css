@@ -8,6 +8,7 @@
   --text-secondary: #cccccc;
   --border-color: #444;
   --font-main: 'Inter', sans-serif;
+  --chart-grid-color: rgba(255, 255, 255, 0.05);
 }
 
 body.light-mode {
@@ -16,6 +17,7 @@ body.light-mode {
   --text-main: #2c3e50;
   --text-secondary: #5e6d7e;
   --border-color: #e0e0e0;
+  --chart-grid-color: rgba(0, 0, 0, 0.05);
 }
 
 * {
