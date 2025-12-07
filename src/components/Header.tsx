@@ -20,6 +20,7 @@ export default function Header() {
                         <Link href="/calculadora-dca" className="nav-item">Bitcoin DCA</Link>
                         <Link href="/calculadora-arrependimento" className="nav-item">Bitcoin ROI</Link>
                         <Link href="/conversor-sats" className="nav-item">Conversor Sats</Link>
+                        <Link href="/renda-fixa-btc" className="nav-item">Renda Fixa BTC</Link>
                     </div>
                 </div>
                 <Link href="/sobre" className="nav-item">Sobre</Link>
