@@ -23,6 +23,8 @@ export default function CalculadoraArrependimentoPage() {
         <main>
             <section className="calculator-section" id="calculator">
                 <Calculator />
+
+
             </section>
 
             <section className="about-section">

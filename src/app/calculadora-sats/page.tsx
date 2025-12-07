@@ -135,11 +135,11 @@ export default function SatoshiCalculatorPage() {
 
     return (
         <main className="about-section">
-            <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '2rem' }}>Calculadora de Aposentadoria em Satoshis</h1>
+            <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '2rem', textAlign: 'center' }}>Calculadora de Aposentadoria em Satoshis</h1>
 
             <div className="about-content">
                 {/* Calculator Inputs */}
-                <div className="calculator-container" style={{ margin: '2rem 0', padding: '2rem', background: 'var(--card-bg)', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                <div className="calculator-container" style={{ margin: '2rem auto', padding: '2rem', background: 'var(--card-bg)', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
                     <h3 style={{ marginBottom: '1.5rem', color: 'var(--bitcoin-orange)' }}>Seus Dados de Planejamento</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                         <div>
@@ -211,6 +211,22 @@ export default function SatoshiCalculatorPage() {
                             </div>
                         </div>
                     )}
+
+                    {/* Share Buttons */}
+                    <div style={{ marginTop: '2rem', display: 'flex', gap: '10px', width: '100%' }}>
+                        <a href={`https://twitter.com/intent/tweet?text=Confira%20esta%20calculadora%20de%20aposentadoria%20em%20Satoshis!&url=https://viverdebitcoin.com/calculadora-sats`} target="_blank" rel="noopener noreferrer" style={{ background: '#000', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            𝕏
+                        </a>
+                        <a href={`https://www.instagram.com/`} target="_blank" rel="noopener noreferrer" style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            IG
+                        </a>
+                        <a href={`https://wa.me/?text=Confira%20esta%20calculadora%20de%20aposentadoria%20em%20Satoshis!%20https://viverdebitcoin.com/calculadora-sats`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            WhatsApp
+                        </a>
+                    </div>
+                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                        Compartilhe nas suas redes sociais :)
+                    </p>
                 </div>
 
                 {/* Results Section */}
@@ -285,6 +301,9 @@ export default function SatoshiCalculatorPage() {
                         <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>* A projeção é educacional e não representa garantia financeira.</p>
                     </div>
                 )}
+
+
+
 
 
                 {/* Educational Content */}

@@ -42,6 +42,11 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  icons: {
+    icon: '/ViverdeBitcoinfavicon.png',
+    shortcut: '/ViverdeBitcoinfavicon.png',
+    apple: '/ViverdeBitcoinfavicon.png',
+  },
 };
 
 export default function RootLayout({

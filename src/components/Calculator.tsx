@@ -30,9 +30,9 @@ ChartJS.register(
 type HistoricalData = { [date: string]: number };
 
 export default function Calculator() {
-    const [amount, setAmount] = useState<string>('');
+    const [amount, setAmount] = useState<string>('1000');
     const [currency, setCurrency] = useState('BRL');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState('2014-09-17');
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
     const [livePriceUSD, setLivePriceUSD] = useState<number | null>(null);
 
@@ -51,10 +51,6 @@ export default function Calculator() {
     const [chartHistory, setChartHistory] = useState<{ date: string, value: number }[]>([]);
 
     useEffect(() => {
-        // Set default date to yesterday
-        const d = new Date();
-        d.setDate(d.getDate() - 1);
-        setDate(d.toISOString().split('T')[0]);
 
         // Fetch Prices
         const fetchPrices = async () => {
@@ -205,7 +201,7 @@ export default function Calculator() {
 
     return (
         <div className="calculator-container">
-            <h2 className="section-title">Calculadora de Bitcoin</h2>
+            <h2 className="section-title">Calculadora de Bitcoin (ROI)</h2>
             <p className="section-desc">Descubra se você seria CLT ou Magnata?</p>
 
             <div className="calculator-card">
@@ -248,6 +244,22 @@ export default function Calculator() {
                 <div className="live-price">
                     {livePriceBRL ? `Preço Atual: ${livePriceBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` : 'Carregando preço atual...'}
                 </div>
+
+                {/* Share Buttons */}
+                <div style={{ marginTop: '1.5rem', display: 'flex', gap: '10px', width: '100%' }}>
+                    <a href={`https://twitter.com/intent/tweet?text=Confira%20esta%20Calculadora%20do%20Arrependimento%20Bitcoin!&url=https://viverdebitcoin.com/calculadora-arrependimento`} target="_blank" rel="noopener noreferrer" style={{ background: '#000', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        𝕏
+                    </a>
+                    <a href={`https://www.instagram.com/`} target="_blank" rel="noopener noreferrer" style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        IG
+                    </a>
+                    <a href={`https://wa.me/?text=Confira%20esta%20Calculadora%20do%20Arrependimento%20Bitcoin!%20https://viverdebitcoin.com/calculadora-arrependimento`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        WhatsApp
+                    </a>
+                </div>
+                <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500, marginBottom: '0' }}>
+                    Compartilhe nas suas redes sociais :)
+                </p>
 
                 {result && (
                     <div id="result-card" className={`result-card fade-in`} style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem', background: 'transparent', opacity: 1, transform: 'none', display: 'flex' }}>
