@@ -18,6 +18,7 @@ import {
 } from 'chart.js';
 import { Line, Bar, Chart } from 'react-chartjs-2';
 import historyData from '@/data/strc-history.json';
+import { useSettings } from '@/contexts/SettingsContext';
 
 ChartJS.register(
     CategoryScale,
@@ -53,6 +54,8 @@ interface ForecastRow {
 }
 
 export default function RendaFixaCalculator() {
+    const { language, t } = useSettings();
+    const currency = 'USD'; // STRC is always USD
     // --- Inputs State ---
     const [inputs, setInputs] = useState(() => {
         const start = new Date('2025-08-15');
@@ -315,9 +318,13 @@ export default function RendaFixaCalculator() {
     const totalReturnUSD = totalWealth - totalCashInvested;
     const totalReturnPct = totalCashInvested > 0 ? (totalReturnUSD / totalCashInvested) * 100 : 0;
 
-    // Helper: Format Currency pt-BR
+    // Helper: Format Currency
     const formatCurrency = (val: number) => {
-        return val.toLocaleString('pt-BR', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        let locale = 'pt-BR';
+        if (language === 'en') locale = 'en-US';
+        if (language === 'es') locale = 'es-ES';
+
+        return val.toLocaleString(locale, { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
     // --- Chart Data ---
@@ -420,8 +427,8 @@ export default function RendaFixaCalculator() {
 
     return (
         <div className="calculator-container" style={{ maxWidth: '800px' }}>
-            <h2 className="section-title">Calculadora de Renda Fixa Lastreada em Bitcoin (STRC)</h2>
-            <p className="section-desc">STRC (Stretch) é um credito de tesouraria da empresa Americana Strategy</p>
+            <h1 className="section-title">{t('rf.title')}</h1>
+            <p className="section-desc">{t('rf.subtitle')}</p>
 
             <div className="calculator-card">
                 {/* Inputs */}
@@ -429,7 +436,7 @@ export default function RendaFixaCalculator() {
 
                     {/* Start Date Input */}
                     <div className="input-group">
-                        <label>Data Inicial</label>
+                        <label>{t('rf.start_date')}</label>
                         <input
                             type="date"
                             value={inputs.startDate}
@@ -441,7 +448,7 @@ export default function RendaFixaCalculator() {
                     </div>
 
                     <div className="input-group">
-                        <label>Cotas Iniciais</label>
+                        <label>{t('rf.initial_shares')}</label>
                         <input
                             type="number"
                             value={inputs.initialShares}
@@ -451,39 +458,39 @@ export default function RendaFixaCalculator() {
                     </div>
 
                     <div className="input-group">
-                        <label>Horizonte</label>
+                        <label>{t('rf.horizon')}</label>
                         <select
                             value={inputs.horizonMonths}
                             onChange={e => handleChange('horizonMonths', Number(e.target.value))}
                         >
                             {/* Dynamic "Until Today" Option */}
                             {!standardOptions.includes(monthsToToday) && (
-                                <option value={monthsToToday}>Até Hoje ({monthsToToday} Meses)</option>
+                                <option value={monthsToToday}>{t('rf.until_today')} ({monthsToToday} {t('rf.months')})</option>
                             )}
 
-                            <option value={6}>6 Meses</option>
-                            <option value={12}>1 Ano</option>
-                            <option value={24}>2 Anos</option>
-                            <option value={36}>3 Anos</option>
+                            <option value={6}>6 {t('rf.months')}</option>
+                            <option value={12}>1 {t('common.year')}</option>
+                            <option value={24}>2 {t('common.year')}s</option>
+                            <option value={36}>3 {t('common.year')}s</option>
                         </select>
                     </div>
 
                     <div className="input-group">
-                        <label>Frequência Aportes</label>
+                        <label>{t('rf.contrib_freq')}</label>
                         <select
                             value={inputs.contribFreq}
                             onChange={e => handleChange('contribFreq', e.target.value)}
                         >
-                            <option value="none">Nenhum</option>
-                            <option value="weekly">Semanal</option>
-                            <option value="monthly">Mensal</option>
-                            <option value="annual">Anual</option>
+                            <option value="none">{t('rf.none')}</option>
+                            <option value="weekly">{t('common.weekly')}</option>
+                            <option value="monthly">{t('common.monthly')}</option>
+                            <option value="annual">{t('common.annual')}</option>
                         </select>
                     </div>
 
                     {inputs.contribFreq !== 'none' && (
                         <div className="input-group">
-                            <label>Valor Aporte</label>
+                            <label>{t('rf.contrib_value')}</label>
                             <div className="amount-wrapper">
                                 <input
                                     type="number"
@@ -503,29 +510,29 @@ export default function RendaFixaCalculator() {
                     )}
 
                     <div className="input-group">
-                        <label>Preço Saída ($)</label>
+                        <label>{t('rf.exit_price')}</label>
                         <input
                             type="number"
                             value={isUntilToday ? lastPrice : inputs.exitPrice}
                             onChange={e => handleChange('exitPrice', Number(e.target.value))}
                             step="0.1"
                             disabled={isUntilToday}
-                            title={isUntilToday ? "Preço fixado na cotação atual para cálculo 'Até Hoje'" : undefined}
+                            title={isUntilToday ? t('rf.exit_price_msg') : undefined}
                             style={{ opacity: isUntilToday ? 0.6 : 1, cursor: isUntilToday ? 'not-allowed' : 'default', backgroundColor: isUntilToday ? 'rgba(255,255,255,0.05)' : '' }}
                         />
                     </div>
 
                     <div className="input-group">
-                        <label>Cenário</label>
+                        <label>{t('rf.scenario')}</label>
                         <select
                             value={inputs.scenario}
                             onChange={e => handleChange('scenario', e.target.value)}
                             disabled={isUntilToday}
                             style={{ opacity: isUntilToday ? 0.6 : 1, cursor: isUntilToday ? 'not-allowed' : 'default', backgroundColor: isUntilToday ? 'rgba(255,255,255,0.05)' : '' }}
                         >
-                            <option value="base">Base (Estável)</option>
-                            <option value="bull">Bull (Preço Alta)</option>
-                            <option value="bear">Bear (Preço Baixa)</option>
+                            <option value="base">{t('rf.scenario_base')}</option>
+                            <option value="bull">{t('rf.scenario_bull')}</option>
+                            <option value="bear">{t('rf.scenario_bear')}</option>
                         </select>
                     </div>
                 </div>
@@ -539,16 +546,16 @@ export default function RendaFixaCalculator() {
                         style={{ width: '20px', height: '20px' }}
                         className="accent-[#f2994a]"
                     />
-                    <label htmlFor="chk-reinvest" style={{ margin: 0, fontWeight: 600, color: 'var(--text-secondary)', cursor: 'pointer' }}>Reinvestir Dividendos Automaticamente</label>
+                    <label htmlFor="chk-reinvest" style={{ margin: 0, fontWeight: 600, color: 'var(--text-secondary)', cursor: 'pointer' }}>{t('rf.reinvest_auto')}</label>
                 </div>
 
                 <button className="cta-button" onClick={handleSimulate}>
-                    Simular Resultado
+                    {t('rf.simulate_btn')}
                 </button>
                 {/* Share Buttons */}
                 <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.95rem', fontWeight: 500 }}>
-                        Compartilhe com seus amigos nas redes sociais
+                        {t('common.share')}
                     </p>
                     <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
                         <a href={`https://twitter.com/intent/tweet?text=Simule%20sua%20Renda%20Fixa%20em%20Bitcoin%20com%20a%20calculadora%20STRC!&url=https://viverdebitcoin.com/renda-fixa-btc`} target="_blank" rel="noopener noreferrer" style={{ background: '#000', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -569,31 +576,31 @@ export default function RendaFixaCalculator() {
                 showResults && activeInputs && chartData && (
                     <div id="simulation-results" className="result-card fade-in" style={{ display: 'block', marginTop: '2rem' }}>
 
-                        <h3 style={{ color: 'var(--text-main)', fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>Projeção de Rendimentos</h3>
+                        <h3 style={{ color: 'var(--text-main)', fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>{t('rf.projection_title')}</h3>
 
                         {/* Summary Cards */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px', marginBottom: '2rem' }}>
 
                             {/* Total Invested */}
                             <div style={{ background: 'rgba(52, 152, 219, 0.1)', padding: '15px', borderRadius: '8px', border: '1px solid #3498db', textAlign: 'center' }}>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total Investido</div>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('rf.total_invested')}</div>
                                 <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: '#3498db' }}>{formatCurrency(totalCashInvested)}</div>
                             </div>
 
                             <div style={{ background: 'rgba(39, 174, 96, 0.1)', padding: '15px', borderRadius: '8px', border: '1px solid var(--primary-green)', textAlign: 'center' }}>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Retorno Total</div>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('rf.total_return')}</div>
                                 <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--primary-green)' }}>{formatCurrency(totalReturnUSD)}</div>
                                 <div style={{ fontSize: '0.9rem', color: '#27ae60' }}>{totalReturnPct.toFixed(2)}% ROI</div>
                             </div>
 
                             <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Valor Final</div>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('rf.final_value')}</div>
                                 <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--bitcoin-orange)' }}>{formatCurrency(finalPortfolioValue)}</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{totalShares.toFixed(2)} cotas</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{totalShares.toFixed(2)} {t('rf.shares')}</div>
                             </div>
 
                             <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Total Dividendos</div>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('rf.total_dividends')}</div>
                                 <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--text-main)' }}>{formatCurrency(totalDividends)}</div>
                             </div>
                         </div>
@@ -604,13 +611,13 @@ export default function RendaFixaCalculator() {
                                 className={`view-btn ${viewMode === 'chart' ? 'active' : ''}`}
                                 onClick={() => setViewMode('chart')}
                             >
-                                Gráfico
+                                {t('common.chart')}
                             </button>
                             <button
                                 className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
                                 onClick={() => setViewMode('table')}
                             >
-                                Tabela
+                                {t('common.table')}
                             </button>
                         </div>
 
@@ -629,13 +636,13 @@ export default function RendaFixaCalculator() {
                                                 y: {
                                                     position: 'left',
                                                     grid: { color: 'rgba(255,255,255,0.05)' },
-                                                    title: { display: true, text: 'Portfolio ($)', color: '#888' },
+                                                    title: { display: true, text: `${t('rf.chart_portfolio')} ($)`, color: '#888' },
                                                     ticks: { color: '#888' }
                                                 },
                                                 y1: {
                                                     position: 'right',
                                                     grid: { drawOnChartArea: false },
-                                                    title: { display: true, text: 'Dividendos ($)', color: '#27ae60' },
+                                                    title: { display: true, text: `${t('rf.chart_dividends')} ($)`, color: '#27ae60' },
                                                     ticks: { color: '#27ae60' }
                                                 },
                                                 x: {
@@ -651,7 +658,10 @@ export default function RendaFixaCalculator() {
                                                             let label = context.dataset.label || '';
                                                             if (label) label += ': ';
                                                             if (context.parsed.y !== null) {
-                                                                label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.parsed.y);
+                                                                let locale = 'pt-BR';
+                                                                if (language === 'en') locale = 'en-US';
+                                                                if (language === 'es') locale = 'es-ES';
+                                                                label += new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(context.parsed.y);
                                                             }
                                                             return label;
                                                         }
@@ -678,7 +688,7 @@ export default function RendaFixaCalculator() {
                                                     fontSize: '0.85rem'
                                                 }}
                                             >
-                                                Mensal
+                                                {t('common.monthly')}
                                             </button>
                                             <button
                                                 onClick={() => setTableFreq('annual')}
@@ -693,7 +703,7 @@ export default function RendaFixaCalculator() {
                                                     fontSize: '0.85rem'
                                                 }}
                                             >
-                                                Anual
+                                                {t('common.annual')}
                                             </button>
                                         </div>
                                     </div>
@@ -703,22 +713,22 @@ export default function RendaFixaCalculator() {
                                             <thead>
                                                 <tr>
                                                     <th onClick={() => handleSort('dateLabel')} style={{ cursor: 'pointer', position: 'sticky', top: 0, backgroundColor: '#1a1a1a', zIndex: 20, padding: '12px', borderBottom: '2px solid #333', textAlign: 'left', minWidth: '100px' }}>
-                                                        {tableFreq === 'monthly' ? 'Mês' : 'Ano'} {sortConfig?.key === 'dateLabel' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                                                        {tableFreq === 'monthly' ? t('common.month') : t('common.year')} {sortConfig?.key === 'dateLabel' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                                                     </th>
                                                     <th onClick={() => handleSort('price')} style={{ cursor: 'pointer', position: 'sticky', top: 0, backgroundColor: '#1a1a1a', zIndex: 20, padding: '12px', borderBottom: '2px solid #333', textAlign: 'right' }}>
-                                                        Preço {sortConfig?.key === 'price' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                                                        {t('common.price')} {sortConfig?.key === 'price' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                                                     </th>
                                                     <th onClick={() => handleSort('dividendPerShare')} style={{ cursor: 'pointer', position: 'sticky', top: 0, backgroundColor: '#1a1a1a', zIndex: 20, padding: '12px', borderBottom: '2px solid #333', textAlign: 'right' }}>
-                                                        Div/Ação {sortConfig?.key === 'dividendPerShare' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                                                        {t('rf.div_share')} {sortConfig?.key === 'dividendPerShare' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                                                     </th>
                                                     <th onClick={() => handleSort('endShares')} style={{ cursor: 'pointer', position: 'sticky', top: 0, backgroundColor: '#1a1a1a', zIndex: 20, padding: '12px', borderBottom: '2px solid #333', textAlign: 'right' }}>
-                                                        Cotas {sortConfig?.key === 'endShares' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                                                        {t('rf.shares')} {sortConfig?.key === 'endShares' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                                                     </th>
                                                     <th onClick={() => handleSort('dividendIncome')} style={{ cursor: 'pointer', position: 'sticky', top: 0, backgroundColor: '#1a1a1a', zIndex: 20, padding: '12px', borderBottom: '2px solid #333', textAlign: 'right' }}>
-                                                        Renda {sortConfig?.key === 'dividendIncome' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                                                        {t('rf.income')} {sortConfig?.key === 'dividendIncome' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                                                     </th>
                                                     <th onClick={() => handleSort('portfolioValue')} style={{ cursor: 'pointer', position: 'sticky', top: 0, backgroundColor: '#1a1a1a', zIndex: 20, padding: '12px', borderBottom: '2px solid #333', textAlign: 'right' }}>
-                                                        Valor Final {sortConfig?.key === 'portfolioValue' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                                                        {t('rf.final_value')} {sortConfig?.key === 'portfolioValue' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                                                     </th>
                                                 </tr>
                                             </thead>

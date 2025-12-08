@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+    const { language, setLanguage, currency, setCurrency, t } = useSettings();
 
     // Close sidebar on route change (mobile)
     useEffect(() => {
@@ -17,12 +19,12 @@ export default function Header() {
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const navLinks = [
-        { name: 'Aposentadoria BTC', href: '/' },
-        { name: 'Aposentadoria Sats', href: '/calculadora-sats' },
-        { name: 'Bitcoin DCA', href: '/calculadora-dca' },
-        { name: 'Bitcoin ROI', href: '/calculadora-arrependimento' },
-        { name: 'Renda Fixa BTC', href: '/renda-fixa-btc' },
-        { name: 'Conversor Sats', href: '/conversor-sats' },
+        { name: t('nav.aposentadoria_btc'), href: '/' },
+        { name: t('nav.aposentadoria_sats'), href: '/calculadora-sats' },
+        { name: t('nav.bitcoin_dca'), href: '/calculadora-dca' },
+        { name: t('nav.bitcoin_roi'), href: '/calculadora-arrependimento' },
+        { name: t('nav.renda_fixa_btc'), href: '/renda-fixa-btc' },
+        { name: t('nav.conversor_sats'), href: '/conversor-sats' },
     ];
 
     return (
@@ -70,12 +72,73 @@ export default function Header() {
                     <div className="nav-divider" />
 
                     <Link href="/sobre" className={`sidebar-nav-item ${pathname === '/sobre' ? 'active' : ''}`}>
-                        Sobre
+                        {t('nav.sobre')}
                     </Link>
                 </nav>
 
-                <div className="sidebar-footer">
-                    <ThemeToggle />
+                <div className="sidebar-footer" style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingTop: '1rem', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
+
+                    {/* Language Selector */}
+                    <div style={{ position: 'relative' }}>
+                        <select
+                            value={language}
+                            onChange={(e) => setLanguage(e.target.value as any)}
+                            style={{
+                                appearance: 'none',
+                                background: 'transparent',
+                                border: '1px solid var(--border-color)',
+                                color: 'var(--text-main)',
+                                padding: '6px 24px 6px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                                textTransform: 'uppercase',
+                                width: 'auto',
+                                minWidth: '60px'
+                            }}
+                        >
+                            <option value="pt">PT</option>
+                            <option value="en">EN</option>
+                            <option value="es">ES</option>
+                        </select>
+                        <div style={{ position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                            ▼
+                        </div>
+                    </div>
+
+                    {/* Currency Selector */}
+                    <div style={{ position: 'relative' }}>
+                        <select
+                            value={currency}
+                            onChange={(e) => setCurrency(e.target.value as any)}
+                            style={{
+                                appearance: 'none',
+                                background: 'transparent',
+                                border: '1px solid var(--border-color)',
+                                color: 'var(--bitcoin-orange)',
+                                padding: '6px 24px 6px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                                width: 'auto',
+                                minWidth: '65px'
+                            }}
+                        >
+                            <option value="BRL">BRL (R$)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                        </select>
+                        <div style={{ position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+                            ▼
+                        </div>
+                    </div>
+
+                    {/* Theme Toggle - Auto margin left to push it to the right slightly if needed, or just part of the flow */}
+                    <div style={{ marginLeft: 'auto' }}>
+                        <ThemeToggle />
+                    </div>
                 </div>
             </aside>
         </>

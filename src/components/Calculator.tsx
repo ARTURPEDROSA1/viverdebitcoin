@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { bitcoinHistoricalData, exchangeRates, exchangeRatesHistorical } from '@/lib/historicalData';
+import { useSettings } from '@/contexts/SettingsContext';
 
 ChartJS.register(
     CategoryScale,
@@ -30,8 +31,9 @@ ChartJS.register(
 type HistoricalData = { [date: string]: number };
 
 export default function Calculator() {
+    const { currency, setCurrency, t } = useSettings();
     const [amount, setAmount] = useState<string>('1000');
-    const [currency, setCurrency] = useState('BRL');
+    // Currency is now global
     const [date, setDate] = useState('2014-09-17');
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
     const [livePriceUSD, setLivePriceUSD] = useState<number | null>(null);
@@ -253,12 +255,12 @@ export default function Calculator() {
 
     return (
         <div className="calculator-container">
-            <h2 className="section-title">Calculadora Bitcoin ROI</h2>
-            <p className="section-desc">Descubra se você seria CLT ou Magnata?</p>
+            <h1 className="section-title">{t('roi.title')}</h1>
+            <p className="section-desc">{t('roi.subtitle')}</p>
 
             <div className="calculator-card">
                 <div className="input-group">
-                    <label htmlFor="investment-amount">Valor do Investimento</label>
+                    <label htmlFor="investment-amount">{t('roi.investment_amount')}</label>
                     <div className="amount-wrapper">
                         <input
                             type="number"
@@ -269,19 +271,19 @@ export default function Calculator() {
                             onChange={(e) => setAmount(e.target.value)}
                         />
                         <select
-                            id="currency-selector"
                             value={currency}
-                            onChange={(e) => setCurrency(e.target.value)}
+                            onChange={(e) => setCurrency(e.target.value as any)}
+                            style={{ width: 'auto', minWidth: '80px', textAlign: 'center' }}
                         >
-                            <option value="BRL">BRL (R$)</option>
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
+                            <option value="BRL">BRL</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
                         </select>
                     </div>
                 </div>
 
                 <div className="input-group">
-                    <label htmlFor="investment-date">Data da Compra</label>
+                    <label htmlFor="investment-date">{t('roi.buy_date')}</label>
                     <input
                         type="date"
                         id="investment-date"
@@ -291,25 +293,25 @@ export default function Calculator() {
                     />
                 </div>
 
-                <button id="calculate-btn" className="cta-button" onClick={calculate}>Calcular Resultado</button>
-                <p className="historical-note">Dados históricos disponíveis a partir de 17/09/2014</p>
+                <button id="calculate-btn" className="cta-button" onClick={calculate}>{t('roi.calculate_btn')}</button>
+                <p className="historical-note">{t('roi.historical_note')}</p>
                 <div className="live-price" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                     {loadingPrice ? (
-                        <span>Atualizando preço...</span>
+                        <span>{t('common.updating')}</span>
                     ) : (
                         <>
                             {
-                                currency === 'BRL' && livePriceBRL ? `Preço Atual: ${livePriceBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` :
-                                    currency === 'EUR' && livePriceEUR ? `Preço Atual: ${livePriceEUR.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}` :
-                                        livePriceUSD ? `Preço Atual: ${livePriceUSD.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` :
-                                            'Carregando preço atual...'
+                                currency === 'BRL' && livePriceBRL ? `${t('common.current_price')}: ${livePriceBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` :
+                                    currency === 'EUR' && livePriceEUR ? `${t('common.current_price')}: ${livePriceEUR.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}` :
+                                        livePriceUSD ? `${t('common.current_price')}: ${livePriceUSD.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` :
+                                            t('common.updating')
                             }
                             <button
                                 onClick={fetchPrices}
                                 className="refresh-btn"
                                 style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: 0 }}
-                                title="Atualizar Preço"
-                                aria-label="Atualizar Preço"
+                                title={t('common.refresh')}
+                                aria-label={t('common.refresh')}
                             >
                                 🔄
                             </button>
@@ -330,25 +332,25 @@ export default function Calculator() {
                     </a>
                 </div>
                 <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500, marginBottom: '0' }}>
-                    Compartilhe nas suas redes sociais :)
+                    {t('common.share')}
                 </p>
 
                 {result && (
                     <div id="result-card" className={`result-card fade-in`} style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem', background: 'transparent', opacity: 1, transform: 'none', display: 'flex' }}>
                         <div className="result-item">
-                            <span>Valor Hoje</span>
+                            <span>{t('dca.results.value_today')}</span>
                             <strong id="result-value">{result.formattedValue}</strong>
                         </div>
                         <div className="result-item">
-                            <span>Quantidade de Bitcoins</span>
+                            <span>{t('common.btc_acquired')}</span>
                             <strong id="result-btc-amount">{result.btcAmount.toFixed(8)} BTC</strong>
                         </div>
                         <div className="result-item">
-                            <span>Lucro/Prejuízo</span>
+                            <span>{t('common.profit')}</span>
                             <strong id="result-profit" className={result.profit >= 0 ? 'profit-positive' : 'profit-negative'}>{result.formattedProfit}</strong>
                         </div>
                         <div className="result-item">
-                            <span>ROI (Retorno)</span>
+                            <span>{t('roi.result_roi')}</span>
                             <strong id="result-roi" className={result.roi >= 0 ? 'roi-positive' : 'roi-negative'}>{result.formattedRoi}</strong>
                         </div>
                     </div>
@@ -358,8 +360,8 @@ export default function Calculator() {
             {chartData && (
                 <>
                     <div className="view-switcher" id="view-switcher-container">
-                        <button className={`view-btn ${!showTable ? 'active' : ''}`} onClick={() => setShowTable(false)}>Gráfico</button>
-                        <button className={`view-btn ${showTable ? 'active' : ''}`} onClick={() => setShowTable(true)}>Tabela</button>
+                        <button className={`view-btn ${!showTable ? 'active' : ''}`} onClick={() => setShowTable(false)}>{t('common.chart')}</button>
+                        <button className={`view-btn ${showTable ? 'active' : ''}`} onClick={() => setShowTable(true)}>{t('common.table')}</button>
                     </div>
 
                     {!showTable ? (
@@ -371,8 +373,8 @@ export default function Calculator() {
                             <table className="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Data</th>
-                                        <th>Valor ({currency})</th>
+                                        <th>{t('common.date')}</th>
+                                        <th>{t('dca.results.value_today')} ({currency})</th>
                                     </tr>
                                 </thead>
                                 <tbody>

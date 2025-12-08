@@ -28,7 +28,6 @@ export default function ThemeToggle() {
     return (
         <button id="theme-toggle" className="theme-toggle-btn" onClick={toggle} title="Alternar Tema">
             <span>{isLight ? '☀️' : '🌙'}</span>
-            Tema
         </button>
     );
 }

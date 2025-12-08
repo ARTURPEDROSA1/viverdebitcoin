@@ -2,13 +2,16 @@
 import { useState, useEffect } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useSettings } from '@/contexts/SettingsContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 export default function SatoshiCalculatorPage() {
     // State definitions
+    // State definitions
+    const { currency, setCurrency, t } = useSettings();
     const [inputAmount, setInputAmount] = useState<number>(100);
-    const [currency, setCurrency] = useState<'BRL' | 'USD' | 'EUR'>('BRL');
+    // Removed local currency state
     const [annualIncrease, setAnnualIncrease] = useState<number>(5);
     const [currentAge, setCurrentAge] = useState<number>(25);
     const [retirementAge, setRetirementAge] = useState<number>(45);
@@ -145,7 +148,7 @@ export default function SatoshiCalculatorPage() {
             labels,
             datasets: [
                 {
-                    label: `Patrimônio Projetado (${currency})`,
+                    label: `${t('sats.projected_value')} (${currency})`,
                     data: patrimonyBrl,
                     borderColor: '#f7931a',
                     backgroundColor: 'rgba(247, 147, 26, 0.2)',
@@ -153,7 +156,7 @@ export default function SatoshiCalculatorPage() {
                     fill: true,
                 },
                 {
-                    label: 'BTC Acumulado',
+                    label: t('sats.final_btc'),
                     data: totalBtcAccumulated,
                     borderColor: '#27ae60',
                     backgroundColor: 'rgba(39, 174, 96, 0.2)',
@@ -175,18 +178,30 @@ export default function SatoshiCalculatorPage() {
 
     return (
         <main className="about-section">
-            <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '2rem', textAlign: 'center' }}>Calculadora de Aposentadoria em Satoshis</h1>
+            <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '2rem', textAlign: 'center' }}>{t('sats.title')}</h1>
 
             <div className="about-content">
                 {/* Calculator Inputs */}
                 <div className="calculator-container" style={{ margin: '2rem auto', padding: '2rem', background: 'var(--card-bg)', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-                    <h3 style={{ marginBottom: '1.5rem', color: 'var(--bitcoin-orange)' }}>Seus Dados de Planejamento</h3>
+                    <h3 style={{ marginBottom: '1.5rem', color: 'var(--bitcoin-orange)' }}>{t('sats.planning_data')}</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                         <div>
-                            <label className="input-label">Valor do Aporte Mensal</label>
+                            <label className="input-label">{t('sats.monthly_contribution')}</label>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                                 <input type="number" value={inputAmount} onChange={(e) => setInputAmount(parseFloat(e.target.value))} className="calculator-input" />
-                                <select value={currency} onChange={(e: any) => setCurrency(e.target.value)} className="calculator-input" style={{ width: '80px', flexShrink: 0 }}>
+                                <select
+                                    value={currency}
+                                    onChange={(e) => setCurrency(e.target.value as any)}
+                                    style={{
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: '8px',
+                                        background: 'var(--card-bg)',
+                                        color: 'var(--text-secondary)',
+                                        fontWeight: 'bold',
+                                        padding: '0 10px',
+                                        cursor: 'pointer'
+                                    }}
+                                >
                                     <option value="BRL">BRL</option>
                                     <option value="USD">USD</option>
                                     <option value="EUR">EUR</option>
@@ -194,27 +209,27 @@ export default function SatoshiCalculatorPage() {
                             </div>
                         </div>
                         <div>
-                            <label className="input-label">Aumento anual do aporte (%)</label>
+                            <label className="input-label">{t('sats.annual_increase')}</label>
                             <input type="number" value={annualIncrease} onChange={(e) => setAnnualIncrease(parseFloat(e.target.value))} className="calculator-input" />
                         </div>
                         <div>
-                            <label className="input-label">Idade Atual</label>
+                            <label className="input-label">{t('home.current_age')}</label>
                             <input type="number" value={currentAge} onChange={(e) => setCurrentAge(parseFloat(e.target.value))} className="calculator-input" />
                         </div>
                         <div>
-                            <label className="input-label">Idade de Aposentadoria</label>
+                            <label className="input-label">{t('home.retirement_age')}</label>
                             <input type="number" value={retirementAge} onChange={(e) => setRetirementAge(parseFloat(e.target.value))} className="calculator-input" />
                         </div>
                         <div>
-                            <label className="input-label">Crescimento anual do BTC (%)</label>
+                            <label className="input-label">{t('sats.btc_growth')}</label>
                             <input type="number" value={btcGrowthRate} onChange={(e) => setBtcGrowthRate(parseFloat(e.target.value))} className="calculator-input" />
                         </div>
                         <div>
-                            <label className="input-label">Preço Atual BTC ({currency})</label>
+                            <label className="input-label">{t('common.current_price')} ({currency})</label>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <input
                                     type="text"
-                                    value={prices && prices[currency] ? formatCurrency(prices[currency], currency) : (loadingPrice ? 'Atualizando...' : 'Carregando...')}
+                                    value={prices && prices[currency] ? formatCurrency(prices[currency], currency) : (loadingPrice ? t('common.updating') : t('common.loading'))}
                                     disabled
                                     className="calculator-input"
                                     style={{ background: 'rgba(0,0,0,0.1)', flex: 1 }}
@@ -258,20 +273,20 @@ export default function SatoshiCalculatorPage() {
                         onMouseOver={(e) => e.currentTarget.style.background = '#e67e00'}
                         onMouseOut={(e) => e.currentTarget.style.background = 'var(--bitcoin-orange)'}
                     >
-                        Calcular Aposentadoria em Sats
+                        {t('sats.calculate_btn')}
                     </button>
 
                     {resultSummary && (
                         <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.95rem' }}>
-                                <div><strong>BTC Acumulado:</strong> <span style={{ color: 'var(--bitcoin-orange)' }}>{formatBtc(resultSummary.finalBtc)}</span></div>
-                                <div><strong>Sats Acumulados:</strong> {(resultSummary.finalSats).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</div>
+                                <div><strong>{t('sats.final_btc')}:</strong> <span style={{ color: 'var(--bitcoin-orange)' }}>{formatBtc(resultSummary.finalBtc)}</span></div>
+                                <div><strong>{t('sats.final_sats')}:</strong> {(resultSummary.finalSats).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</div>
 
-                                <div><strong>Valor Atual Acumulado:</strong> {formatCurrency(resultSummary.valueAtCurrent, currency)}</div>
-                                <div><strong>Sats/{currency} (Hoje):</strong> {Math.round(resultSummary.satsPerCurrent).toLocaleString('pt-BR')}</div>
+                                <div><strong>{t('sats.current_value')}:</strong> {formatCurrency(resultSummary.valueAtCurrent, currency)}</div>
+                                <div><strong>{t('sats.sats_per_currency')} ({t('sats.today')}):</strong> {Math.round(resultSummary.satsPerCurrent).toLocaleString('pt-BR')}</div>
 
-                                <div><strong>Valor Projetado:</strong> <span style={{ color: 'var(--primary-green)' }}>{formatCurrency(resultSummary.valueProjected, currency)}</span></div>
-                                <div><strong>Sats/{currency} (Projetado):</strong> {Math.round(resultSummary.satsPerProjected).toLocaleString('pt-BR')}</div>
+                                <div><strong>{t('sats.projected_value')}:</strong> <span style={{ color: 'var(--primary-green)' }}>{formatCurrency(resultSummary.valueProjected, currency)}</span></div>
+                                <div><strong>{t('sats.sats_per_currency')} ({t('sats.projected')}):</strong> {Math.round(resultSummary.satsPerProjected).toLocaleString('pt-BR')}</div>
                             </div>
                         </div>
                     )}
@@ -289,21 +304,21 @@ export default function SatoshiCalculatorPage() {
                         </a>
                     </div>
                     <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
-                        Compartilhe nas suas redes sociais :)
+                        {t('common.share')}
                     </p>
                 </div>
 
                 {/* Results Section */}
                 {chartData && (
                     <div style={{ margin: '2rem 0', padding: '1.5rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                        <h3 style={{ textAlign: 'center', marginBottom: '1rem', marginTop: '0', fontSize: '1.8rem' }}>Resultados do seu Planejamento</h3>
+                        <h3 style={{ textAlign: 'center', marginBottom: '1rem', marginTop: '0', fontSize: '1.8rem' }}>{t('sats.results_title')}</h3>
 
 
 
                         {/* Toggle View */}
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
-                            <button onClick={() => setViewMode('chart')} style={{ padding: '0.6rem 1.2rem', background: viewMode === 'chart' ? 'var(--primary-green)' : 'transparent', border: '1px solid var(--primary-green)', color: viewMode === 'chart' ? '#fff' : 'var(--text-main)', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Gráfico</button>
-                            <button onClick={() => setViewMode('table')} style={{ padding: '0.6rem 1.2rem', background: viewMode === 'table' ? 'var(--primary-green)' : 'transparent', border: '1px solid var(--primary-green)', color: viewMode === 'table' ? '#fff' : 'var(--text-main)', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>Tabela</button>
+                            <button onClick={() => setViewMode('chart')} style={{ padding: '0.6rem 1.2rem', background: viewMode === 'chart' ? 'var(--primary-green)' : 'transparent', border: '1px solid var(--primary-green)', color: viewMode === 'chart' ? '#fff' : 'var(--text-main)', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>{t('common.chart')}</button>
+                            <button onClick={() => setViewMode('table')} style={{ padding: '0.6rem 1.2rem', background: viewMode === 'table' ? 'var(--primary-green)' : 'transparent', border: '1px solid var(--primary-green)', color: viewMode === 'table' ? '#fff' : 'var(--text-main)', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>{t('common.table')}</button>
                         </div>
 
                         {viewMode === 'chart' ? (
@@ -322,14 +337,14 @@ export default function SatoshiCalculatorPage() {
                                                 type: 'linear' as const,
                                                 display: true,
                                                 position: 'left' as const,
-                                                title: { display: true, text: `Patrimônio (${currency})` }
+                                                title: { display: true, text: `${t('sats.projected_value')} (${currency})` }
                                             },
                                             y1: {
                                                 type: 'linear' as const,
                                                 display: true,
                                                 position: 'right' as const,
                                                 grid: { drawOnChartArea: false },
-                                                title: { display: true, text: 'BTC Acumulado' }
+                                                title: { display: true, text: t('sats.final_btc') }
                                             },
                                         },
                                         plugins: {
@@ -344,9 +359,9 @@ export default function SatoshiCalculatorPage() {
                                 <table className="about-table" style={{ width: '100%' }}>
                                     <thead>
                                         <tr>
-                                            <th>Idade</th>
-                                            <th>Patrimônio ({currency})</th>
-                                            <th>BTC Acumulado</th>
+                                            <th>{t('home.current_age')}</th>
+                                            <th>{t('sats.projected_value')} ({currency})</th>
+                                            <th>{t('sats.final_btc')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -372,8 +387,8 @@ export default function SatoshiCalculatorPage() {
 
                 {/* Educational Content */}
                 <div style={{ marginTop: '3rem', marginBottom: '3rem' }}>
-                    <h3 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>Descubra Quando Você Pode Parar de Trabalhar Guardando Bitcoin</h3>
-                    <p>A Calculadora de Aposentadoria em Satoshis é uma ferramenta simples e poderosa criada para ajudar você a visualizar como pequenas economias mensais em Bitcoin podem crescer ao longo dos anos.</p>
+                    <h3 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>{t('sats.edu_title_1')}</h3>
+                    <p>{t('sats.edu_text_1')}</p>
                     <p>Ao informar quanto você guarda por mês (em reais, dólares ou euros), configurar um aumento recorrente dos aportes e definir a data desejada para aposentadoria, o sistema projeta quanto BTC você terá acumulado.</p>
                     <div style={{ background: 'rgba(39, 174, 96, 0.1)', padding: '1.5rem', borderRadius: '8px', margin: '1.5rem 0', borderLeft: '4px solid var(--primary-green)' }}>
                         <p><strong>Por exemplo:</strong> Alguém que começa a poupar aos 25 anos, mantendo contribuições regulares e assumindo um crescimento moderado do Bitcoin, pode potencialmente atingir liberdade financeira perto dos 45 anos.</p>
@@ -381,8 +396,8 @@ export default function SatoshiCalculatorPage() {
                 </div>
 
                 {/* Educational Content */}
-                <h2>1. O que é um Satoshi?</h2>
-                <p>Um satoshi é a menor unidade do Bitcoin: <strong>1 BTC = 100.000.000 sats</strong>.</p>
+                <h2>{t('sats.edu_title_2')}</h2>
+                <p>{t('sats.edu_text_2')}</p>
                 <p>Isso torna possível que qualquer pessoa comece a economizar em Bitcoin, mesmo com pouco dinheiro.</p>
 
                 <h2>2. Por que economizar em Bitcoin?</h2>

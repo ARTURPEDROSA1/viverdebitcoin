@@ -561,13 +561,15 @@ body.light-mode .table-container {
   background: none;
   border: 1px solid var(--border-color);
   color: var(--text-main);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  padding: 6px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
   margin-left: auto;
   transition: all 0.3s;
 }

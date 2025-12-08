@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useSettings } from '@/contexts/SettingsContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
@@ -44,26 +45,6 @@ type ResultsState = {
     historyBear: PortfolioHistoryItem[];
 };
 
-const USD_ANCHORS: Anchors = {
-    2028: { base: 225000, bull: 450000, bear: 115000 },
-    2033: { base: 425000, bull: 1050000, bear: 185000 },
-    2040: { base: 800000, bull: 3250000, bear: 350000 },
-    2050: { base: 1900000, bull: 10000000, bear: 650000 },
-    2075: { base: 3000000, bull: 30000000, bear: 550000 },
-};
-
-const MACRO_EVENTS = [
-    { id: 'etf', label: 'Forte Fluxo em ETFs', type: 'tailwind', icon: '📈', multiplier: 1.10, desc: 'Entrada persistente de capital institucional e fundos.' },
-    { id: 'reg_clarity', label: 'Clareza Regulatória', type: 'tailwind', icon: '⚖️', multiplier: 1.05, desc: 'Regras claras para custódia e impostos.' },
-    { id: 'sovereign', label: 'Adoção Soberana', type: 'tailwind', icon: '🏛️', multiplier: 1.15, desc: 'Bancos centrais adicionam BTC às reservas.' },
-    { id: 'miner', label: 'Mineração Sustentável', type: 'tailwind', icon: '⚡', multiplier: 1.05, desc: 'Integração energética e segurança da rede.' },
-    { id: 'risk_on', label: 'Liquidez Global', type: 'tailwind', icon: '🌊', multiplier: 1.05, desc: 'Queda de juros reais e expansão monetária.' },
-    { id: 'tight_liq', label: 'Liquidez Apertada', type: 'headwind', icon: '📉', multiplier: 0.85, desc: 'Juros altos e aperto quantitativo (QT).' },
-    { id: 'adv_reg', label: 'Regulação Hostil', type: 'headwind', icon: '🚫', multiplier: 0.85, desc: 'Restrições de acesso ou KYC agressivo.' },
-    { id: 'recession', label: 'Recessão Global', type: 'headwind', icon: '🏚️', multiplier: 0.80, desc: 'Choque de demanda e deflação.' },
-    { id: 'protocol', label: 'Falha no Protocolo', type: 'headwind', icon: '⚠️', multiplier: 0.70, desc: 'Bug crítico ou perda de confiança técnica.' },
-];
-
 const FALLBACK_PRICES = {
     USD: 98000,
     BRL: 98000 * 6.0,
@@ -75,7 +56,32 @@ const FALLBACK_RATES = {
     USDEUR: 0.95
 };
 
+// Moved Macro definitions inside component or keep standard constant but without text
+const MACRO_DEFS = [
+    { id: 'etf', type: 'tailwind', icon: '📈', multiplier: 1.10 },
+    { id: 'reg_clarity', type: 'tailwind', icon: '⚖️', multiplier: 1.05 },
+    { id: 'sovereign', type: 'tailwind', icon: '🏛️', multiplier: 1.15 },
+    { id: 'miner', type: 'tailwind', icon: '⚡', multiplier: 1.05 },
+    { id: 'risk_on', type: 'tailwind', icon: '🌊', multiplier: 1.05 },
+    { id: 'tight_liq', type: 'headwind', icon: '📉', multiplier: 0.85 },
+    { id: 'adv_reg', type: 'headwind', icon: '🚫', multiplier: 0.85 },
+    { id: 'recession', type: 'headwind', icon: '🏚️', multiplier: 0.80 },
+    { id: 'protocol', type: 'headwind', icon: '⚠️', multiplier: 0.70 },
+];
+
+// Anchors
+const USD_ANCHORS: Anchors = {
+    2028: { base: 225000, bull: 450000, bear: 115000 },
+    2033: { base: 425000, bull: 1050000, bear: 185000 },
+    2040: { base: 800000, bull: 3250000, bear: 350000 },
+    2050: { base: 1900000, bull: 10000000, bear: 650000 },
+    2075: { base: 3000000, bull: 30000000, bear: 550000 },
+};
+
 export default function BitcoinRetirementPage() {
+    // Context
+    const { currency, setCurrency, t } = useSettings();
+
     // Inputs
     const [currentAge, setCurrentAge] = useState(30);
     const [retirementAge, setRetirementAge] = useState(55);
@@ -89,7 +95,7 @@ export default function BitcoinRetirementPage() {
 
     const [targetIncome, setTargetIncome] = useState(10000); // Target Monthly Income in Today's purchasing power
 
-    const [currency, setCurrency] = useState<Currency>('BRL');
+    // Removed local currency state in favor of context
     const [swr, setSwr] = useState(4); // Safe Withdrawal Rate %
     const [inflation, setInflation] = useState(3); // Annual Inflation %
     const [selectedMacros, setSelectedMacros] = useState<string[]>(['etf', 'reg_clarity']);
@@ -190,7 +196,7 @@ export default function BitcoinRetirementPage() {
             console.error("Critical error in fetchData:", error);
             setPrices(FALLBACK_PRICES);
             setExchangeRates(FALLBACK_RATES);
-            setErrorMsg('Usando preços offline (Erro Crítico)');
+            setErrorMsg(t('common.error.critical'));
         } finally {
             setIsLoadingData(false);
         }
@@ -220,7 +226,7 @@ export default function BitcoinRetirementPage() {
 
         // Ensure valid inputs
         if (retirementAge <= currentAge) {
-            alert("A idade de aposentadoria deve ser maior que a idade atual.");
+            alert(t('common.error.age'));
             return;
         }
 
@@ -229,7 +235,7 @@ export default function BitcoinRetirementPage() {
 
         let totalMultiplier = 1.0;
         selectedMacros.forEach(id => {
-            const macro = MACRO_EVENTS.find(m => m.id === id);
+            const macro = MACRO_DEFS.find(m => m.id === id);
             if (macro) totalMultiplier *= macro.multiplier;
         });
 
@@ -452,7 +458,7 @@ export default function BitcoinRetirementPage() {
                     <span style={{ fontSize: '1.5rem' }}>{icon}</span>
                     <span style={{ fontWeight: 'bold', color: color, fontSize: '1.3rem' }}>{title}</span>
                     <span style={{ fontSize: '0.8rem', background: `rgba(${color === '#f2994a' ? '242, 153, 74' : color === '#27ae60' ? '39, 174, 96' : '231, 76, 60'}, 0.1)`, color: color, padding: '4px 10px', borderRadius: '12px', marginLeft: 'auto' }}>
-                        {isTargetMet ? 'Meta Atingida' : 'Abaixo da Meta'}
+                        {isTargetMet ? t('home.result.target_met') : t('home.result.under_target')}
                     </span>
                 </div>
 
@@ -460,31 +466,31 @@ export default function BitcoinRetirementPage() {
                     {/* Header Stats */}
                     <div style={{ gridColumn: '1/-1', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                         <div className="stat-block" style={{ background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>Patrimônio em BTC</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('home.result.patrimony_btc')}</div>
                             <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--text-main)' }}>{formatBtc(data.btc)} <span style={{ fontSize: '0.8rem' }}>BTC</span></div>
                         </div>
                         <div className="stat-block" style={{ background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>Patrimônio Nominal</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('home.result.patrimony_nominal')}</div>
                             <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: color }}>{formatMoney(data.nominal)}</div>
                             <div style={{ fontSize: '0.85rem', color: data.nominal >= data.invested ? '#27ae60' : '#e74c3c', marginTop: '4px', fontWeight: 'bold' }}>
-                                ROI Nominal: {((data.nominal - data.invested) / data.invested * 100).toLocaleString('pt-BR', { maximumFractionDigits: 0, signDisplay: 'always' })}%
+                                {t('home.result.roi_nominal')}: {((data.nominal - data.invested) / data.invested * 100).toLocaleString('pt-BR', { maximumFractionDigits: 0, signDisplay: 'always' })}%
                             </div>
                         </div>
                     </div>
 
                     {/* Detailed Metrics */}
                     <div style={{ background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                        <h5 style={{ fontSize: '0.9rem', color: color, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Renda Mensal: Método Retirada ({swr}%)</h5>
-                        {renderMetricRow('Retirada Nominal (1º Ano)', formatMoney(data.swrNominalMonthly))}
-                        {renderMetricRow('Retirada Real (Poder de Compra)', formatMoney(data.swrRealMonthly))}
-                        {renderMetricRow('Retirada em BTC', `${formatBtc(data.swrBtcMonthly)} BTC`)}
+                        <h5 style={{ fontSize: '0.9rem', color: color, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>{t('home.result.income_method')} ({swr}%)</h5>
+                        {renderMetricRow(t('home.result.nominal'), formatMoney(data.swrNominalMonthly))}
+                        {renderMetricRow(t('home.result.real'), formatMoney(data.swrRealMonthly))}
+                        {renderMetricRow(t('home.result.slice_btc'), `${formatBtc(data.swrBtcMonthly)} BTC`)}
                     </div>
 
                     <div style={{ background: 'var(--bg-secondary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                        <h5 style={{ fontSize: '0.9rem', color: color, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Renda Mensal: Fatias Iguais ({data.yearsInRetirement} Anos)</h5>
-                        {renderMetricRow('Nominal (Simples Divisão)', formatMoney(data.sliceNominalMonthly))}
-                        {renderMetricRow('Real (Ajustado Inflação)', formatMoney(data.sliceRealMonthly))}
-                        {renderMetricRow('Fatia em BTC', `${formatBtc(data.sliceBtcMonthly)} BTC`)}
+                        <h5 style={{ fontSize: '0.9rem', color: color, marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>{t('home.result.income_slices')} ({data.yearsInRetirement} {t('common.annual')})</h5>
+                        {renderMetricRow(t('home.result.nominal'), formatMoney(data.sliceNominalMonthly))}
+                        {renderMetricRow(t('home.result.real'), formatMoney(data.sliceRealMonthly))}
+                        {renderMetricRow(t('home.result.slice_btc'), `${formatBtc(data.sliceBtcMonthly)} BTC`)}
                     </div>
                 </div>
 
@@ -500,18 +506,18 @@ export default function BitcoinRetirementPage() {
                         <div>
                             <div style={{ fontSize: '0.85rem', color: isTargetMet ? '#27ae60' : '#e74c3c', fontWeight: 'bold', marginBottom: '4px' }}>
                                 {isTargetMet
-                                    ? `✅ Você excede sua meta mensal em ${formatMoney(data.gapRealMonthly)}`
-                                    : `⚠️ Faltam ${formatMoney(Math.abs(data.gapRealMonthly))} mensais para sua meta`
+                                    ? `✅ ${t('home.result.gap_success')} ${formatMoney(data.gapRealMonthly)}`
+                                    : `⚠️ ${t('home.result.gap_fail')} ${formatMoney(Math.abs(data.gapRealMonthly))} ${t('home.result.gap_fail_suffix')}`
                                 }
                             </div>
                             {!isTargetMet && (
                                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                                    BTC Adicional Necessário (Hoje): <strong style={{ color: 'var(--text-main)' }}>{formatBtc(data.btcNeeded)} BTC</strong>
+                                    {t('home.result.btc_needed')}: <strong style={{ color: 'var(--text-main)' }}>{formatBtc(data.btcNeeded)} BTC</strong>
                                 </div>
                             )}
                         </div>
                         <div style={{ textAlign: 'right', fontSize: '1.5rem', fontWeight: 'bold', color: isTargetMet ? '#27ae60' : '#e74c3c' }}>
-                            {formatMoney(data.swrRealMonthly)} <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>/ mês</span>
+                            {formatMoney(data.swrRealMonthly)} <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{t('common.per_month_suffix')}</span>
                         </div>
                     </div>
                 </div>
@@ -521,9 +527,9 @@ export default function BitcoinRetirementPage() {
 
     return (
         <main className="about-section" style={{ maxWidth: '1400px', padding: '2rem 5%' }}>
-            <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '0.5rem', textAlign: 'center' }}>Calculadora de Aposentadoria Bitcoin</h1>
+            <h1 className="hero-title" style={{ fontSize: '2.5rem', marginBottom: '0.5rem', textAlign: 'center' }}>{t('home.title')}</h1>
             <p style={{ textAlign: 'center', marginBottom: '3rem', color: 'var(--text-secondary)', maxWidth: '800px', marginInline: 'auto' }}>
-                Simule cenários macroeconômicos, ajuste inflação e descubra quanto BTC você precisa para se aposentar com segurança.
+                {t('home.subtitle')}
             </p>
 
             {errorMsg && (
@@ -536,9 +542,9 @@ export default function BitcoinRetirementPage() {
 
                 {/* Inputs Column - Modified layout */}
                 <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', minHeight: '32px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem', minHeight: '32px' }}>
                         <h2 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            ⚙️ Configurações
+                            ⚙️ {t('home.settings')}
                         </h2>
                     </div>
 
@@ -551,7 +557,7 @@ export default function BitcoinRetirementPage() {
                                 </span>
                                 <button
                                     onClick={fetchData}
-                                    title="Atualizar Preço"
+                                    title={t('common.refresh')}
                                     disabled={isLoadingData}
                                     style={{
                                         background: 'transparent',
@@ -577,50 +583,55 @@ export default function BitcoinRetirementPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginBottom: '1rem' }}>
                             <div>
-                                <label className="input-label" style={{ fontSize: '0.8rem' }}>Moeda</label>
-                                <select value={currency} onChange={(e) => setCurrency(e.target.value as Currency)} className="calculator-input" style={{ width: '100%' }}>
-                                    <option value="BRL">BRL (R$)</option>
-                                    <option value="USD">USD ($)</option>
-                                    <option value="EUR">EUR (€)</option>
+                                <label className="input-label" style={{ fontSize: '0.8rem' }}>{t('settings.currency')}</label>
+                                <select
+                                    value={currency}
+                                    onChange={(e) => setCurrency(e.target.value as any)}
+                                    className="calculator-input"
+                                    style={{ width: '100%', height: '44px', textAlign: 'center' }}
+                                >
+                                    <option value="BRL">BRL</option>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
                                 </select>
                             </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                             <div>
-                                <label className="input-label" style={{ fontSize: '0.8rem' }}>Idade Atual</label>
+                                <label className="input-label" style={{ fontSize: '0.8rem' }}>{t('home.current_age')}</label>
                                 <input type="number" value={currentAge} onChange={e => setCurrentAge(Number(e.target.value))} className="calculator-input" style={{ width: '100%' }} />
                             </div>
                             <div>
-                                <label className="input-label" style={{ fontSize: '0.8rem' }}>Aposentadoria</label>
+                                <label className="input-label" style={{ fontSize: '0.8rem' }}>{t('home.retirement_age')}</label>
                                 <input type="number" value={retirementAge} onChange={e => setRetirementAge(Number(e.target.value))} className="calculator-input" style={{ width: '100%' }} />
                             </div>
                         </div>
 
                         {/* Target Income Input */}
                         <div style={{ marginBottom: '1rem' }}>
-                            <label className="input-label" style={{ fontSize: '0.8rem', color: '#f2994a' }}>Renda Mensal Desejada (Valores de Hoje)</label>
+                            <label className="input-label" style={{ fontSize: '0.8rem', color: '#f2994a' }}>{t('home.target_income')}</label>
                             <input type="number" value={targetIncome} onChange={e => setTargetIncome(Number(e.target.value))} className="calculator-input" style={{ width: '100%' }} />
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                             <div>
-                                <label className="input-label" style={{ fontSize: '0.8rem' }}>Expectativa Vida</label>
+                                <label className="input-label" style={{ fontSize: '0.8rem' }}>{t('home.life_expectancy')}</label>
                                 <input type="number" value={lifeExpectancy} onChange={e => setLifeExpectancy(Number(e.target.value))} className="calculator-input" style={{ width: '100%' }} />
                             </div>
                             <div>
-                                <label className="input-label" style={{ fontSize: '0.8rem' }}>Inflação Anual (%)</label>
+                                <label className="input-label" style={{ fontSize: '0.8rem' }}>{t('home.inflation')}</label>
                                 <input type="number" step="0.1" value={inflation} onChange={e => setInflation(Number(e.target.value))} className="calculator-input" style={{ width: '100%' }} />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '1rem' }}>
-                            <label className="input-label" style={{ fontSize: '0.8rem' }}>Taxa de Retirada Segura (%)</label>
+                            <label className="input-label" style={{ fontSize: '0.8rem' }}>{t('home.swr')}</label>
                             <input type="number" step="0.1" value={swr} onChange={e => setSwr(Number(e.target.value))} className="calculator-input" style={{ width: '100%' }} />
                         </div>
 
                         <div style={{ marginBottom: '1rem' }}>
-                            <label className="input-label" style={{ fontSize: '0.8rem' }}>BTC Já Acumulado</label>
+                            <label className="input-label" style={{ fontSize: '0.8rem' }}>{t('home.btc_accumulated')}</label>
                             <input type="number" step="0.0001" value={currentBtc} onChange={e => setCurrentBtc(Number(e.target.value))} className="calculator-input" style={{ width: '100%' }} />
                         </div>
 
@@ -628,7 +639,7 @@ export default function BitcoinRetirementPage() {
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <label className="input-label" style={{ fontSize: '0.8rem', margin: 0 }}>
-                                        Aporte ({contributionUnit === 'btc' ? 'BTC' : 'Sats'})
+                                        {t('home.contribution')} ({contributionUnit === 'btc' ? 'BTC' : 'Sats'})
                                     </label>
                                     <button
                                         onClick={toggleUnit}
@@ -642,7 +653,7 @@ export default function BitcoinRetirementPage() {
                                             padding: 0
                                         }}
                                     >
-                                        (Mudar p/ {contributionUnit === 'btc' ? 'Sats' : 'BTC'})
+                                        ({t('home.change_to')} {contributionUnit === 'btc' ? 'Sats' : 'BTC'})
                                     </button>
                                 </div>
 
@@ -656,7 +667,7 @@ export default function BitcoinRetirementPage() {
                                             textDecoration: contributionFrequency === 'monthly' ? 'underline' : 'none'
                                         }}
                                     >
-                                        Mensal
+                                        {t('common.monthly')}
                                     </span>
                                     <span style={{ color: 'var(--border-color)' }}>|</span>
                                     <span
@@ -668,7 +679,7 @@ export default function BitcoinRetirementPage() {
                                             textDecoration: contributionFrequency === 'annual' ? 'underline' : 'none'
                                         }}
                                     >
-                                        Anual
+                                        {t('common.annual')}
                                     </span>
                                 </div>
                             </div>
@@ -702,18 +713,18 @@ export default function BitcoinRetirementPage() {
                             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
                             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                         >
-                            Simular Cenários
+                            {t('home.simulate_btn')}
                         </button>
                     </div>
                 </div>
 
                 {/* Macros Column */}
                 <div>
-                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        🌍 Eventos Macro
+                    <h2 style={{ marginBottom: '1rem', fontSize: '1.2rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                        🌍 {t('home.macro_events')}
                     </h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                        {MACRO_EVENTS.map(macro => {
+                        {MACRO_DEFS.map(macro => {
                             const isSelected = selectedMacros.includes(macro.id);
                             const isTailwind = macro.type === 'tailwind';
                             return (
@@ -746,7 +757,7 @@ export default function BitcoinRetirementPage() {
                                     </div>
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span style={{ fontWeight: 'bold', fontSize: '0.95rem', color: 'var(--text-main)' }}>{macro.label}</span>
+                                            <span style={{ fontWeight: 'bold', fontSize: '0.95rem', color: 'var(--text-main)' }}>{t(`home.macro.${macro.id}.label`)}</span>
                                             <span style={{
                                                 fontSize: '0.7rem',
                                                 padding: '2px 6px',
@@ -759,7 +770,7 @@ export default function BitcoinRetirementPage() {
                                             </span>
                                         </div>
                                         <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: '1.3' }}>
-                                            {macro.desc}
+                                            {t(`home.macro.${macro.id}.desc`)}
                                         </div>
                                     </div>
                                     <div style={{ marginLeft: 'auto' }}>
@@ -795,10 +806,11 @@ export default function BitcoinRetirementPage() {
                         </a>
                     </div>
                     <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
-                        Compartilhe com a família e amigos!
+                        {t('common.share')}
                     </p>
                 </div>
             </div>
+
 
             {/* 4. RESULTS CARDS */}
             {
@@ -819,23 +831,23 @@ export default function BitcoinRetirementPage() {
                             textAlign: 'center'
                         }}>
                             <div>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>Anos até Aposentadoria</div>
-                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f2994a' }}>{retirementAge - currentAge} anos</div>
+                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('home.chart.years_until_ret')}</div>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#f2994a' }}>{retirementAge - currentAge} {t('home.chart.years_suffix')}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>Ano da Aposentadoria</div>
+                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('home.chart.ret_year')}</div>
                                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-main)' }}>{new Date().getFullYear() + (retirementAge - currentAge)}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>Anos na Aposentadoria</div>
-                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#27ae60' }}>{Math.max(1, lifeExpectancy - retirementAge)} anos</div>
+                                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>{t('home.chart.years_in_ret')}</div>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#27ae60' }}>{Math.max(1, lifeExpectancy - retirementAge)} {t('home.chart.years_suffix')}</div>
                             </div>
                         </div>
 
-                        {renderResultCard('Base', results.base, '#f2994a', '⚖️')}
+                        {renderResultCard(t('home.chart.base'), results.base, '#f2994a', '⚖️')}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
-                            {renderResultCard('Bull', results.bull, '#27ae60', '🐂')}
-                            {renderResultCard('Bear', results.bear, '#e74c3c', '🐻')}
+                            {renderResultCard(t('home.chart.bull'), results.bull, '#27ae60', '🐂')}
+                            {renderResultCard(t('home.chart.bear'), results.bear, '#e74c3c', '🐻')}
                         </div>
 
                         {/* Chart Section */}
@@ -848,20 +860,20 @@ export default function BitcoinRetirementPage() {
                         }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                                 <h2 style={{ fontSize: '1.2rem', color: 'var(--text-main)', margin: 0 }}>
-                                    📈 Projeção de Patrimônio
+                                    {t('home.chart.title')}
                                 </h2>
 
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
                                     {/* Scenario Filters */}
                                     <div style={{ display: 'flex', gap: '8px' }}>
                                         <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem', color: '#f2994a', cursor: 'pointer' }}>
-                                            <input type="checkbox" checked={showBase} onChange={e => setShowBase(e.target.checked)} /> Base
+                                            <input type="checkbox" checked={showBase} onChange={e => setShowBase(e.target.checked)} /> {t('home.chart.base')}
                                         </label>
                                         <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem', color: '#27ae60', cursor: 'pointer' }}>
-                                            <input type="checkbox" checked={showBull} onChange={e => setShowBull(e.target.checked)} /> Bull
+                                            <input type="checkbox" checked={showBull} onChange={e => setShowBull(e.target.checked)} /> {t('home.chart.bull')}
                                         </label>
                                         <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem', color: '#e74c3c', cursor: 'pointer' }}>
-                                            <input type="checkbox" checked={showBear} onChange={e => setShowBear(e.target.checked)} /> Bear
+                                            <input type="checkbox" checked={showBear} onChange={e => setShowBear(e.target.checked)} /> {t('home.chart.bear')}
                                         </label>
                                     </div>
 
@@ -903,8 +915,8 @@ export default function BitcoinRetirementPage() {
 
                             {/* View Switcher */}
                             <div className="view-switcher" style={{ margin: '0 0 1rem 0', justifyContent: 'flex-start' }}>
-                                <button className={`view-btn ${view === 'chart' ? 'active' : ''}`} onClick={() => setView('chart')}>Gráfico</button>
-                                <button className={`view-btn ${view === 'table' ? 'active' : ''}`} onClick={() => setView('table')}>Tabela</button>
+                                <button className={`view-btn ${view === 'chart' ? 'active' : ''}`} onClick={() => setView('chart')}>{t('common.chart')}</button>
+                                <button className={`view-btn ${view === 'table' ? 'active' : ''}`} onClick={() => setView('table')}>{t('common.table')}</button>
                             </div>
 
                             <div style={{ height: '350px', width: '100%', display: view === 'chart' ? 'block' : 'none' }}>
@@ -913,7 +925,7 @@ export default function BitcoinRetirementPage() {
                                         labels: results.historyBase.map(i => i.age),
                                         datasets: [
                                             {
-                                                label: 'Cenário Base',
+                                                label: t('home.chart.base'),
                                                 data: results.historyBase.map(i => chartMode === 'btc' ? i.btc : i.nominal),
                                                 borderColor: '#f2994a',
                                                 backgroundColor: 'rgba(242, 153, 74, 0.1)',
@@ -923,7 +935,7 @@ export default function BitcoinRetirementPage() {
                                                 hidden: !showBase
                                             },
                                             {
-                                                label: 'Cenário Bull',
+                                                label: t('home.chart.bull'),
                                                 data: results.historyBull.map(i => chartMode === 'btc' ? i.btc : i.nominal),
                                                 borderColor: '#27ae60',
                                                 backgroundColor: 'rgba(39, 174, 96, 0.1)',
@@ -933,7 +945,7 @@ export default function BitcoinRetirementPage() {
                                                 hidden: !showBull
                                             },
                                             {
-                                                label: 'Cenário Bear',
+                                                label: t('home.chart.bear'),
                                                 data: results.historyBear.map(i => chartMode === 'btc' ? i.btc : i.nominal),
                                                 borderColor: '#e74c3c',
                                                 backgroundColor: 'rgba(231, 76, 60, 0.1)',
@@ -977,7 +989,7 @@ export default function BitcoinRetirementPage() {
                                         },
                                         scales: {
                                             x: {
-                                                title: { display: true, text: 'Idade', color: isLightMode ? '#5e6d7e' : '#cccccc' },
+                                                title: { display: true, text: t('home.table.age'), color: isLightMode ? '#5e6d7e' : '#cccccc' },
                                                 ticks: { color: isLightMode ? '#5e6d7e' : '#cccccc' },
                                                 grid: { color: isLightMode ? '#cccccc' : 'rgba(255, 255, 255, 0.05)' }
                                             },
@@ -995,8 +1007,8 @@ export default function BitcoinRetirementPage() {
                                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                                         <thead>
                                             <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                                                <th style={{ textAlign: 'left', padding: '10px', color: 'var(--text-secondary)' }}>Idade</th>
-                                                <th style={{ textAlign: 'left', padding: '10px', color: 'var(--text-secondary)' }}>Ano</th>
+                                                <th style={{ textAlign: 'left', padding: '10px', color: 'var(--text-secondary)' }}>{t('home.table.age')}</th>
+                                                <th style={{ textAlign: 'left', padding: '10px', color: 'var(--text-secondary)' }}>{t('home.table.year')}</th>
                                                 {showBase && <th style={{ textAlign: 'right', padding: '10px', color: '#f2994a' }}>Base</th>}
                                                 {showBull && <th style={{ textAlign: 'right', padding: '10px', color: '#27ae60' }}>Bull</th>}
                                                 {showBear && <th style={{ textAlign: 'right', padding: '10px', color: '#e74c3c' }}>Bear</th>}
@@ -1027,52 +1039,52 @@ export default function BitcoinRetirementPage() {
 
             {/* Explanations & How it Works */}
             <div className="about-content" style={{ fontSize: '0.9rem', padding: '2rem', background: 'var(--card-bg)', borderRadius: '12px', marginTop: '3rem', border: '1px solid var(--border-color)' }}>
-                <h2 style={{ color: 'var(--primary-green)', marginBottom: '1rem', fontSize: '1.4rem' }}>Calculadora de Aposentadoria Bitcoin — Como Funciona?</h2>
+                <h2 style={{ color: 'var(--primary-green)', marginBottom: '1rem', fontSize: '1.4rem' }}>{t('home.info.title')}</h2>
                 <p style={{ marginBottom: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    A Calculadora de Aposentadoria Bitcoin projeta quanto BTC você precisa acumular para garantir uma renda mensal segura no futuro. Ela combina trajetórias macroeconômicas do preço do Bitcoin, cenários Base, Bull e Bear, inflação, expectativa de vida e seu aporte mensal em BTC ou sats.
+                    {t('home.info.desc1')}
                 </p>
 
-                <p style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Ao informar sua idade, idade de aposentadoria, renda desejada, inflação e taxa de retirada segura (SWR), o modelo calcula:</p>
+                <p style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.info.desc2')}</p>
                 <ul style={{ paddingLeft: '20px', marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    <li>BTC acumulado até a aposentadoria</li>
-                    <li>Valor nominal do patrimônio em cada cenário</li>
-                    <li>Renda mensal estimada, ajustada pela inflação</li>
-                    <li>Comparação com sua meta de renda</li>
-                    <li>Projeção ano a ano (gráfico e tabela)</li>
-                    <li>Impacto dos eventos macro (ETFs, liquidez, regulamentação, recessão, etc.)</li>
+                    <li>{t('home.info.li1')}</li>
+                    <li>{t('home.info.li2')}</li>
+                    <li>{t('home.info.li3')}</li>
+                    <li>{t('home.info.li4')}</li>
+                    <li>{t('home.info.li5')}</li>
+                    <li>{t('home.info.li6')}</li>
                 </ul>
 
                 <p style={{ marginBottom: '2rem', color: 'var(--text-secondary)' }}>
-                    O objetivo é mostrar, de forma clara e auditável, seu possível poder de compra futuro usando Bitcoin como ativo de longo prazo.
+                    {t('home.info.goal')}
                 </p>
 
-                <h2 style={{ color: 'var(--bitcoin-orange)', marginBottom: '1rem', fontSize: '1.4rem' }}>O que esperar dos resultados</h2>
-                <p style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Os cenários exibem três trajetórias possíveis:</p>
+                <h2 style={{ color: 'var(--bitcoin-orange)', marginBottom: '1rem', fontSize: '1.4rem' }}>{t('home.info.expect_title')}</h2>
+                <p style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.info.scenarios_intro')}</p>
                 <ul style={{ paddingLeft: '20px', marginBottom: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    <li><strong>Base</strong> – projeção neutra</li>
-                    <li><strong>Bull</strong> – adoção acelerada</li>
-                    <li><strong>Bear</strong> – ambiente adverso</li>
+                    <li><strong>{t('home.info.scen_base')}</strong></li>
+                    <li><strong>{t('home.info.scen_bull')}</strong></li>
+                    <li><strong>{t('home.info.scen_bear')}</strong></li>
                 </ul>
 
-                <p style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>O relatório mostra:</p>
+                <p style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.info.report_intro')}</p>
                 <ul style={{ paddingLeft: '20px', marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    <li>Patrimônio final em BTC e na sua moeda</li>
-                    <li>Renda mensal estimada pelo método dos 4% e pelo método Fatias Iguais</li>
-                    <li>Se sua meta financeira é atingida ou não</li>
-                    <li>Um gráfico claro da evolução do seu patrimônio até os 90 anos</li>
+                    <li>{t('home.info.rep_li1')}</li>
+                    <li>{t('home.info.rep_li2')}</li>
+                    <li>{t('home.info.rep_li3')}</li>
+                    <li>{t('home.info.rep_li4')}</li>
                 </ul>
 
                 <p style={{ marginBottom: '2rem', color: 'var(--text-secondary)' }}>
-                    Você vê exatamente quanto BTC precisa acumular para viver com segurança — e como diferentes condições macroeconômicas podem afetar seus planos.
+                    {t('home.info.final_msg')}
                 </p>
 
                 <div style={{ padding: '1.5rem', background: 'rgba(231, 76, 60, 0.1)', borderLeft: '4px solid #e74c3c', borderRadius: '8px' }}>
-                    <h4 style={{ color: '#e74c3c', marginTop: 0, marginBottom: '0.5rem', fontSize: '1.1rem' }}>Aviso Importante (Disclaimer)</h4>
+                    <h4 style={{ color: '#e74c3c', marginTop: 0, marginBottom: '0.5rem', fontSize: '1.1rem' }}>{t('home.info.disclaimer_title')}</h4>
                     <p style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        Esta calculadora é uma ferramenta educacional de planejamento financeiro e não constitui recomendação de investimento, consultoria financeira ou garantia de resultados futuros.
+                        {t('home.info.disclaimer_text1')}
                     </p>
                     <p style={{ marginBottom: 0, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        O Bitcoin é um ativo volátil e todos os cenários são simulações hipotéticas. Sempre revise suas decisões com um profissional qualificado e pratique boa autocustódia, armazenando BTC de forma segura.
+                        {t('home.info.disclaimer_text2')}
                     </p>
                 </div>
             </div>
@@ -1080,31 +1092,31 @@ export default function BitcoinRetirementPage() {
             {/* 5. MODEL NOTES */}
             <div className="about-content" style={{ fontSize: '0.9rem', padding: '2rem', background: 'var(--bg-secondary)', borderRadius: '12px', marginTop: '3rem' }}>
                 <h4 style={{ marginTop: 0, fontSize: '1.2rem', color: 'var(--text-main)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-                    📌 Notas do Modelo e Âncoras
+                    {t('home.notes.title')}
                 </h4>
                 <p style={{ marginBottom: '1.5rem', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                    Esta calculadora combina um modelo transparente de trajetória de preço com alternadores macroeconômicos e dois métodos de gastos na aposentadoria. Tudo abaixo é editável e projetado para ser fácil de auditar.
+                    {t('home.notes.intro')}
                     <br /><br />
-                    Esta ferramenta é para planejamento de cenários; <strong>não é conselho de investimento</strong>. Edite os parâmetros para refletir sua própria visão.
+                    <strong>{t('home.notes.intro_bold')}</strong>
                 </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
 
                     {/* Column 1: Formula & Anchors */}
                     <div>
-                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>Fórmula da Trajetória de Preço</h5>
+                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>{t('home.notes.col1_title')}</h5>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                            As faixas de âncora em 2028, 2033, 2040, 2050 e 2075 para Base, Bull e Bear representam pontos médios direcionais baseados em cenários amplamente discutidos (adoção de ETFs, clareza regulatória, diversificação de reservas, economia dos mineradores).
+                            {t('home.notes.col1_desc1')}
                         </p>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                            <strong>Interpolação logarítmica:</strong> calculamos a taxa de crescimento anual composta (CAGR) entre âncoras adjacentes e projetamos para o ano da sua aposentadoria.
+                            {t('home.notes.col1_desc2')}
                         </p>
                         <div style={{ background: 'var(--bg-secondary)', padding: '0.8rem', borderRadius: '6px', fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
                             CAGR = (Pt2 / Pt1)^(1/(t2−t1)) − 1<br />
                             Pret = Pt1 · (1 + CAGR)^(ret−t1)
                         </div>
 
-                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>Âncoras Atuais (USD)</h5>
+                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>{t('home.notes.col1_anchors_title')}</h5>
                         <ul style={{ listStyle: 'none', padding: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                             <li style={{ marginBottom: '4px' }}><strong>2028:</strong> Base $225k, Bull $450k, Bear $115k</li>
                             <li style={{ marginBottom: '4px' }}><strong>2033:</strong> Base $425k, Bull $1.05M, Bear $185k</li>
@@ -1116,53 +1128,53 @@ export default function BitcoinRetirementPage() {
 
                     {/* Column 2: Macros & Math */}
                     <div>
-                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>Lógica dos Alternadores Macro</h5>
+                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>{t('home.notes.col2_title')}</h5>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                            Os multiplicadores macro aplicam ajustes multiplicativos por cenário. Exemplo: se o cenário Base tem +10% de fluxos de ETF e -15% de liquidez restrita, o multiplicador líquido será 1.10 × 0.85 = 0.935.
+                            {t('home.notes.col2_desc')}
                         </p>
                         <ul style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', paddingLeft: '1.2rem', marginBottom: '1.5rem' }}>
-                            <li style={{ marginBottom: '4px' }}><strong>Fortes fluxos de ETF:</strong> eleva Base/Bull mais do que Bear.</li>
-                            <li style={{ marginBottom: '4px' }}><strong>Clareza regulatória:</strong> reduz risco de cauda (Bear).</li>
-                            <li style={{ marginBottom: '4px' }}><strong>Reservas Soberanas:</strong> adoção simbólica mas poderosa (Bull).</li>
-                            <li style={{ marginBottom: '4px' }}><strong>Energia e Mineração:</strong> reduz risco operacional.</li>
-                            <li style={{ marginBottom: '4px' }}><strong>Liquidez Global:</strong> correlação com ativos de risco.</li>
+                            <li style={{ marginBottom: '4px' }}>{t('home.notes.col2_li1')}</li>
+                            <li style={{ marginBottom: '4px' }}>{t('home.notes.col2_li2')}</li>
+                            <li style={{ marginBottom: '4px' }}>{t('home.notes.col2_li3')}</li>
+                            <li style={{ marginBottom: '4px' }}>{t('home.notes.col2_li4')}</li>
+                            <li style={{ marginBottom: '4px' }}>{t('home.notes.col2_li5')}</li>
                         </ul>
 
-                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>Matemática de Portfólio</h5>
+                        <h5 style={{ fontSize: '1rem', color: '#f2994a', marginBottom: '0.8rem' }}>{t('home.notes.col2_math_title')}</h5>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                            <strong>BTC na aposentadoria</strong> = BTC atual + (Compras anuais × Anos).<br />
-                            <strong>Portfólio</strong> = BTC Final × Preço no Cenário.
+                            {t('home.notes.col2_math1')}<br />
+                            {t('home.notes.col2_math2')}
                         </p>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0' }}>
-                            *Todos os valores de gastos são trazidos a <strong>Valor Presente</strong> (descontados pela inflação) para refletir o poder de compra de hoje.
+                            {t('home.notes.col2_math_note')}
                         </p>
                     </div>
                 </div>
 
                 <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-color)' }}>
-                    <h5 style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginBottom: '0.8rem' }}>📚 Fontes e Leitura Adicional</h5>
+                    <h5 style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginBottom: '0.8rem' }}>{t('home.sources.title')}</h5>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                         <div>
-                            <strong>Emissão do Bitcoin:</strong> <a href="https://www.unchained.com/blog/bitcoin-source-code-21-million" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Unchained: The 21M supply in code</a> · <a href="https://bitcoinmagazine.com/guides/when-is-the-next-bitcoin-halving" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Bitcoin Magazine: Halving primer</a>.
+                            <strong>{t('home.sources.emission')}:</strong> <a href="https://www.unchained.com/blog/bitcoin-source-code-21-million" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Unchained: The 21M supply in code</a> · <a href="https://bitcoinmagazine.com/guides/when-is-the-next-bitcoin-halving" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Bitcoin Magazine: Halving primer</a>.
                         </div>
                         <div>
-                            <strong>ETFs Spot (EUA):</strong> <a href="https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>SEC Chair statement</a> · <a href="https://www.congress.gov/crs_external_products/IF/PDF/IF12573/IF12573.2.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>CRS explainer</a>.
+                            <strong>{t('home.sources.etfs')}:</strong> <a href="https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>SEC Chair statement</a> · <a href="https://www.congress.gov/crs_external_products/IF/PDF/IF12573/IF12573.2.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>CRS explainer</a>.
                         </div>
                         <div>
-                            <strong>Mineração e Energia:</strong> <a href="https://cpowerenergy.com/vpps-and-flexible-demand-response-bitcoin-mining-flexes-its-capabilities/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>cPower: miners as flexible load</a> · <a href="https://www.mara.com/posts/the-duke-study-bitcoin-mining-and-the-future-of-grid-stability" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Duke study summary</a>.
+                            <strong>{t('home.sources.mining')}:</strong> <a href="https://cpowerenergy.com/vpps-and-flexible-demand-response-bitcoin-mining-flexes-its-capabilities/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>cPower: miners as flexible load</a> · <a href="https://www.mara.com/posts/the-duke-study-bitcoin-mining-and-the-future-of-grid-stability" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Duke study summary</a>.
                         </div>
                         <div>
-                            <strong>Fluxos de ETFs:</strong> <a href="https://www.blackrock.com/us/individual/products/333011/ishares-bitcoin-trust" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>BlackRock IBIT facts</a> · <a href="https://cryptoslate.com/insights/blackrocks-bitcoin-fund-ibit-hits-top-3-us-etfs-by-inflow-for-2024/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>CryptoSlate/Bloomberg on 2024 flows</a>.
+                            <strong>{t('home.sources.flows')}:</strong> <a href="https://www.blackrock.com/us/individual/products/333011/ishares-bitcoin-trust" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>BlackRock IBIT facts</a> · <a href="https://cryptoslate.com/insights/blackrocks-bitcoin-fund-ibit-hits-top-3-us-etfs-by-inflow-for-2024/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>CryptoSlate/Bloomberg on 2024 flows</a>.
                         </div>
                         <div>
-                            <strong>Taxa de Retirada Segura (SWR):</strong> <a href="https://www.financialplanningassociation.org/sites/default/files/2021-04/MAR04%20Determining%20Withdrawal%20Rates%20Using%20Historical%20Data.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Bengen (1994) PDF</a>.
+                            <strong>{t('home.sources.swr')}:</strong> <a href="https://www.financialplanningassociation.org/sites/default/files/2021-04/MAR04%20Determining%20Withdrawal%20Rates%20Using%20Historical%20Data.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Bengen (1994) PDF</a>.
                         </div>
                         <div>
-                            <strong>Stock-to-Flow (S2F):</strong> <a href="https://www.emerald.com/sef/article/39/3/506/511921/Dissecting-the-stock-to-flow-model-for-Bitcoin" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Emerald: dissecting S2F</a>.
+                            <strong>{t('home.sources.s2f')}:</strong> <a href="https://www.emerald.com/sef/article/39/3/506/511921/Dissecting-the-stock-to-flow-model-for-Bitcoin" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-green)', textDecoration: 'none' }}>Emerald: dissecting S2F</a>.
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </main >
     );
 }

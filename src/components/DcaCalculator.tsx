@@ -15,6 +15,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { bitcoinHistoricalData, exchangeRates, exchangeRatesHistorical } from '@/lib/historicalData';
+import { useSettings } from '@/contexts/SettingsContext';
 
 ChartJS.register(
     CategoryScale,
@@ -31,10 +32,11 @@ ChartJS.register(
 type HistoricalData = { [date: string]: number };
 
 export default function DcaCalculator() {
+    const { currency, setCurrency, t } = useSettings();
     const [amount, setAmount] = useState<string>('100');
     const [initialInvestment, setInitialInvestment] = useState<string>('');
     const [frequency, setFrequency] = useState('monthly');
-    const [currency, setCurrency] = useState('BRL');
+    // Removed local currency state
     const [date, setDate] = useState('2020-01-01');
     const [livePriceUSD, setLivePriceUSD] = useState<number | null>(null);
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
@@ -310,168 +312,170 @@ export default function DcaCalculator() {
 
     return (
         <div className="calculator-container">
-            <h2 className="section-title">Calculadora DCA Bitcoin</h2>
-            <p className="section-desc">Simule compras recorrentes com Dollar Cost Averaging</p>
+            <h1 className="section-title">{t('dca.title')}</h1>
+            <p className="section-desc">{t('dca.subtitle')}</p>
 
             <div className="calculator-card">
                 <div className="input-group">
-                    <label htmlFor="initial-investment">Aporte Inicial (Opcional)</label>
-                    <input
-                        type="number"
-                        id="initial-investment"
-                        placeholder="Ex: 1000"
-                        min="0"
-                        value={initialInvestment}
-                        onChange={(e) => setInitialInvestment(e.target.value)}
-                    />
-                </div>
-
-                <div className="input-group">
-                    <label htmlFor="investment-amount">Valor Recorrente</label>
-                    <div className="amount-wrapper">
+                    <div className="input-group">
+                        <label htmlFor="initial-investment">{t('dca.initial_investment')}</label>
                         <input
                             type="number"
-                            id="investment-amount"
-                            placeholder="Ex: 100"
+                            id="initial-investment"
+                            placeholder="Ex: 1000"
                             min="0"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            value={initialInvestment}
+                            onChange={(e) => setInitialInvestment(e.target.value)}
                         />
+                    </div>
+
+                    <div className="input-group">
+                        <label htmlFor="investment-amount">{t('dca.recurring_amount')}</label>
+                        <div className="amount-wrapper">
+                            <input
+                                type="number"
+                                id="investment-amount"
+                                placeholder="Ex: 100"
+                                min="0"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                            />
+                            <select
+                                value={currency}
+                                onChange={(e) => setCurrency(e.target.value as any)}
+                                style={{ width: 'auto', minWidth: '80px', textAlign: 'center' }}
+                            >
+                                <option value="BRL">BRL</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="input-group">
+                        <label htmlFor="frequency">{t('dca.frequency')}</label>
                         <select
-                            id="currency-selector"
-                            value={currency}
-                            onChange={(e) => setCurrency(e.target.value)}
+                            id="frequency"
+                            value={frequency}
+                            onChange={(e) => setFrequency(e.target.value)}
                         >
-                            <option value="BRL">BRL (R$)</option>
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
+                            <option value="weekly">{t('common.weekly')}</option>
+                            <option value="biweekly">{t('common.biweekly')}</option>
+                            <option value="monthly">{t('common.monthly')}</option>
+                            <option value="yearly">{t('common.annual')}</option>
                         </select>
                     </div>
-                </div>
 
-                <div className="input-group">
-                    <label htmlFor="frequency">Frequência</label>
-                    <select
-                        id="frequency"
-                        value={frequency}
-                        onChange={(e) => setFrequency(e.target.value)}
-                    >
-                        <option value="weekly">Semanal (Toda semana)</option>
-                        <option value="biweekly">Quinzenal (A cada 2 semanas)</option>
-                        <option value="monthly">Mensal (Todo mês)</option>
-                        <option value="yearly">Anual (Todo ano)</option>
-                    </select>
-                </div>
+                    <div className="input-group">
+                        <label htmlFor="start-date">{t('dca.start_date')}</label>
+                        <input
+                            type="date"
+                            id="start-date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            max={new Date().toISOString().split('T')[0]}
+                        />
+                    </div>
 
-                <div className="input-group">
-                    <label htmlFor="start-date">Data de Início</label>
-                    <input
-                        type="date"
-                        id="start-date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        max={new Date().toISOString().split('T')[0]}
-                    />
-                </div>
+                    <button id="calculate-btn" className="cta-button" onClick={calculate}>{t('dca.calculate_btn')}</button>
+                    <div className="live-price" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                        {loadingPrice ? (
+                            <span>{t('common.updating')}</span>
+                        ) : (
+                            <>
+                                {getFormattedLivePrice() !== '...' ? `${t('common.current_price')}: ${getFormattedLivePrice()}` : t('common.loading')}
+                                <button
+                                    onClick={fetchPrices}
+                                    className="refresh-btn"
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: 0 }}
+                                    title="Atualizar Preço"
+                                    aria-label="Atualizar Preço"
+                                >
+                                    🔄
+                                </button>
+                            </>
+                        )}
+                    </div>
 
-                <button id="calculate-btn" className="cta-button" onClick={calculate}>Calcular DCA</button>
-                <div className="live-price" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                    {loadingPrice ? (
-                        <span>Atualizando preço...</span>
-                    ) : (
-                        <>
-                            {getFormattedLivePrice() !== '...' ? `Preço Atual: ${getFormattedLivePrice()}` : 'Carregando preço atual...'}
-                            <button
-                                onClick={fetchPrices}
-                                className="refresh-btn"
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: 0 }}
-                                title="Atualizar Preço"
-                                aria-label="Atualizar Preço"
-                            >
-                                🔄
-                            </button>
-                        </>
+                    {/* Share Buttons */}
+                    <div style={{ marginTop: '1.5rem', display: 'flex', gap: '10px', width: '100%' }}>
+                        <a href={`https://twitter.com/intent/tweet?text=Veja%20meu%20resultado%20na%20Calculadora%20DCA%20Bitcoin!&url=https://viverdebitcoin.com/calculadora-dca`} target="_blank" rel="noopener noreferrer" style={{ background: '#000', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            𝕏
+                        </a>
+                        <a href={`https://www.instagram.com/`} target="_blank" rel="noopener noreferrer" style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            IG
+                        </a>
+                        <a href={`https://wa.me/?text=Veja%20meu%20resultado%20na%20Calculadora%20DCA%20Bitcoin!%20https://viverdebitcoin.com/calculadora-dca`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            WhatsApp
+                        </a>
+                    </div>
+
+                    {result && (
+                        <div id="result-card" className={`result-card fade-in`} style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem', background: 'transparent', opacity: 1, transform: 'none', display: 'flex', flexWrap: 'wrap' }}>
+                            <div className="result-item" style={{ width: '100%' }}>
+                                <span>{t('dca.results.total_invested')}</span>
+                                <strong>{result.totalInvested}</strong>
+                            </div>
+                            <div className="result-item" style={{ width: '100%' }}>
+                                <span>{t('dca.results.value_today')}</span>
+                                <strong>{result.currentValue}</strong>
+                            </div>
+                            <div className="result-item" style={{ width: '100%' }}>
+                                <span>{t('common.profit')}</span>
+                                <strong className={result.isProfit ? 'profit-positive' : 'profit-negative'}>{result.profit} ({result.roi})</strong>
+                            </div>
+                            <div className="result-item" style={{ width: '100%' }}>
+                                <span>{t('common.btc_acquired')}</span>
+                                <strong style={{ color: 'var(--bitcoin-orange)' }}>{result.btcAmount.toFixed(8)} BTC</strong>
+                            </div>
+                            <div className="result-item" style={{ width: '100%' }}>
+                                <span>{t('dca.results.avg_price')}</span>
+                                <strong>{result.avgPrice}</strong>
+                            </div>
+                            <div className="result-item" style={{ width: '100%' }}>
+                                <span>{t('dca.results.cost_per_sat')}</span>
+                                <strong>{result.avgPriceSats}</strong>
+                            </div>
+                        </div>
                     )}
                 </div>
 
-                {/* Share Buttons */}
-                <div style={{ marginTop: '1.5rem', display: 'flex', gap: '10px', width: '100%' }}>
-                    <a href={`https://twitter.com/intent/tweet?text=Veja%20meu%20resultado%20na%20Calculadora%20DCA%20Bitcoin!&url=https://viverdebitcoin.com/calculadora-dca`} target="_blank" rel="noopener noreferrer" style={{ background: '#000', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        𝕏
-                    </a>
-                    <a href={`https://www.instagram.com/`} target="_blank" rel="noopener noreferrer" style={{ background: 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        IG
-                    </a>
-                    <a href={`https://wa.me/?text=Veja%20meu%20resultado%20na%20Calculadora%20DCA%20Bitcoin!%20https://viverdebitcoin.com/calculadora-dca`} target="_blank" rel="noopener noreferrer" style={{ background: '#25D366', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        WhatsApp
-                    </a>
-                </div>
+                {chartData && (
+                    <>
+                        <div className="view-switcher" id="view-switcher-container">
+                            <button className={`view-btn ${!showTable ? 'active' : ''}`} onClick={() => setShowTable(false)}>{t('common.chart')}</button>
+                            <button className={`view-btn ${showTable ? 'active' : ''}`} onClick={() => setShowTable(true)}>{t('common.table')}</button>
+                        </div>
 
-                {result && (
-                    <div id="result-card" className={`result-card fade-in`} style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem', background: 'transparent', opacity: 1, transform: 'none', display: 'flex', flexWrap: 'wrap' }}>
-                        <div className="result-item" style={{ width: '100%' }}>
-                            <span>Total Investido</span>
-                            <strong>{result.totalInvested}</strong>
-                        </div>
-                        <div className="result-item" style={{ width: '100%' }}>
-                            <span>Valor Hoje</span>
-                            <strong>{result.currentValue}</strong>
-                        </div>
-                        <div className="result-item" style={{ width: '100%' }}>
-                            <span>Lucro/Prejuízo</span>
-                            <strong className={result.isProfit ? 'profit-positive' : 'profit-negative'}>{result.profit} ({result.roi})</strong>
-                        </div>
-                        <div className="result-item" style={{ width: '100%' }}>
-                            <span>Bitcoin Acumulado</span>
-                            <strong style={{ color: 'var(--bitcoin-orange)' }}>{result.btcAmount.toFixed(8)} BTC</strong>
-                        </div>
-                        <div className="result-item" style={{ width: '100%' }}>
-                            <span>Preço Médio (DCA)</span>
-                            <strong>{result.avgPrice}</strong>
-                        </div>
-                        <div className="result-item" style={{ width: '100%' }}>
-                            <span>Custo por Sat</span>
-                            <strong>{result.avgPriceSats}</strong>
-                        </div>
-                    </div>
+                        {!showTable ? (
+                            <div className="chart-container" id="dca-chart-container">
+                                <Line options={chartOptions} data={chartData} />
+                            </div>
+                        ) : (
+                            <div className="table-container active" id="dca-table-container">
+                                <table className="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>{t('common.date')}</th>
+                                            <th>{t('dca.table_invested')} ({currency})</th>
+                                            <th>{t('dca.table_value')} ({currency})</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {chartHistory.map((row, i) => (
+                                            <tr key={i}>
+                                                <td>{row.date.split('-').reverse().join('/')}</td>
+                                                <td>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.invested)}</td>
+                                                <td>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
-
-            {chartData && (
-                <>
-                    <div className="view-switcher" id="view-switcher-container">
-                        <button className={`view-btn ${!showTable ? 'active' : ''}`} onClick={() => setShowTable(false)}>Gráfico</button>
-                        <button className={`view-btn ${showTable ? 'active' : ''}`} onClick={() => setShowTable(true)}>Tabela</button>
-                    </div>
-
-                    {!showTable ? (
-                        <div className="chart-container" id="dca-chart-container">
-                            <Line options={chartOptions} data={chartData} />
-                        </div>
-                    ) : (
-                        <div className="table-container active" id="dca-table-container">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Investido Acumulado ({currency})</th>
-                                        <th>Valor Portfólio ({currency})</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {chartHistory.map((row, i) => (
-                                        <tr key={i}>
-                                            <td>{row.date.split('-').reverse().join('/')}</td>
-                                            <td>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.invested)}</td>
-                                            <td>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </>
-            )}
         </div>
     );
 }
