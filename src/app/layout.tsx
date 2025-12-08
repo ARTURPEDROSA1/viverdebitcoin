@@ -69,9 +69,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <JsonLd data={jsonLdData} />
         <Header />
-        <MarketTicker />
-        {children}
-        <Footer />
+        <div className="main-content-wrapper">
+          <MarketTicker />
+          {children}
+          <Footer />
+        </div>
       </body>
     </html>
   );
