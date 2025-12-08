@@ -38,6 +38,7 @@ export default function DcaCalculator() {
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
     const [livePriceEUR, setLivePriceEUR] = useState<number | null>(null);
     const [isLightMode, setIsLightMode] = useState(false);
+    const [loadingPrice, setLoadingPrice] = useState(false);
 
     const [result, setResult] = useState<{
         totalInvested: string;
@@ -54,34 +55,55 @@ export default function DcaCalculator() {
     const [showTable, setShowTable] = useState(false);
     const [chartHistory, setChartHistory] = useState<{ date: string, invested: number, value: number }[]>([]);
 
+    const fetchPrices = async () => {
+        setLoadingPrice(true);
+        // USD & EUR (CoinDesk with CoinGecko fallback)
+        try {
+            const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+            const data = await res.json();
+
+            if (data.bpi && data.bpi.USD) {
+                setLivePriceUSD(data.bpi.USD.rate_float);
+            }
+            if (data.bpi && data.bpi.EUR) {
+                setLivePriceEUR(data.bpi.EUR.rate_float);
+            }
+        } catch (e) {
+            console.error("Error fetching USD/EUR from CoinDesk:", e);
+
+            // Fallback to CoinGecko
+            try {
+                const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
+                const dataCoingecko = await resCoingecko.json();
+                setLivePriceUSD(dataCoingecko.bitcoin.usd);
+                setLivePriceEUR(dataCoingecko.bitcoin.eur);
+            } catch (e2) {
+                console.error("Error fetching USD/EUR from CoinGecko:", e2);
+            }
+        }
+
+        // BRL from AwesomeAPI (Independent)
+        try {
+            const resBRL = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
+            const dataBRL = await resBRL.json();
+            setLivePriceBRL(parseFloat(dataBRL.BTCBRL.bid));
+        } catch (e) {
+            console.error("Error fetching BRL:", e);
+        }
+        setLoadingPrice(false);
+    };
+
     useEffect(() => {
         // Theme Observer
         const checkTheme = () => setIsLightMode(document.body.classList.contains('light-mode'));
         checkTheme();
         const observer = new MutationObserver(checkTheme);
         observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-        return () => observer.disconnect();
-    }, []);
 
-    useEffect(() => {
-        // Fetch Prices
-        const fetchPrices = async () => {
-            try {
-                // USD & EUR from CoinGecko
-                const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
-                const dataCoingecko = await resCoingecko.json();
-                setLivePriceUSD(dataCoingecko.bitcoin.usd);
-                setLivePriceEUR(dataCoingecko.bitcoin.eur);
-
-                // BRL from AwesomeAPI
-                const resBRL = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
-                const dataBRL = await resBRL.json();
-                setLivePriceBRL(parseFloat(dataBRL.BTCBRL.bid));
-            } catch (e) {
-                console.error(e);
-            }
-        };
+        // Initial fetch
         fetchPrices();
+
+        return () => observer.disconnect();
     }, []);
 
     const getDateValue = (dataObj: HistoricalData, target: string) => {
@@ -117,7 +139,12 @@ export default function DcaCalculator() {
     };
 
     const calculate = () => {
-        if ((!amount && !initialInvestment) || !date || !livePriceUSD) return;
+        // Check if we have the necessary price data for the selected currency
+        let hasValidPrice = !!livePriceUSD;
+        if (currency === 'BRL' && livePriceBRL) hasValidPrice = true;
+        if (currency === 'EUR' && livePriceEUR) hasValidPrice = true;
+
+        if ((!amount && !initialInvestment) || !date || !hasValidPrice) return;
 
         const recurringAmount = parseFloat(amount) || 0;
         const initialAmount = parseFloat(initialInvestment) || 0;
@@ -181,13 +208,16 @@ export default function DcaCalculator() {
         }
 
         // Final Calculation
-        let currentPrice = livePriceUSD;
+        let currentPrice: number = 0;
         if (currency === 'BRL' && livePriceBRL) currentPrice = livePriceBRL;
-        if (currency === 'EUR' && livePriceEUR) currentPrice = livePriceEUR;
-        else if (currency !== 'USD') {
+        else if (currency === 'EUR' && livePriceEUR) currentPrice = livePriceEUR;
+        else if (currency === 'USD' && livePriceUSD) currentPrice = livePriceUSD;
+        else if (livePriceUSD) {
             // @ts-ignore
             const currentRate = exchangeRates[currency] || 1;
             currentPrice = livePriceUSD * currentRate;
+        } else {
+            return;
         }
 
         const currentPortfolioValue = totalBtc * currentPrice;
@@ -343,8 +373,23 @@ export default function DcaCalculator() {
                 </div>
 
                 <button id="calculate-btn" className="cta-button" onClick={calculate}>Calcular DCA</button>
-                <div className="live-price">
-                    {getFormattedLivePrice() !== '...' ? `Preço Atual: ${getFormattedLivePrice()}` : 'Carregando preço atual...'}
+                <div className="live-price" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    {loadingPrice ? (
+                        <span>Atualizando preço...</span>
+                    ) : (
+                        <>
+                            {getFormattedLivePrice() !== '...' ? `Preço Atual: ${getFormattedLivePrice()}` : 'Carregando preço atual...'}
+                            <button
+                                onClick={fetchPrices}
+                                className="refresh-btn"
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: 0 }}
+                                title="Atualizar Preço"
+                                aria-label="Atualizar Preço"
+                            >
+                                🔄
+                            </button>
+                        </>
+                    )}
                 </div>
 
                 {/* Share Buttons */}

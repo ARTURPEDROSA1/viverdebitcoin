@@ -9,24 +9,47 @@ export default function SatsConverter() {
     const [livePriceUSD, setLivePriceUSD] = useState<number | null>(null);
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
     const [livePriceEUR, setLivePriceEUR] = useState<number | null>(null);
+    const [loadingPrice, setLoadingPrice] = useState(false);
 
-    useEffect(() => {
-        const fetchPrices = async () => {
+    const fetchPrices = async () => {
+        setLoadingPrice(true);
+        // USD & EUR (CoinDesk with CoinGecko fallback)
+        try {
+            const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+            const data = await res.json();
+
+            if (data.bpi && data.bpi.USD) {
+                setLivePriceUSD(data.bpi.USD.rate_float);
+            }
+            if (data.bpi && data.bpi.EUR) {
+                setLivePriceEUR(data.bpi.EUR.rate_float);
+            }
+        } catch (e) {
+            console.error("Error fetching USD/EUR from CoinDesk:", e);
+
+            // Fallback to CoinGecko
             try {
-                // USD & EUR
                 const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
                 const dataCoingecko = await resCoingecko.json();
                 setLivePriceUSD(dataCoingecko.bitcoin.usd);
                 setLivePriceEUR(dataCoingecko.bitcoin.eur);
-
-                // BRL
-                const resBRL = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
-                const dataBRL = await resBRL.json();
-                setLivePriceBRL(parseFloat(dataBRL.BTCBRL.bid));
-            } catch (e) {
-                console.error(e);
+            } catch (e2) {
+                console.error("Error fetching USD/EUR from CoinGecko:", e2);
             }
-        };
+        }
+
+        // BRL from AwesomeAPI (Independent)
+        try {
+            const resBRL = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
+            const dataBRL = await resBRL.json();
+            setLivePriceBRL(parseFloat(dataBRL.BTCBRL.bid));
+        } catch (e) {
+            console.error("Error fetching BRL:", e);
+        }
+        setLoadingPrice(false);
+    };
+
+    useEffect(() => {
         fetchPrices();
         // Update every 30s
         const interval = setInterval(fetchPrices, 30000);
@@ -99,12 +122,29 @@ export default function SatsConverter() {
                     <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--bitcoin-orange)', lineHeight: 1 }}>
                         {sats} <span style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>Sats</span>
                     </div>
-                    <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                        Cotação: {currency} {
-                            currency === 'BRL' && livePriceBRL ? livePriceBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) :
-                                currency === 'EUR' && livePriceEUR ? livePriceEUR.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) :
-                                    livePriceUSD ? livePriceUSD.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '...'
-                        }
+                    <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                        {loadingPrice ? (
+                            <span>Atualizando cotação...</span>
+                        ) : (
+                            <>
+                                <span>
+                                    Cotação: {currency} {
+                                        currency === 'BRL' && livePriceBRL ? livePriceBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) :
+                                            currency === 'EUR' && livePriceEUR ? livePriceEUR.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }) :
+                                                livePriceUSD ? livePriceUSD.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '...'
+                                    }
+                                </span>
+                                <button
+                                    onClick={fetchPrices}
+                                    className="refresh-btn"
+                                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', padding: 0 }}
+                                    title="Atualizar Cotação"
+                                    aria-label="Atualizar Cotação"
+                                >
+                                    🔄
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
 

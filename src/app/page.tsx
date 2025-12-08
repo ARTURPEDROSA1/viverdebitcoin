@@ -122,32 +122,75 @@ export default function BitcoinRetirementPage() {
     const fetchData = async () => {
         setIsLoadingData(true);
         setErrorMsg('');
+
         try {
-            const res = await fetch("https://economia.awesomeapi.com.br/last/BTC-USD,USD-BRL,EUR-USD");
-            if (!res.ok) throw new Error("API Limit or Error");
-            const data = await res.json();
+            const newPrices = { ...FALLBACK_PRICES };
+            const newRates = { ...FALLBACK_RATES };
 
-            const btcUsd = parseFloat(data.BTCUSD.bid);
-            const usdBrl = parseFloat(data.USDBRL.bid);
-            const eurUsd = parseFloat(data.EURUSD.bid);
+            // 1. Fetch BTC-USD & BTC-EUR (CoinDesk -> CoinGecko)
+            let btcUsd = 0;
+            let btcEur = 0;
 
-            setPrices({
-                USD: btcUsd,
-                BRL: btcUsd * usdBrl,
-                EUR: btcUsd / eurUsd
-            });
+            try {
+                const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+                const data = await res.json();
+                if (data.bpi && data.bpi.USD) btcUsd = data.bpi.USD.rate_float;
+                if (data.bpi && data.bpi.EUR) btcEur = data.bpi.EUR.rate_float;
+            } catch (e) {
+                console.error("CoinDesk Error:", e);
+                try {
+                    const resGecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
+                    const dataGecko = await resGecko.json();
+                    btcUsd = dataGecko.bitcoin.usd;
+                    btcEur = dataGecko.bitcoin.eur;
+                } catch (e2) {
+                    console.error("CoinGecko Error:", e2);
+                }
+            }
 
-            setExchangeRates({
-                USDBRL: usdBrl,
-                USDEUR: 1 / eurUsd
-            });
+            // 2. Fetch BTC-BRL & USD-BRL (AwesomeAPI)
+            let btcBrl = 0;
+            let usdBrl = 0;
+
+            try {
+                const resAwesome = await fetch("https://economia.awesomeapi.com.br/last/BTC-BRL,USD-BRL");
+                const dataAwesome = await resAwesome.json();
+                btcBrl = parseFloat(dataAwesome.BTCBRL.bid);
+                usdBrl = parseFloat(dataAwesome.USDBRL.bid);
+            } catch (e) {
+                console.error("AwesomeAPI Error:", e);
+            }
+
+            // 3. Consolidate Data
+            if (btcUsd > 0) newPrices.USD = btcUsd;
+            if (btcEur > 0) newPrices.EUR = btcEur;
+            if (btcBrl > 0) newPrices.BRL = btcBrl;
+
+            // Calculate Rates
+            // Prefer direct USD-BRL from API, but fallback to implied if needed
+            if (usdBrl > 0) {
+                newRates.USDBRL = usdBrl;
+            } else if (btcUsd > 0 && btcBrl > 0) {
+                newRates.USDBRL = btcBrl / btcUsd;
+            }
+
+            // Calculate USD-EUR Rate
+            if (btcUsd > 0 && btcEur > 0) {
+                newRates.USDEUR = btcEur / btcUsd; // 1 USD = (PriceEUR / PriceUSD) EUR ?? No.
+                // If 1 BTC = $100k and 1 BTC = €95k.
+                // $100k = €95k  =>  $1 = €0.95.
+                // So Rate = PriceEUR / PriceUSD. Correct.
+                newRates.USDEUR = btcEur / btcUsd;
+            }
+
+            setPrices(newPrices);
+            setExchangeRates(newRates);
 
         } catch (error) {
-            console.error("Failed to fetch data, using fallback", error);
-            // Use fallback if API fails
+            console.error("Critical error in fetchData:", error);
             setPrices(FALLBACK_PRICES);
             setExchangeRates(FALLBACK_RATES);
-            setErrorMsg('Usando preços offline (API indisponível)');
+            setErrorMsg('Usando preços offline (Erro Crítico)');
         } finally {
             setIsLoadingData(false);
         }

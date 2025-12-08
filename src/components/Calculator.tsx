@@ -35,7 +35,9 @@ export default function Calculator() {
     const [date, setDate] = useState('2014-09-17');
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
     const [livePriceUSD, setLivePriceUSD] = useState<number | null>(null);
+    const [livePriceEUR, setLivePriceEUR] = useState<number | null>(null);
     const [isLightMode, setIsLightMode] = useState(false);
+    const [loadingPrice, setLoadingPrice] = useState(false);
 
     const [result, setResult] = useState<{
         currentValue: number;
@@ -51,6 +53,44 @@ export default function Calculator() {
     const [showTable, setShowTable] = useState(false);
     const [chartHistory, setChartHistory] = useState<{ date: string, value: number }[]>([]);
 
+    const fetchPrices = async () => {
+        setLoadingPrice(true);
+        // USD & EUR (CoinDesk with CoinGecko fallback)
+        try {
+            const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+            const data = await res.json();
+
+            if (data.bpi && data.bpi.USD) {
+                setLivePriceUSD(data.bpi.USD.rate_float);
+            }
+            if (data.bpi && data.bpi.EUR) {
+                setLivePriceEUR(data.bpi.EUR.rate_float);
+            }
+        } catch (e) {
+            console.error("Error fetching USD/EUR from CoinDesk:", e);
+
+            // Fallback to CoinGecko
+            try {
+                const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
+                const dataCoingecko = await resCoingecko.json();
+                setLivePriceUSD(dataCoingecko.bitcoin.usd);
+                setLivePriceEUR(dataCoingecko.bitcoin.eur);
+            } catch (e2) {
+                console.error("Error fetching USD/EUR from CoinGecko:", e2);
+            }
+        }
+
+        // BRL from AwesomeAPI (Independent)
+        try {
+            const resBRL = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
+            const dataBRL = await resBRL.json();
+            setLivePriceBRL(parseFloat(dataBRL.BTCBRL.bid));
+        } catch (e) {
+            console.error("Error fetching BRL:", e);
+        }
+        setLoadingPrice(false);
+    };
+
     useEffect(() => {
         // Theme Observer
         const checkTheme = () => setIsLightMode(document.body.classList.contains('light-mode'));
@@ -61,20 +101,6 @@ export default function Calculator() {
     }, []);
 
     useEffect(() => {
-        // Fetch Prices
-        const fetchPrices = async () => {
-            try {
-                const res = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
-                const data = await res.json();
-                setLivePriceBRL(parseFloat(data.BTCBRL.bid));
-
-                const resUSD = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-                const dataUSD = await resUSD.json();
-                setLivePriceUSD(dataUSD.bitcoin.usd);
-            } catch (e) {
-                console.error(e);
-            }
-        };
         fetchPrices();
         const interval = setInterval(fetchPrices, 30000);
         return () => clearInterval(interval);
@@ -267,8 +293,28 @@ export default function Calculator() {
 
                 <button id="calculate-btn" className="cta-button" onClick={calculate}>Calcular Resultado</button>
                 <p className="historical-note">Dados históricos disponíveis a partir de 17/09/2014</p>
-                <div className="live-price">
-                    {livePriceBRL ? `Preço Atual: ${livePriceBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` : 'Carregando preço atual...'}
+                <div className="live-price" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    {loadingPrice ? (
+                        <span>Atualizando preço...</span>
+                    ) : (
+                        <>
+                            {
+                                currency === 'BRL' && livePriceBRL ? `Preço Atual: ${livePriceBRL.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}` :
+                                    currency === 'EUR' && livePriceEUR ? `Preço Atual: ${livePriceEUR.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' })}` :
+                                        livePriceUSD ? `Preço Atual: ${livePriceUSD.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}` :
+                                            'Carregando preço atual...'
+                            }
+                            <button
+                                onClick={fetchPrices}
+                                className="refresh-btn"
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', padding: 0 }}
+                                title="Atualizar Preço"
+                                aria-label="Atualizar Preço"
+                            >
+                                🔄
+                            </button>
+                        </>
+                    )}
                 </div>
 
                 {/* Share Buttons */}

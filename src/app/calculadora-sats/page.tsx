@@ -24,22 +24,62 @@ export default function SatoshiCalculatorPage() {
     const [resultSummary, setResultSummary] = useState<any>(null);
 
     // Fetch BTC prices
-    useEffect(() => {
-        const fetchPrices = async () => {
+    const [loadingPrice, setLoadingPrice] = useState<boolean>(false);
+
+    // Fetch BTC prices
+    const fetchPrices = async () => {
+        setLoadingPrice(true);
+        try {
+            const newPrices = { BRL: 0, USD: 0, EUR: 0 };
+
+            // USD & EUR (CoinDesk with CoinGecko fallback)
             try {
-                // Fetch BTC-BRL, BTC-USD, BTC-EUR
-                const res = await fetch("https://economia.awesomeapi.com.br/json/last/BTC-BRL,BTC-USD,BTC-EUR");
+                const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
                 const data = await res.json();
 
-                setPrices({
-                    BRL: parseFloat(data.BTCBRL.bid),
-                    USD: parseFloat(data.BTCUSD.bid),
-                    EUR: parseFloat(data.BTCEUR.bid),
-                });
-            } catch (error) {
-                console.error("Erro ao buscar preços BTC:", error);
+                if (data.bpi && data.bpi.USD) {
+                    newPrices.USD = data.bpi.USD.rate_float;
+                }
+                if (data.bpi && data.bpi.EUR) {
+                    newPrices.EUR = data.bpi.EUR.rate_float;
+                }
+            } catch (e) {
+                console.error("Error fetching USD/EUR from CoinDesk:", e);
+                // Fallback to CoinGecko
+                try {
+                    const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
+                    const dataCoingecko = await resCoingecko.json();
+                    newPrices.USD = dataCoingecko.bitcoin.usd;
+                    newPrices.EUR = dataCoingecko.bitcoin.eur;
+                } catch (e2) {
+                    console.error("Error fetching USD/EUR from CoinGecko:", e2);
+                }
             }
-        };
+
+            // BRL from AwesomeAPI (Independent)
+            try {
+                const resBRL = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
+                const dataBRL = await resBRL.json();
+                newPrices.BRL = parseFloat(dataBRL.BTCBRL.bid);
+            } catch (e) {
+                console.error("Error fetching BRL:", e);
+            }
+
+            // Update state safely (only if values differ significantly or if completely missing)
+            setPrices(prev => ({
+                BRL: newPrices.BRL || (prev?.BRL ?? 0),
+                USD: newPrices.USD || (prev?.USD ?? 0),
+                EUR: newPrices.EUR || (prev?.EUR ?? 0),
+            }));
+
+        } catch (error) {
+            console.error("Erro geral ao buscar preços BTC:", error);
+        } finally {
+            setLoadingPrice(false);
+        }
+    };
+
+    useEffect(() => {
         fetchPrices();
     }, []);
 
@@ -171,7 +211,31 @@ export default function SatoshiCalculatorPage() {
                         </div>
                         <div>
                             <label className="input-label">Preço Atual BTC ({currency})</label>
-                            <input type="text" value={prices ? formatCurrency(prices[currency], currency) : 'Carregando...'} disabled className="calculator-input" style={{ background: 'rgba(0,0,0,0.1)' }} />
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <input
+                                    type="text"
+                                    value={prices && prices[currency] ? formatCurrency(prices[currency], currency) : (loadingPrice ? 'Atualizando...' : 'Carregando...')}
+                                    disabled
+                                    className="calculator-input"
+                                    style={{ background: 'rgba(0,0,0,0.1)', flex: 1 }}
+                                />
+                                <button
+                                    onClick={fetchPrices}
+                                    disabled={loadingPrice}
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        cursor: loadingPrice ? 'not-allowed' : 'pointer',
+                                        fontSize: '1.2rem',
+                                        padding: '4px',
+                                        opacity: loadingPrice ? 0.5 : 1
+                                    }}
+                                    title="Atualizar Preço"
+                                    aria-label="Atualizar Preço"
+                                >
+                                    🔄
+                                </button>
+                            </div>
                         </div>
                     </div>
 
