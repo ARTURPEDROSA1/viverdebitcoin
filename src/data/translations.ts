@@ -336,7 +336,8 @@ export const translations: Record<Language, Record<string, string>> = {
 
         'home.sources.title': '📚 Fontes e Leitura Adicional',
         'home.sources.emission': 'Emissão do Bitcoin',
-        'home.sources.etfs': 'ETFs Spot (EUA)',
+        'home.sources.etfs': 'ETFs Spot (Global)',
+        'home.sources.regulation': 'Regulação (MiCA)',
         'home.sources.mining': 'Mineração e Energia',
         'home.sources.flows': 'Fluxos de ETFs',
         'home.sources.swr': 'Taxa de Retirada Segura (SWR)',
@@ -833,7 +834,8 @@ export const translations: Record<Language, Record<string, string>> = {
 
         'home.sources.title': '📚 Sources and Further Reading',
         'home.sources.emission': 'Bitcoin Emission',
-        'home.sources.etfs': 'Spot ETFs (USA)',
+        'home.sources.etfs': 'Spot ETFs (Global)',
+        'home.sources.regulation': 'Regulation (MiCA)',
         'home.sources.mining': 'Mining and Energy',
         'home.sources.flows': 'ETF Flows',
         'home.sources.swr': 'Safe Withdrawal Rate (SWR)',
@@ -1008,6 +1010,10 @@ export const translations: Record<Language, Record<string, string>> = {
         'settings.language': 'Idioma',
         'settings.currency': 'Moneda',
         'calculators': 'Calculadoras',
+
+        'home.table.age': 'Edad',
+        'home.table.year': 'Año',
+
         'footer.rights': 'Todos los derechos reservados.',
 
         // Common
@@ -1328,7 +1334,8 @@ export const translations: Record<Language, Record<string, string>> = {
 
         'home.sources.title': '📚 Fuentes y Lectura Adicional',
         'home.sources.emission': 'Emisión de Bitcoin',
-        'home.sources.etfs': 'ETFs Spot (EE.UU.)',
+        'home.sources.etfs': 'ETFs Spot (Global)',
+        'home.sources.regulation': 'Regulación (MiCA)',
         'home.sources.mining': 'Minería y Energía',
         'home.sources.flows': 'Flujos de ETF',
         'home.sources.swr': 'Tasa de Retiro Segura (SWR)',

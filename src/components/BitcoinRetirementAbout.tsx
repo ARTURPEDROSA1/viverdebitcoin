@@ -137,18 +137,86 @@ export default function BitcoinRetirementAbout() {
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', fontSize: '0.9rem' }}>
                     <div>
-                        <p style={{ marginBottom: '0.5rem' }}><strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.emission')}:</strong> Unchained: The 21M supply in code · Bitcoin Magazine: Halving primer.</p>
-                        <p><strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.swr')}:</strong> Bengen (1994) PDF.</p>
+                        <p style={{ marginBottom: '0.5rem' }}>
+                            <strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.emission')}:</strong>{' '}
+                            <a href="https://www.unchained.com/blog/bitcoin-source-code-21-million" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                Unchained: The 21M supply in code
+                            </a>
+                            {' · '}
+                            <a href="https://bitcoinmagazine.com/guides/when-is-the-next-bitcoin-halving" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                Bitcoin Magazine: Halving primer
+                            </a>.
+                        </p>
+                        <p>
+                            <strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.swr')}:</strong>{' '}
+                            <a href="https://www.financialplanningassociation.org/sites/default/files/2021-04/MAR04%20Determining%20Withdrawal%20Rates%20Using%20Historical%20Data.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                Bengen (1994) PDF
+                            </a>.
+                        </p>
                     </div>
                     <div>
-                        <p style={{ marginBottom: '0.5rem' }}><strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.etfs')}:</strong> SEC Chair statement · CRS explainer.</p>
-                        <p><strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.s2f')}:</strong> Emerald: dissecting S2F.</p>
+                        <p style={{ marginBottom: '0.5rem' }}>
+                            <strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.etfs')}:</strong>{' '}
+                            <a href="https://www.sec.gov/newsroom/speeches-statements/gensler-statement-spot-bitcoin-011023" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                SEC Chair statement
+                            </a>
+                            {' · '}
+                            <a href="https://www.congress.gov/crs_external_products/IF/PDF/IF12573/IF12573.2.pdf" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                CRS explainer
+                            </a>
+                            {' · '}
+                            <a href="https://www.reuters.com/markets/currencies/hong-kong-gives-initial-approval-first-bitcoin-ether-spot-etfs-say-funds-2024-04-15/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                Reuters: HK initial approvals
+                            </a>
+                            {' · '}
+                            <a href="https://www.ft.com/content/5bcd37ae-abd0-4eb4-8c23-b0ae1a7c5f84" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                FT: HK launches spot crypto ETFs
+                            </a>.
+                        </p>
+                        <p>
+                            <strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.s2f')}:</strong>{' '}
+                            <a href="https://www.emerald.com/sef/article/39/3/506/511921/Dissecting-the-stock-to-flow-model-for-Bitcoin" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                Emerald: dissecting S2F
+                            </a>
+                            {' · '}
+                            <a href="https://www.mdpi.com/1911-8074/17/10/443" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                MDPI survey
+                            </a>.
+                        </p>
                     </div>
                     <div>
-                        <p style={{ marginBottom: '0.5rem' }}><strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.mining')}:</strong> cPower: miners as flexible load · Duke study summary.</p>
+                        <p style={{ marginBottom: '0.5rem' }}>
+                            <strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.mining')}:</strong>{' '}
+                            <a href="https://cpowerenergy.com/vpps-and-flexible-demand-response-bitcoin-mining-flexes-its-capabilities/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                cPower: miners as flexible load
+                            </a>
+                            {' · '}
+                            <a href="https://www.mara.com/posts/the-duke-study-bitcoin-mining-and-the-future-of-grid-stability" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                Duke study summary
+                            </a>.
+                        </p>
+                        <p>
+                            <strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.regulation')}:</strong>{' '}
+                            <a href="https://micapapers.com/guide/timeline/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                MiCA Papers: implementation dates
+                            </a>
+                            {' · '}
+                            <a href="https://www.hoganlovells.com/en/publications/the-eus-markets-in-crypto-assets-mica-regulation-a-status-update" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                Hogan Lovells overview
+                            </a>.
+                        </p>
                     </div>
                     <div>
-                        <p><strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.flows')}:</strong> BlackRock IBIT facts · CryptoSlate/Bloomberg on 2024 flows.</p>
+                        <p>
+                            <strong style={{ color: 'var(--primary-green)' }}>{t('home.sources.flows')}:</strong>{' '}
+                            <a href="https://www.blackrock.com/us/individual/products/333011/ishares-bitcoin-trust" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                BlackRock IBIT facts
+                            </a>
+                            {' · '}
+                            <a href="https://cryptoslate.com/insights/blackrocks-bitcoin-fund-ibit-hits-top-3-us-etfs-by-inflow-for-2024/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-main)', textDecoration: 'underline' }}>
+                                CryptoSlate/Bloomberg on 2024 flows
+                            </a>.
+                        </p>
                     </div>
                 </div>
             </div>
