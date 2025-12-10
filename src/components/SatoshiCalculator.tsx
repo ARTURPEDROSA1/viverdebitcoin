@@ -6,7 +6,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
-export default function SatoshiCalculatorPage() {
+export default function SatoshiCalculator() {
     // State definitions
     // State definitions
     const { currency, setCurrency, t } = useSettings();
@@ -433,7 +433,7 @@ export default function SatoshiCalculatorPage() {
                 <h3>→ Usar um endereço Bitcoin diferente para cada ano de economia</h3>
                 <p>Isso é uma prática avançada, mas extremamente importante para <strong>PRIVACIDADE E SEGURANÇA FINANCEIRA</strong>.</p>
                 <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '8px', margin: '1.5rem 0' }}>
-                    <h4 style={{ color: 'var(--bitcoin-orange)', marginTop: 0 }}>🛡️ Por que usar um endereço por ano?</h4>
+                    <h4 style={{ color: 'var(--bitcoin-orange)' }}>🛡️ Por que usar um endereço por ano?</h4>
                     <p>Porque assim cada ano de economia fica isolado em um endereço diferente.</p>
                     <ul style={{ margin: '0.5rem 0 0 20px', listStyleType: 'disc', lineHeight: '1.6' }}>
                         <li>Quando você gastar os sats de um ano específico, somente aquele saldo será exposto publicamente.</li>

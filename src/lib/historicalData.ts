@@ -5,6 +5,7 @@
 
 // Daily Bitcoin Price in USD
 export const bitcoinHistoricalData = {
+    "2025-12-07": 89244.7620814118,
     "2025-12-06": 89307.09154512963,
     "2025-12-05": 92140.70419795791,
     "2025-12-04": 92977.96,
@@ -4109,6 +4110,7 @@ export const bitcoinHistoricalData = {
 // Historical Exchange Rates (Currency per USD)
 export const exchangeRatesHistorical = {
     "BRL": {
+        "2025-12-07": 5.4381,
         "2025-12-05": 5.43342,
         "2025-12-04": 5.2925,
         "2025-12-03": 5.3079,
@@ -7039,6 +7041,7 @@ export const exchangeRatesHistorical = {
         "2014-09-17": 2.3581
     },
     "EUR": {
+        "2025-12-07": 0.8591212907438271,
         "2025-12-05": 0.8588999209812073,
         "2025-12-04": 0.8547319121447029,
         "2025-12-03": 0.8567900437442495,

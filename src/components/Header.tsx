@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
 import { useSettings } from '@/contexts/SettingsContext';
+import { getPath, getPageIdFromSlug, PageId, routeMap } from '@/lib/routes';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
     const { language, setLanguage, currency, setCurrency, t } = useSettings();
 
     // Close sidebar on route change (mobile)
@@ -18,21 +20,56 @@ export default function Header() {
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
+    // Dynamic Navigation Links
     const navLinks = [
-        { name: t('nav.aposentadoria_btc'), href: '/' },
-        { name: t('nav.aposentadoria_sats'), href: '/calculadora-sats' },
-        { name: t('nav.bitcoin_dca'), href: '/calculadora-dca' },
-        { name: t('nav.bitcoin_roi'), href: '/calculadora-arrependimento' },
-        { name: t('nav.renda_fixa_btc'), href: '/renda-fixa-btc' },
-        { name: t('nav.conversor_sats'), href: '/conversor-sats' },
+        { name: t('nav.aposentadoria_btc'), id: 'home' as PageId },
+        { name: t('nav.aposentadoria_sats'), id: 'sats-calculator' as PageId },
+        { name: t('nav.bitcoin_dca'), id: 'dca-calculator' as PageId },
+        { name: t('nav.bitcoin_roi'), id: 'regret-calculator' as PageId },
+        { name: t('nav.renda_fixa_btc'), id: 'fixed-income' as PageId },
+        { name: t('nav.conversor_sats'), id: 'sats-converter' as PageId },
     ];
+
+    const currentPath = (id: PageId) => getPath(language, id);
+
+    const handleLanguageChange = (newLang: string) => {
+        // Find current page ID from pathname
+        let currentPageId: PageId = 'home';
+        let detectedLang = 'pt';
+
+        // Simple detection strategy
+        if (pathname.startsWith('/en')) {
+            detectedLang = 'en';
+        } else if (pathname.startsWith('/es')) {
+            detectedLang = 'es';
+        } else {
+            detectedLang = 'pt';
+        }
+
+        // Extract slug
+        let slug = '';
+        if (detectedLang === 'en') slug = pathname.replace('/en', '').replace(/^\//, '');
+        else if (detectedLang === 'es') slug = pathname.replace('/es', '').replace(/^\//, '');
+        else slug = pathname.replace(/^\//, '');
+
+        const identifiedId = getPageIdFromSlug(detectedLang, slug);
+        if (identifiedId) {
+            currentPageId = identifiedId;
+        }
+
+        // Determine new path
+        const newPath = getPath(newLang, currentPageId);
+
+        // Navigate
+        router.push(newPath);
+    };
 
     return (
         <>
             {/* Mobile Top Bar */}
             <div className="mobile-topbar">
                 <div className="logo-container-mobile">
-                    <Link href="/" className="logo-link">
+                    <Link href={getPath(language, 'home')} className="logo-link">
                         <span className="brand-name-mobile" style={{ color: 'var(--primary-green)' }}>Viverde<span className="highlight">bitcoin</span></span>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="/ViverdeBitcoinfavicon.png" alt="Viver de Bitcoin" style={{ height: '24px', width: 'auto', marginLeft: '8px' }} />
@@ -49,7 +86,7 @@ export default function Header() {
             {/* Sidebar */}
             <aside className={`main-sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <Link href="/" className="logo-link-desktop">
+                    <Link href={getPath(language, 'home')} className="logo-link-desktop">
                         <div className="brand-name">Viverde<span className="highlight">bitcoin</span></div>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="/ViverdeBitcoinfavicon.png" alt="Viver de Bitcoin" style={{ height: '28px', width: 'auto', marginLeft: '10px' }} />
@@ -59,19 +96,22 @@ export default function Header() {
 
                 <nav className="sidebar-nav">
 
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className={`sidebar-nav-item ${pathname === link.href ? 'active' : ''}`}
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
+                    {navLinks.map((link) => {
+                        const href = currentPath(link.id);
+                        return (
+                            <Link
+                                key={link.id}
+                                href={href}
+                                className={`sidebar-nav-item ${pathname === href ? 'active' : ''}`}
+                            >
+                                {link.name}
+                            </Link>
+                        );
+                    })}
 
                     <div className="nav-divider" />
 
-                    <Link href="/sobre" className={`sidebar-nav-item ${pathname === '/sobre' ? 'active' : ''}`}>
+                    <Link href={getPath(language, 'about')} className={`sidebar-nav-item ${pathname === getPath(language, 'about') ? 'active' : ''}`}>
                         {t('nav.sobre')}
                     </Link>
                 </nav>
@@ -82,7 +122,7 @@ export default function Header() {
                     <div style={{ position: 'relative' }}>
                         <select
                             value={language}
-                            onChange={(e) => setLanguage(e.target.value as any)}
+                            onChange={(e) => handleLanguageChange(e.target.value)}
                             style={{
                                 appearance: 'none',
                                 background: 'transparent',
@@ -135,7 +175,7 @@ export default function Header() {
                         </div>
                     </div>
 
-                    {/* Theme Toggle - Auto margin left to push it to the right slightly if needed, or just part of the flow */}
+                    {/* Theme Toggle */}
                     <div style={{ marginLeft: 'auto' }}>
                         <ThemeToggle />
                     </div>
