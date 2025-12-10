@@ -796,15 +796,7 @@ export default function BitcoinRetirementCalculator() {
                         <select
                             value={currency}
                             onChange={e => setCurrency(e.target.value as any)}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                background: 'var(--bg-secondary)',
-                                border: '1px solid var(--border-color)',
-                                borderRadius: '8px',
-                                color: 'var(--text-main)',
-                                fontSize: '1rem'
-                            }}
+                            className="calculator-input"
                         >
                             <option value="BRL">BRL (Real Brasileiro)</option>
                             <option value="USD">USD (Dólar Americano)</option>
@@ -821,7 +813,7 @@ export default function BitcoinRetirementCalculator() {
                                 value={currentAge}
                                 onChange={e => setCurrentAge(Number(e.target.value))}
                                 className="calculator-input"
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'white' }}
+
                             />
                         </div>
                         <div>
@@ -831,7 +823,7 @@ export default function BitcoinRetirementCalculator() {
                                 value={retirementAge}
                                 onChange={e => setRetirementAge(Number(e.target.value))}
                                 className="calculator-input"
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'white' }}
+
                             />
                         </div>
                     </div>
@@ -867,15 +859,7 @@ export default function BitcoinRetirementCalculator() {
                                 onBlur={() => setIsIncomeFocused(false)}
                                 className="calculator-input"
                                 style={{
-                                    width: '100%',
                                     paddingLeft: currency === 'EUR' ? '12px' : (currency === 'BRL' ? '40px' : '30px'),
-                                    paddingRight: '12px',
-                                    paddingTop: '12px',
-                                    paddingBottom: '12px',
-                                    borderRadius: '8px',
-                                    border: '1px solid var(--border-color)',
-                                    background: 'var(--bg-secondary)',
-                                    color: 'white'
                                 }}
                             />
                         </div>
@@ -890,7 +874,6 @@ export default function BitcoinRetirementCalculator() {
                                 value={lifeExpectancy}
                                 onChange={e => setLifeExpectancy(Number(e.target.value))}
                                 className="calculator-input"
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'white' }}
                             />
                         </div>
                         <div>
@@ -900,7 +883,6 @@ export default function BitcoinRetirementCalculator() {
                                 value={annualInflation}
                                 onChange={e => setAnnualInflation(Number(e.target.value))}
                                 className="calculator-input"
-                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'white' }}
                             />
                         </div>
                     </div>
@@ -914,7 +896,7 @@ export default function BitcoinRetirementCalculator() {
                             onChange={e => setSafeWithdrawalRate(Number(e.target.value))}
                             step="0.1"
                             className="calculator-input"
-                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'white' }}
+
                         />
                     </div>
 
@@ -931,7 +913,7 @@ export default function BitcoinRetirementCalculator() {
                                 onChange={e => setBtcAccumulated(Number(e.target.value))}
                                 step="0.0001"
                                 className="calculator-input"
-                                style={{ width: '100%', padding: '12px 12px 12px 35px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'white' }}
+                                style={{ paddingLeft: '35px' }}
                             />
                         </div>
                     </div>
@@ -991,12 +973,8 @@ export default function BitcoinRetirementCalculator() {
                                 step={contributionUnit === 'BTC' ? "0.0001" : "1000"}
                                 className="calculator-input"
                                 style={{
-                                    width: '100%',
-                                    padding: '12px 140px 12px 35px', // Added right padding for the fiat display
-                                    borderRadius: '8px',
-                                    border: '1px solid var(--border-color)',
-                                    background: 'var(--bg-secondary)',
-                                    color: 'white'
+                                    paddingRight: '140px',
+                                    paddingLeft: '35px',
                                 }}
                             />
                             <input
