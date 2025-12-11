@@ -500,14 +500,15 @@ export default function DcaCalculator() {
                                                     style={{
                                                         position: 'sticky',
                                                         top: 0,
-                                                        background: 'var(--card-bg)',
+                                                        background: isLightMode ? '#ffffff' : '#222222', // Enforce solid background
                                                         zIndex: 2,
                                                         cursor: 'pointer',
                                                         userSelect: 'none',
                                                         textAlign: 'left',
                                                         padding: '12px',
                                                         color: 'var(--text-main)',
-                                                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                                                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                                                        borderBottom: '1px solid var(--border-color)'
                                                     }}
                                                 >
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
