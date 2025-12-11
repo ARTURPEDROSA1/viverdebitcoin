@@ -1363,10 +1363,10 @@ export default function BitcoinRetirementCalculator() {
                                                 return (
                                                     <tr key={row.year} style={{
                                                         borderBottom: '1px solid rgba(255,255,255,0.05)',
-                                                        background: isRetirement ? 'rgba(39, 174, 96, 0.05)' : 'transparent'
+                                                        background: 'transparent'
                                                     }}>
                                                         <td style={{ padding: '12px', fontWeight: isRetirement ? 'bold' : 'normal' }}>
-                                                            {row.year} {isRetirement && sortedData[i - 1] && sortedData[i - 1].year < finalSummary.retirementYear && '🏠'}
+                                                            {row.year}
                                                         </td>
                                                         <td style={{ padding: '12px' }}>{age}</td>
                                                         <td style={{ padding: '12px', textAlign: 'right', fontFamily: 'monospace' }}>
