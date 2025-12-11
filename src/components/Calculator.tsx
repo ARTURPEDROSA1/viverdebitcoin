@@ -289,6 +289,7 @@ export default function Calculator() {
                         id="investment-date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
+                        min="2014-09-17"
                         max={new Date().toISOString().split('T')[0]}
                     />
                 </div>
