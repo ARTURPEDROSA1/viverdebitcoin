@@ -779,7 +779,7 @@ export default function BitcoinRetirementCalculator() {
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                                <strong style={{ color: 'var(--bitcoin-orange)', fontSize: '1.1rem' }}>
+                                <strong style={{ color: 'var(--bitcoin-orange)', fontSize: '0.9rem' }}>
                                     {loadingPrice ? '...' : formatMoney(btcPrice)}
                                 </strong>
                                 <span style={{ fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => window.location.reload()}>🔄</span>
