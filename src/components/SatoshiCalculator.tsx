@@ -29,6 +29,8 @@ export default function SatoshiCalculator() {
     const [calculatedSats, setCalculatedSats] = useState<number>(0);
     const [viewMode, setViewMode] = useState<'chart' | 'table'>('chart');
     const [resultSummary, setResultSummary] = useState<any>(null);
+    const [isLightMode, setIsLightMode] = useState(false);
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
     // Fetch BTC prices
     const [loadingPrice, setLoadingPrice] = useState<boolean>(false);
@@ -93,6 +95,14 @@ export default function SatoshiCalculator() {
 
     useEffect(() => {
         fetchPrices();
+    }, []);
+
+    useEffect(() => {
+        const checkTheme = () => setIsLightMode(document.body.classList.contains('light-mode'));
+        checkTheme();
+        const observer = new MutationObserver(checkTheme);
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        return () => observer.disconnect();
     }, []);
 
     const handleCalculate = () => {
@@ -484,23 +494,70 @@ export default function SatoshiCalculator() {
                                 />
                             </div>
                         ) : (
-                            <div className="table-responsive" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                                <table className="about-table" style={{ width: '100%' }}>
-                                    <thead>
+                            <div style={{ overflowX: 'auto', maxHeight: '400px', borderRadius: '12px', border: '1px solid var(--border-color)', marginTop: '1rem', background: 'rgba(255, 255, 255, 0.05)' }}>
+                                <table className="about-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead style={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: isLightMode ? '#ffffff' : '#262626', borderBottom: '1px solid var(--border-color)' }}>
                                         <tr>
-                                            <th>{t('home.current_age')}</th>
-                                            <th>{t('sats.projected_value')} ({currency})</th>
-                                            <th>{t('sats.final_btc')}</th>
+                                            {[
+                                                { key: 'age', label: t('home.current_age') },
+                                                { key: 'projected', label: `${t('sats.projected_value')} (${currency})` },
+                                                { key: 'btc', label: t('sats.final_btc') }
+                                            ].map((col) => (
+                                                <th
+                                                    key={col.key}
+                                                    onClick={() => {
+                                                        let direction: 'asc' | 'desc' = 'asc';
+                                                        if (sortConfig && sortConfig.key === col.key && sortConfig.direction === 'asc') {
+                                                            direction = 'desc';
+                                                        }
+                                                        setSortConfig({ key: col.key, direction });
+                                                    }}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        userSelect: 'none',
+                                                        padding: '12px 15px',
+                                                        textAlign: 'left',
+                                                        color: 'var(--text-main)',
+                                                        backgroundColor: 'inherit' // Inherits from thead
+                                                    }}
+                                                >
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                        {col.label}
+                                                        {sortConfig?.key === col.key ? (
+                                                            <span>{sortConfig.direction === 'asc' ? '▲' : '▼'}</span>
+                                                        ) : (
+                                                            <span style={{ color: 'var(--border-color)', fontSize: '0.8em' }}>⇵</span>
+                                                        )}
+                                                    </div>
+                                                </th>
+                                            ))}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {chartData.labels.map((label: string, i: number) => (
-                                            <tr key={i}>
-                                                <td>{label}</td>
-                                                <td>{formatCurrency(chartData.datasets[0].data[i], currency)}</td>
-                                                <td>{formatBtc(chartData.datasets[1].data[i])}</td>
-                                            </tr>
-                                        ))}
+                                        {(() => {
+                                            const data = chartData.labels.map((label: string, i: number) => ({
+                                                label,
+                                                age: parseInt(label.replace(/\D/g, '')) || 0,
+                                                projected: chartData.datasets[0].data[i],
+                                                btc: chartData.datasets[1].data[i]
+                                            }));
+
+                                            if (sortConfig) {
+                                                data.sort((a: any, b: any) => {
+                                                    if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+                                                    if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+                                                    return 0;
+                                                });
+                                            }
+
+                                            return data.map((row: any, i: number) => (
+                                                <tr key={i} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                                    <td style={{ padding: '12px 15px' }}>{row.label}</td>
+                                                    <td style={{ padding: '12px 15px' }}>{formatCurrency(row.projected, currency)}</td>
+                                                    <td style={{ padding: '12px 15px' }}>{formatBtc(row.btc)}</td>
+                                                </tr>
+                                            ));
+                                        })()}
                                     </tbody>
                                 </table>
                             </div>
@@ -573,6 +630,6 @@ export default function SatoshiCalculator() {
                     <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>🎯 Resultado: Você divide sua aposentadoria em "caixinhas" anuais de BTC, onde cada caixa possui seu próprio endereço na sua cold wallet.</p>
                 </div>
             </div>
-        </main>
+        </main >
     );
 }
