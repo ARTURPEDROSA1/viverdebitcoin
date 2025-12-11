@@ -58,6 +58,7 @@ export default function DcaCalculator() {
     const [chartData, setChartData] = useState<any>(null);
     const [showTable, setShowTable] = useState(false);
     const [chartHistory, setChartHistory] = useState<{ date: string, invested: number, value: number }[]>([]);
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
     const fetchPrices = async () => {
         setLoadingPrice(true);
@@ -478,23 +479,56 @@ export default function DcaCalculator() {
                                 <Line options={chartOptions} data={chartData} />
                             </div>
                         ) : (
-                            <div className="table-container active" id="dca-table-container">
-                                <table className="data-table">
-                                    <thead>
+                            <div className="table-container active" id="dca-table-container" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                                <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead style={{ position: 'sticky', top: 0, background: 'var(--card-bg)', zIndex: 1 }}>
                                         <tr>
-                                            <th>{t('common.date')}</th>
-                                            <th>{t('dca.table_invested')} ({currency})</th>
-                                            <th>{t('dca.table_value')} ({currency})</th>
+                                            {[
+                                                { key: 'date', label: t('common.date') },
+                                                { key: 'invested', label: `${t('dca.table_invested')} (${currency})` },
+                                                { key: 'value', label: `${t('dca.table_value')} (${currency})` }
+                                            ].map((col) => (
+                                                <th
+                                                    key={col.key}
+                                                    onClick={() => {
+                                                        let direction: 'asc' | 'desc' = 'asc';
+                                                        if (sortConfig && sortConfig.key === col.key && sortConfig.direction === 'asc') {
+                                                            direction = 'desc';
+                                                        }
+                                                        setSortConfig({ key: col.key, direction });
+                                                    }}
+                                                    style={{ cursor: 'pointer', userSelect: 'none', textAlign: 'left', padding: '12px', color: 'var(--text-main)' }}
+                                                >
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                        {col.label}
+                                                        {sortConfig?.key === col.key ? (
+                                                            <span>{sortConfig.direction === 'asc' ? '▲' : '▼'}</span>
+                                                        ) : (
+                                                            <span style={{ color: 'var(--border-color)', fontSize: '0.8em' }}>⇵</span>
+                                                        )}
+                                                    </div>
+                                                </th>
+                                            ))}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {chartHistory.map((row, i) => (
-                                            <tr key={i}>
-                                                <td>{row.date.split('-').reverse().join('/')}</td>
-                                                <td>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.invested)}</td>
-                                                <td>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
-                                            </tr>
-                                        ))}
+                                        {(() => {
+                                            const sortedData = [...chartHistory];
+                                            if (sortConfig) {
+                                                sortedData.sort((a: any, b: any) => {
+                                                    if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+                                                    if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+                                                    return 0;
+                                                });
+                                            }
+                                            return sortedData.map((row, i) => (
+                                                <tr key={i}>
+                                                    <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{row.date.split('-').reverse().join('/')}</td>
+                                                    <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.invested)}</td>
+                                                    <td style={{ padding: '12px', borderBottom: '1px solid var(--border-color)' }}>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
+                                                </tr>
+                                            ));
+                                        })()}
                                     </tbody>
                                 </table>
                             </div>
