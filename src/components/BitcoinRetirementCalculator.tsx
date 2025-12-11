@@ -772,19 +772,19 @@ export default function BitcoinRetirementCalculator() {
                 <div style={{ background: 'var(--card-bg)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
                     {/* Header with Title and Price */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <span style={{ fontSize: '1.5rem' }}>⚙️</span>
-                            <h3 style={{ margin: 0, color: '#FFFFFF' }}>{t('home.settings')}</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '1.2rem' }}>⚙️</span>
+                            <h3 style={{ margin: 0, color: '#FFFFFF', fontSize: '1rem' }}>{t('home.settings')}</h3>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                                <strong style={{ color: 'var(--bitcoin-orange)', fontSize: '0.9rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'flex-end' }}>
+                                <strong style={{ color: 'var(--bitcoin-orange)', fontSize: '0.8rem' }}>
                                     {loadingPrice ? '...' : formatMoney(btcPrice)}
                                 </strong>
-                                <span style={{ fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => window.location.reload()}>🔄</span>
+                                <span style={{ fontSize: '1rem', cursor: 'pointer' }} onClick={() => window.location.reload()}>🔄</span>
                             </div>
-                            <small style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                            <small style={{ color: 'var(--text-secondary)', fontSize: '0.7rem' }}>
                                 1 {currency} ≈ {btcPrice ? Math.floor(100000000 / btcPrice).toLocaleString(currency === 'USD' ? 'en-US' : 'de-DE') : '...'} sats
                             </small>
                         </div>
