@@ -8,6 +8,8 @@ export default function RendaFixaAbout() {
 
     return (
         <div className="about-content" style={{ maxWidth: '800px', marginInline: 'auto', fontSize: '0.9rem', padding: '2rem', background: 'var(--card-bg)', borderRadius: '12px', marginTop: '3rem', border: '1px solid var(--border-color)' }}>
+            <p style={{ marginBottom: '2rem', color: 'var(--text-main)', lineHeight: 1.6, fontSize: '1rem' }} dangerouslySetInnerHTML={{ __html: t('rf.about.intro') }} />
+
             <h2 style={{ color: 'var(--primary-green)', marginBottom: '1rem', fontSize: '1.4rem', fontWeight: 'bold' }}>
                 {t('rf.about.title')}
             </h2>

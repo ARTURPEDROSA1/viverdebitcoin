@@ -2,7 +2,11 @@ import { notFound } from 'next/navigation';
 import { PageRenderer } from '@/components/PageRenderer';
 import type { Metadata } from 'next';
 
+import { translations } from '@/data/translations';
+
 export const metadata: Metadata = {
+    title: translations['en']['home.title'],
+    description: translations['en']['home.subtitle'],
     alternates: {
         canonical: 'https://viverdebitcoin.com/en',
         languages: {
