@@ -481,7 +481,7 @@ export default function DcaCalculator() {
                         ) : (
                             <div className="table-container active" id="dca-table-container" style={{ maxHeight: '500px', overflowY: 'auto' }}>
                                 <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
+                                    <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
                                         <tr>
                                             {[
                                                 { key: 'date', label: t('common.date') },
@@ -500,15 +500,16 @@ export default function DcaCalculator() {
                                                     style={{
                                                         position: 'sticky',
                                                         top: 0,
-                                                        background: isLightMode ? '#ffffff' : '#222222', // Enforce solid background
-                                                        zIndex: 2,
+                                                        backgroundColor: isLightMode ? '#ffffff' : '#262626',
+                                                        zIndex: 10,
                                                         cursor: 'pointer',
                                                         userSelect: 'none',
                                                         textAlign: 'left',
                                                         padding: '12px',
                                                         color: 'var(--text-main)',
-                                                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                                                        borderBottom: '1px solid var(--border-color)'
+                                                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                                                        borderBottom: '1px solid var(--border-color)',
+                                                        contentVisibility: 'auto'
                                                     }}
                                                 >
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
