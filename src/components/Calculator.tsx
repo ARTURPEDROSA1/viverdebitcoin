@@ -32,7 +32,7 @@ type HistoricalData = { [date: string]: number };
 
 export default function Calculator() {
     const { currency, setCurrency, t } = useSettings();
-    const [amount, setAmount] = useState<string>('1000');
+    const [amount, setAmount] = useState<string>('1.000');
     // Currency is now global
     const [date, setDate] = useState('2014-09-17');
     const [livePriceBRL, setLivePriceBRL] = useState<number | null>(null);
@@ -140,6 +140,12 @@ export default function Calculator() {
         return null;
     };
 
+    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '');
+        const formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        setAmount(formatted);
+    };
+
     const calculate = () => {
         if (!amount || !date || !livePriceUSD) return;
 
@@ -170,7 +176,7 @@ export default function Calculator() {
             else historicalRate = exchangeRates[currency] || 1;
         }
 
-        const amountNum = parseFloat(amount);
+        const amountNum = parseFloat(amount.replace(/\./g, '').replace(',', '.'));
         const amountInUSD = amountNum / historicalRate;
         const btcAmount = amountInUSD / historicalPriceUSD;
 
@@ -267,12 +273,12 @@ export default function Calculator() {
                                 {currency === 'BRL' ? 'R$' : (currency === 'EUR' ? '€' : '$')}
                             </span>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="numeric"
                                 id="investment-amount"
-                                placeholder="Ex: 1000"
-                                min="0"
+                                placeholder="Ex: 1.000"
                                 value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
+                                onChange={handleAmountChange}
                                 style={{ paddingLeft: '45px', width: '100%' }}
                             />
                         </div>
