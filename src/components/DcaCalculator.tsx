@@ -479,10 +479,10 @@ export default function DcaCalculator() {
                                 <Line options={chartOptions} data={chartData} />
                             </div>
                         ) : (
-                            <div className="table-container active" id="dca-table-container" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                                <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
-                                        <tr>
+                            <div style={{ overflowX: 'auto', maxHeight: '500px', marginTop: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.05)' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-main)', fontSize: '0.9rem' }}>
+                                    <thead style={{ position: 'sticky', top: 0, background: 'var(--card-bg)', zIndex: 1 }}>
+                                        <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
                                             {[
                                                 { key: 'date', label: t('common.date') },
                                                 { key: 'invested', label: `${t('dca.table_invested')} (${currency})` },
@@ -498,18 +498,11 @@ export default function DcaCalculator() {
                                                         setSortConfig({ key: col.key, direction });
                                                     }}
                                                     style={{
-                                                        position: 'sticky',
-                                                        top: 0,
-                                                        backgroundColor: isLightMode ? '#ffffff' : '#262626',
-                                                        zIndex: 10,
                                                         cursor: 'pointer',
                                                         userSelect: 'none',
                                                         textAlign: 'left',
                                                         padding: '12px',
-                                                        color: 'var(--text-main)',
-                                                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                                                        borderBottom: '1px solid var(--border-color)',
-                                                        contentVisibility: 'auto'
+                                                        color: col.key === 'date' ? 'inherit' : 'var(--text-main)'
                                                     }}
                                                 >
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
