@@ -360,7 +360,6 @@ export default function DcaCalculator() {
                                 <input
                                     type="number"
                                     id="investment-amount"
-                                    placeholder="Ex: 100"
                                     min="0"
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
