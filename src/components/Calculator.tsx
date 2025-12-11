@@ -262,14 +262,20 @@ export default function Calculator() {
                 <div className="input-group">
                     <label htmlFor="investment-amount">{t('roi.investment_amount')}</label>
                     <div className="amount-wrapper">
-                        <input
-                            type="number"
-                            id="investment-amount"
-                            placeholder="Ex: 1000"
-                            min="0"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                        />
+                        <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
+                            <span style={{ position: 'absolute', left: '12px', color: 'var(--text-secondary)', zIndex: 1, pointerEvents: 'none' }}>
+                                {currency === 'BRL' ? 'R$' : (currency === 'EUR' ? '€' : '$')}
+                            </span>
+                            <input
+                                type="number"
+                                id="investment-amount"
+                                placeholder="Ex: 1000"
+                                min="0"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                style={{ paddingLeft: '45px', width: '100%' }}
+                            />
+                        </div>
                         <select
                             value={currency}
                             onChange={(e) => setCurrency(e.target.value as any)}
