@@ -623,7 +623,7 @@ export default function RendaFixaCalculator() {
                             <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
                                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{t('rf.final_value')}</div>
                                 <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--bitcoin-orange)' }}>{formatCurrency(finalPortfolioValue)}</div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{totalShares.toFixed(2)} {t('rf.shares')}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{totalShares.toFixed(0)} {t('rf.shares')}</div>
                             </div>
 
                             <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
@@ -765,7 +765,7 @@ export default function RendaFixaCalculator() {
                                                         <td style={{ padding: '12px', textAlign: 'left' }}>{row.dateLabel}</td>
                                                         <td style={{ padding: '12px', textAlign: 'right' }}>{formatCurrency(row.price)}</td>
                                                         <td style={{ padding: '12px', textAlign: 'right' }}>{formatCurrency(row.dividendPerShare)}</td>
-                                                        <td style={{ padding: '12px', textAlign: 'right' }}>{row.endShares.toFixed(2)}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'right' }}>{row.endShares.toFixed(0)}</td>
                                                         <td style={{ padding: '12px', textAlign: 'right', color: '#27ae60' }}>{formatCurrency(row.dividendIncome)}</td>
                                                         <td style={{ padding: '12px', textAlign: 'right', fontWeight: 'bold' }}>{formatCurrency(row.portfolioValue)}</td>
                                                     </tr>
