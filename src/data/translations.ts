@@ -15,6 +15,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'footer.rights': 'Todos os direitos reservados.',
 
         // Common
+        'common.price': 'Preço',
         'common.current_price': 'Preço Atual',
         'common.updating': 'Atualizando preço...',
         'common.loading': 'Carregando...',
@@ -526,6 +527,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
         'footer.rights': 'All rights reserved.',
         // Common
+        'common.price': 'Price',
         'common.current_price': 'Current Price',
         'common.updating': 'Updating price...',
         'common.loading': 'Loading...',
@@ -1036,6 +1038,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'footer.rights': 'Todos los derechos reservados.',
 
         // Common
+        'common.price': 'Precio',
         'common.current_price': 'Precio Actual',
         'common.updating': 'Actualizando precio...',
         'common.loading': 'Cargando...',
