@@ -122,7 +122,7 @@ export const translations: Record<Language, Record<string, string>> = {
         // DCA Calculator
         'dca.title': 'Calculadora DCA Bitcoin',
         'dca.subtitle': 'Simule compras recorrentes com Dollar Cost Averaging',
-        'dca.initial_investment': 'Aporte Inicial (Opcional)',
+        'dca.initial_investment': 'Aporte Inicial',
         'dca.recurring_amount': 'Valor Recorrente',
         'dca.frequency': 'Frequência',
         'dca.start_date': 'Data de Início',
@@ -632,7 +632,7 @@ export const translations: Record<Language, Record<string, string>> = {
         // DCA Calculator
         'dca.title': 'Bitcoin DCA Calculator',
         'dca.subtitle': 'Simulate recurring purchases with Dollar Cost Averaging',
-        'dca.initial_investment': 'Initial Investment (Optional)',
+        'dca.initial_investment': 'Initial Investment',
         'dca.recurring_amount': 'Recurring Amount',
         'dca.frequency': 'Frequency',
         'dca.start_date': 'Start Date',
@@ -1140,7 +1140,7 @@ export const translations: Record<Language, Record<string, string>> = {
         // DCA Calculator
         'dca.title': 'Calculadora DCA Bitcoin',
         'dca.subtitle': 'Simula compras recurrentes con Dollar Cost Averaging',
-        'dca.initial_investment': 'Inversión Inicial (Opcional)',
+        'dca.initial_investment': 'Inversión Inicial',
         'dca.recurring_amount': 'Monto Recurrente',
         'dca.frequency': 'Frecuencia',
         'dca.start_date': 'Fecha de Inicio',
