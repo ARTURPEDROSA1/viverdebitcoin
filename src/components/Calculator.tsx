@@ -389,8 +389,8 @@ export default function Calculator() {
                                 <thead style={{ position: 'sticky', top: 0, background: isLightMode ? '#ffffff' : '#222222', zIndex: 1 }}>
                                     <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
                                         {[
-                                            { key: 'date', label: t('common.date') },
-                                            { key: 'value', label: `${t('dca.table_value')} (${currency})` }
+                                            { key: 'date', label: t('common.date'), align: 'left' },
+                                            { key: 'value', label: `${t('dca.table_value')} (${currency})`, align: 'right' }
                                         ].map((col) => (
                                             <th
                                                 key={col.key}
@@ -404,13 +404,13 @@ export default function Calculator() {
                                                 style={{
                                                     cursor: 'pointer',
                                                     userSelect: 'none',
-                                                    textAlign: 'left',
+                                                    textAlign: col.align as any,
                                                     padding: '12px',
                                                     color: 'var(--text-main)',
                                                     backgroundColor: 'inherit'
                                                 }}
                                             >
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', justifyContent: col.align === 'right' ? 'flex-end' : 'flex-start' }}>
                                                     {col.label}
                                                     {sortConfig?.key === col.key ? (
                                                         <span>{sortConfig.direction === 'asc' ? '▲' : '▼'}</span>
@@ -435,8 +435,8 @@ export default function Calculator() {
 
                                         return sortedData.map((row, i) => (
                                             <tr key={i} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                                                <td style={{ padding: '12px' }}>{row.date.split('-').reverse().join('/')}</td>
-                                                <td style={{ padding: '12px' }}>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'left' }}>{row.date.split('-').reverse().join('/')}</td>
+                                                <td style={{ padding: '12px', textAlign: 'right' }}>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
                                             </tr>
                                         ));
                                     })()}
