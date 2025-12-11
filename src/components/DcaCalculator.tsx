@@ -34,7 +34,7 @@ type HistoricalData = { [date: string]: number };
 export default function DcaCalculator() {
     const { currency, setCurrency, t } = useSettings();
     const [amount, setAmount] = useState<string>('100');
-    const [initialInvestment, setInitialInvestment] = useState<string>('');
+    const [initialInvestment, setInitialInvestment] = useState<string>('50');
     const [frequency, setFrequency] = useState('monthly');
     // Removed local currency state
     const [date, setDate] = useState('2020-01-01');
@@ -334,7 +334,6 @@ export default function DcaCalculator() {
                             <input
                                 type="number"
                                 id="initial-investment"
-                                placeholder="Ex: 1000"
                                 min="0"
                                 value={initialInvestment}
                                 onChange={(e) => setInitialInvestment(e.target.value)}
