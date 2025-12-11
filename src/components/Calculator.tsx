@@ -51,9 +51,11 @@ export default function Calculator() {
         formattedRoi: string;
     } | null>(null);
 
+
     const [chartData, setChartData] = useState<any>(null);
     const [showTable, setShowTable] = useState(false);
     const [chartHistory, setChartHistory] = useState<{ date: string, value: number }[]>([]);
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
     const fetchPrices = async () => {
         setLoadingPrice(true);
@@ -382,21 +384,62 @@ export default function Calculator() {
                             <Line options={chartOptions} data={chartData} />
                         </div>
                     ) : (
-                        <div className="table-container active" id="roi-table-container">
-                            <table className="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>{t('common.date')}</th>
-                                        <th>{t('dca.results.value_today')} ({currency})</th>
+                        <div style={{ overflowX: 'auto', maxHeight: '500px', marginTop: '1rem', border: '1px solid var(--border-color)', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.05)' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-main)', fontSize: '0.9rem' }}>
+                                <thead style={{ position: 'sticky', top: 0, background: isLightMode ? '#ffffff' : '#222222', zIndex: 1 }}>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        {[
+                                            { key: 'date', label: t('common.date') },
+                                            { key: 'value', label: `${t('dca.table_value')} (${currency})` }
+                                        ].map((col) => (
+                                            <th
+                                                key={col.key}
+                                                onClick={() => {
+                                                    let direction: 'asc' | 'desc' = 'asc';
+                                                    if (sortConfig && sortConfig.key === col.key && sortConfig.direction === 'asc') {
+                                                        direction = 'desc';
+                                                    }
+                                                    setSortConfig({ key: col.key, direction });
+                                                }}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    userSelect: 'none',
+                                                    textAlign: 'left',
+                                                    padding: '12px',
+                                                    color: 'var(--text-main)',
+                                                    backgroundColor: 'inherit'
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                    {col.label}
+                                                    {sortConfig?.key === col.key ? (
+                                                        <span>{sortConfig.direction === 'asc' ? '▲' : '▼'}</span>
+                                                    ) : (
+                                                        <span style={{ color: 'var(--border-color)', fontSize: '0.8em' }}>⇵</span>
+                                                    )}
+                                                </div>
+                                            </th>
+                                        ))}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {chartHistory.map((row, i) => (
-                                        <tr key={i}>
-                                            <td>{row.date.split('-').reverse().join('/')}</td>
-                                            <td>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
-                                        </tr>
-                                    ))}
+                                    {(() => {
+                                        const sortedData = [...chartHistory];
+                                        if (sortConfig) {
+                                            sortedData.sort((a: any, b: any) => {
+                                                if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+                                                if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+                                                return 0;
+                                            });
+                                        }
+
+                                        return sortedData.map((row, i) => (
+                                            <tr key={i} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                                <td style={{ padding: '12px' }}>{row.date.split('-').reverse().join('/')}</td>
+                                                <td style={{ padding: '12px' }}>{new Intl.NumberFormat(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency }).format(row.value)}</td>
+                                            </tr>
+                                        ));
+                                    })()}
                                 </tbody>
                             </table>
                         </div>
