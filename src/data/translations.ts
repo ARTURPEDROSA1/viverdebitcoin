@@ -139,7 +139,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'dca.table_value': 'Valor do Portfólio',
 
         // ROI Calculator
-        'roi.title': 'Calculadora Bitcoin ROI',
+        'roi.title': 'Calculadora ROI Bitcoin',
         'roi.subtitle': 'Descubra se você seria CLT ou Magnata?',
         'roi.investment_amount': 'Valor do Investimento',
         'roi.buy_date': 'Data da Compra',
@@ -1157,7 +1157,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'dca.table_value': 'Valor del Portafolio',
 
         // ROI Calculator
-        'roi.title': 'Calculadora Bitcoin ROI',
+        'roi.title': 'Calculadora ROI Bitcoin',
         'roi.subtitle': 'Descubre qué pasaría si hubieras comprado Bitcoin',
         'roi.investment_amount': 'Monto de Inversión',
         'roi.buy_date': 'Fecha de Compra',
