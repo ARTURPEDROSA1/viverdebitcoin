@@ -75,6 +75,7 @@ export default function RendaFixaCalculator() {
             reinvest: false,
             exitPrice: 99.5,
             scenario: 'base' as Scenario,
+            sellAtEnd: true,
             startDate: '2025-08-15'
         };
     });
@@ -191,6 +192,9 @@ export default function RendaFixaCalculator() {
 
         let totalCostBasis = initialShares * startPrice;
         let projectionStartPrice = startPrice;
+        if (!activeInputs.sellAtEnd) {
+            effectiveExitPrice = startPrice;
+        }
         let projectionStartDividend = lastDividend;
 
         // Fix: Add months with overflow protection (e.g. Jan 31 + 1mo -> Feb 28, not Mar 3)
@@ -229,8 +233,11 @@ export default function RendaFixaCalculator() {
                 // Future Projection
                 // Interpolate from start (or last real) to exit
                 const progress = i / horizonMonths;
-
-                periodPrice = startPrice + (effectiveExitPrice - startPrice) * progress;
+                if (!activeInputs.sellAtEnd) {
+                    periodPrice = startPrice; // Flat if not selling
+                } else {
+                    periodPrice = startPrice + (effectiveExitPrice - startPrice) * progress;
+                }
 
                 // Dividend Logic
                 // Strategy: Price < 100 => Increase Dividends. Price > 100 => Decrease Dividends.
@@ -516,15 +523,29 @@ export default function RendaFixaCalculator() {
                     )}
 
                     <div className="input-group">
-                        <label>{t('rf.exit_price')}</label>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <label>{t('rf.exit_price')}</label>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={inputs.sellAtEnd}
+                                    onChange={e => handleChange('sellAtEnd', e.target.checked)}
+                                    id="chk-sell-end"
+                                    style={{ width: '16px', height: '16px', accentColor: '#f2994a' }}
+                                />
+                                <label htmlFor="chk-sell-end" style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: 'normal' }}>
+                                    {t('rf.sell_at_end')}
+                                </label>
+                            </div>
+                        </div>
                         <input
                             type="number"
                             value={isUntilToday ? lastPrice : inputs.exitPrice}
                             onChange={e => handleChange('exitPrice', Number(e.target.value))}
                             step="0.1"
-                            disabled={isUntilToday}
+                            disabled={isUntilToday || !inputs.sellAtEnd}
                             title={isUntilToday ? t('rf.exit_price_msg') : undefined}
-                            style={{ opacity: isUntilToday ? 0.6 : 1, cursor: isUntilToday ? 'not-allowed' : 'default', backgroundColor: isUntilToday ? 'rgba(255,255,255,0.05)' : '' }}
+                            style={{ opacity: isUntilToday || !inputs.sellAtEnd ? 0.6 : 1, cursor: isUntilToday || !inputs.sellAtEnd ? 'not-allowed' : 'default', backgroundColor: isUntilToday || !inputs.sellAtEnd ? 'rgba(255,255,255,0.05)' : '' }}
                         />
                     </div>
 
@@ -533,8 +554,8 @@ export default function RendaFixaCalculator() {
                         <select
                             value={inputs.scenario}
                             onChange={e => handleChange('scenario', e.target.value)}
-                            disabled={isUntilToday}
-                            style={{ opacity: isUntilToday ? 0.6 : 1, cursor: isUntilToday ? 'not-allowed' : 'default', backgroundColor: isUntilToday ? 'rgba(255,255,255,0.05)' : '' }}
+                            disabled={isUntilToday || !inputs.sellAtEnd}
+                            style={{ opacity: isUntilToday || !inputs.sellAtEnd ? 0.6 : 1, cursor: isUntilToday || !inputs.sellAtEnd ? 'not-allowed' : 'default', backgroundColor: isUntilToday || !inputs.sellAtEnd ? 'rgba(255,255,255,0.05)' : '' }}
                         >
                             <option value="base">{t('rf.scenario_base')}</option>
                             <option value="bull">{t('rf.scenario_bull')}</option>
