@@ -867,8 +867,8 @@ export default function BitcoinRetirementCalculator() {
 
                     {/* Life Expectancy & Inflation Row */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                        <div>
-                            <label className="input-label" style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)', minHeight: '42px', display: 'flex', alignItems: 'flex-end' }}>{t('home.life_expectancy')}</label>
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                            <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.life_expectancy')}</label>
                             <input
                                 type="number"
                                 value={lifeExpectancy}
@@ -876,8 +876,8 @@ export default function BitcoinRetirementCalculator() {
                                 className="calculator-input"
                             />
                         </div>
-                        <div>
-                            <label className="input-label" style={{ marginBottom: '0.5rem', color: 'var(--text-secondary)', minHeight: '42px', display: 'flex', alignItems: 'flex-end' }}>{t('home.inflation')}</label>
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                            <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.inflation')}</label>
                             <input
                                 type="number"
                                 value={annualInflation}
