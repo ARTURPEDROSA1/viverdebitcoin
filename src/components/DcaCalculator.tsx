@@ -319,14 +319,28 @@ export default function DcaCalculator() {
                 <div className="input-group">
                     <div className="input-group">
                         <label htmlFor="initial-investment">{t('dca.initial_investment')}</label>
-                        <input
-                            type="number"
-                            id="initial-investment"
-                            placeholder="Ex: 1000"
-                            min="0"
-                            value={initialInvestment}
-                            onChange={(e) => setInitialInvestment(e.target.value)}
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <span style={{
+                                position: 'absolute',
+                                left: '12px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                color: 'var(--text-secondary)',
+                                zIndex: 1,
+                                pointerEvents: 'none'
+                            }}>
+                                {currency === 'BRL' ? 'R$' : (currency === 'EUR' ? '€' : '$')}
+                            </span>
+                            <input
+                                type="number"
+                                id="initial-investment"
+                                placeholder="Ex: 1000"
+                                min="0"
+                                value={initialInvestment}
+                                onChange={(e) => setInitialInvestment(e.target.value)}
+                                style={{ paddingLeft: currency === 'BRL' ? '42px' : '35px', width: '100%' }}
+                            />
+                        </div>
                     </div>
 
                     <div className="input-group">
