@@ -223,14 +223,14 @@ export default function SatoshiCalculator() {
                 {/* Calculator Inputs */}
                 <div className="calculator-container" style={{ margin: '2rem auto', padding: '2rem', background: 'var(--card-bg)', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
                     {/* Header: Configurações & Price */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <span style={{ fontSize: '1.5rem' }}>⚙️</span>
-                            <h3 style={{ margin: 0, fontSize: '1.4rem' }}>{t('home.settings')}</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ fontSize: '1.2rem' }}>⚙️</span>
+                            <h3 style={{ margin: 0, fontSize: '1rem', color: '#FFFFFF' }}>{t('home.settings')}</h3>
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                                <strong style={{ color: 'var(--bitcoin-orange)', fontSize: '1.4rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'flex-end' }}>
+                                <strong style={{ color: 'var(--bitcoin-orange)', fontSize: '0.8rem' }}>
                                     {prices && prices[currency] ? formatCurrency(prices[currency], currency) : (loadingPrice ? t('common.updating') : t('common.loading'))}
                                 </strong>
                                 <button
@@ -240,7 +240,7 @@ export default function SatoshiCalculator() {
                                         background: 'none',
                                         border: 'none',
                                         cursor: loadingPrice ? 'not-allowed' : 'pointer',
-                                        fontSize: '1.2rem',
+                                        fontSize: '1rem',
                                         padding: '4px',
                                         opacity: loadingPrice ? 0.5 : 1
                                     }}
@@ -249,7 +249,7 @@ export default function SatoshiCalculator() {
                                     🔄
                                 </button>
                             </div>
-                            <small style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            <small style={{ color: 'var(--text-secondary)', fontSize: '0.7rem', fontWeight: 'bold' }}>
                                 1 {currency} ≈ {prices && prices[currency] ? Math.floor(100000000 / prices[currency]).toLocaleString(currency === 'BRL' ? 'pt-BR' : 'en-US') : '...'} sats
                             </small>
                         </div>
