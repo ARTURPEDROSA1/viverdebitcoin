@@ -439,7 +439,7 @@ export default function RendaFixaCalculator() {
 
             <div className="calculator-card">
                 {/* Inputs */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', textAlign: 'left', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', textAlign: 'left', marginBottom: '1.5rem' }}>
 
                     {/* Start Date Input */}
                     <div className="input-group">
