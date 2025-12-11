@@ -331,15 +331,29 @@ export default function DcaCalculator() {
 
                     <div className="input-group">
                         <label htmlFor="investment-amount">{t('dca.recurring_amount')}</label>
-                        <div className="amount-wrapper">
-                            <input
-                                type="number"
-                                id="investment-amount"
-                                placeholder="Ex: 100"
-                                min="0"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                            />
+                        <div className="amount-wrapper" style={{ display: 'flex', gap: '10px' }}>
+                            <div style={{ position: 'relative', flex: 1 }}>
+                                <span style={{
+                                    position: 'absolute',
+                                    left: '12px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    color: 'var(--text-secondary)',
+                                    zIndex: 1,
+                                    pointerEvents: 'none'
+                                }}>
+                                    {currency === 'BRL' ? 'R$' : (currency === 'EUR' ? '€' : '$')}
+                                </span>
+                                <input
+                                    type="number"
+                                    id="investment-amount"
+                                    placeholder="Ex: 100"
+                                    min="0"
+                                    value={amount}
+                                    onChange={(e) => setAmount(e.target.value)}
+                                    style={{ paddingLeft: currency === 'BRL' ? '42px' : '35px', width: '100%' }}
+                                />
+                            </div>
                             <select
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value as any)}
