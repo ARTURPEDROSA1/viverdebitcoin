@@ -492,11 +492,17 @@ export default function RendaFixaCalculator() {
                         <div className="input-group">
                             <label>{t('rf.contrib_value')}</label>
                             <div className="amount-wrapper">
-                                <input
-                                    type="number"
-                                    value={inputs.contribValue}
-                                    onChange={e => handleChange('contribValue', Number(e.target.value))}
-                                />
+                                <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
+                                    {inputs.contribType === 'fixed_amount' && (
+                                        <span style={{ position: 'absolute', left: '12px', color: 'var(--text-secondary)', zIndex: 1, pointerEvents: 'none' }}>$</span>
+                                    )}
+                                    <input
+                                        type="number"
+                                        value={inputs.contribValue}
+                                        onChange={e => handleChange('contribValue', Number(e.target.value))}
+                                        style={{ paddingLeft: inputs.contribType === 'fixed_amount' ? '30px' : '12px', width: '100%' }}
+                                    />
+                                </div>
                                 <select
                                     value={inputs.contribType}
                                     onChange={e => handleChange('contribType', e.target.value)}
