@@ -128,7 +128,7 @@ export default function SatsConverter() {
                         {t('converter.result_prefix')}
                     </div>
                     <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--bitcoin-orange)', lineHeight: 1 }}>
-                        {sats} <span style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>{t('converter.table_col_sats')}</span>
+                        <span style={{ marginRight: '0.5rem' }}>⚡</span>{sats} <span style={{ fontSize: '1.5rem', color: 'var(--text-main)' }}>{t('converter.table_col_sats')}</span>
                     </div>
                     <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                         {loadingPrice ? (

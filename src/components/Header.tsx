@@ -26,8 +26,10 @@ export default function Header() {
         { name: t('nav.aposentadoria_sats'), id: 'sats-calculator' as PageId },
         { name: t('nav.bitcoin_dca'), id: 'dca-calculator' as PageId },
         { name: t('nav.bitcoin_roi'), id: 'regret-calculator' as PageId },
-        { name: t('nav.renda_fixa_btc'), id: 'fixed-income' as PageId },
+
+        { name: t('nav.conversor_btc'), id: 'btc-converter' as PageId },
         { name: t('nav.conversor_sats'), id: 'sats-converter' as PageId },
+        { name: t('nav.renda_fixa_btc'), id: 'fixed-income' as PageId },
     ];
 
     const currentPath = (id: PageId) => getPath(language, id);

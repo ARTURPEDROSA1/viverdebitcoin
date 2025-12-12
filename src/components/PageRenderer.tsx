@@ -13,6 +13,7 @@ import StrcChart from '@/components/StrcChart';
 import RendaFixaAbout from '@/components/RendaFixaAbout';
 import SatsConverter from '@/components/SatsConverter';
 import AboutContent from '@/components/AboutContent';
+import BtcConverter from '@/components/BtcConverter';
 import AvisoLegal from '@/components/AvisoLegal';
 import TermosDeUso from '@/components/TermosDeUso';
 import PoliticaPrivacidade from '@/components/PoliticaPrivacidade';
@@ -21,11 +22,45 @@ import Disclosure from '@/components/Disclosure';
 import BitcoinRetirementCalculator from '@/components/BitcoinRetirementCalculator';
 import BitcoinRetirementAbout from '@/components/BitcoinRetirementAbout';
 
-export function PageRenderer({ id }: { id: PageId }) {
+import JsonLd from '@/components/JsonLd';
+import { translations } from '@/data/translations';
+
+export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: string }) {
+    const t = translations[locale as keyof typeof translations] || translations['pt'];
+
+    // Generate specific JSON-LD based on page type
+    let jsonLdData: any = null;
+    const baseUrl = 'https://viverdebitcoin.com';
+    const path = locale === 'pt' ? '' : `/${locale}`;
+
+    if (id === 'btc-converter' || id === 'sats-converter') {
+        jsonLdData = {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": id === 'btc-converter' ? t['btc_conv.title'] : t['converter.title'],
+            "url": `${baseUrl}${path}/${id === 'btc-converter' ? 'conversor-btc' : 'conversor-sats'}`,
+            "description": id === 'btc-converter' ? t['btc_conv.subtitle'] : t['converter.subtitle'],
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Any"
+        };
+    } else if (id === 'sats-calculator' || id === 'dca-calculator' || id === 'regret-calculator' || id === 'fixed-income' || id === 'home') {
+        jsonLdData = {
+            "@context": "https://schema.org",
+            "@type": "FinancialProduct",
+            "name": id === 'home' ? t['home.title'] : (id === 'dca-calculator' ? t['dca.title'] : (id === 'regret-calculator' ? t['roi.title'] : t['rf.title'])),
+            "description": id === 'home' ? t['home.subtitle'] : t['dca.subtitle'],
+            "brand": {
+                "@type": "Brand",
+                "name": "Viver de Bitcoin"
+            }
+        };
+    }
+
     switch (id) {
         case 'home':
             return (
                 <main>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
                     <BitcoinRetirementCalculator />
                     <BitcoinRetirementAbout />
                 </main>
@@ -37,6 +72,7 @@ export function PageRenderer({ id }: { id: PageId }) {
         case 'dca-calculator':
             return (
                 <main>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
                     <section className="calculator-section" id="dca-calculator">
                         <DcaCalculator />
                     </section>
@@ -45,11 +81,17 @@ export function PageRenderer({ id }: { id: PageId }) {
             );
 
         case 'sats-calculator':
-            return <SatoshiCalculator />;
+            return (
+                <>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
+                    <SatoshiCalculator />
+                </>
+            );
 
         case 'regret-calculator':
             return (
                 <main>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
                     <section className="calculator-section">
                         <Calculator />
                     </section>
@@ -60,6 +102,7 @@ export function PageRenderer({ id }: { id: PageId }) {
         case 'fixed-income':
             return (
                 <main className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-black">
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
                     <div className="max-w-7xl mx-auto">
                         <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                             <RendaFixaCalculator />
@@ -73,7 +116,16 @@ export function PageRenderer({ id }: { id: PageId }) {
         case 'sats-converter':
             return (
                 <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
                     <SatsConverter />
+                </main>
+            );
+
+        case 'btc-converter':
+            return (
+                <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
+                    <BtcConverter />
                 </main>
             );
 

@@ -62,6 +62,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             title = t['converter.title'];
             description = t['converter.subtitle'];
             break;
+        case 'btc-converter':
+            title = t['btc_conv.title'];
+            description = t['btc_conv.subtitle'];
+            break;
         case 'about':
             title = t['about.hero_title'];
             description = t['about.sec1_p1'];
@@ -91,6 +95,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {
         title,
         description,
+        keywords: ['bitcoin', 'calculadora', 'sats', 'conversor', 'investimento', 'aposentadoria', 'fire', 'criptomoedas', 'viver de bitcoin'],
         alternates: {
             canonical: `${baseUrl}${ptPath}`,
             languages: {
@@ -125,5 +130,5 @@ export default async function PtPage({ params }: { params: Promise<{ slug: strin
         return notFound();
     }
 
-    return <PageRenderer id={pageId} />;
+    return <PageRenderer id={pageId} locale="pt" />;
 }

@@ -11,7 +11,8 @@ export type PageId =
     | 'privacy'
     | 'cookies'
     | 'affiliate'
-    | 'contact';
+    | 'contact'
+    | 'btc-converter';
 
 export const routeMap: Record<string, Record<PageId, string>> = {
     en: {
@@ -21,6 +22,7 @@ export const routeMap: Record<string, Record<PageId, string>> = {
         'regret-calculator': 'regret-calculator',
         'fixed-income': 'bitcoin-fixed-income',
         'sats-converter': 'sats-converter',
+        'btc-converter': 'btc-converter',
         'about': 'about',
         'disclaimer': 'disclaimer',
         'terms': 'terms-of-use',
@@ -36,6 +38,7 @@ export const routeMap: Record<string, Record<PageId, string>> = {
         'regret-calculator': 'calculadora-arrepentimiento',
         'fixed-income': 'ingreso-fijo-btc',
         'sats-converter': 'conversor-sats',
+        'btc-converter': 'conversor-btc',
         'about': 'sobre',
         'disclaimer': 'aviso-legal',
         'terms': 'terminos-de-uso',
@@ -51,6 +54,7 @@ export const routeMap: Record<string, Record<PageId, string>> = {
         'regret-calculator': 'calculadora-arrependimento',
         'fixed-income': 'renda-fixa-btc',
         'sats-converter': 'conversor-sats',
+        'btc-converter': 'conversor-btc',
         'about': 'sobre',
         'disclaimer': 'aviso-legal',
         'terms': 'termos-de-uso',

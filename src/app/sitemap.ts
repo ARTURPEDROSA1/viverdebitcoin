@@ -15,16 +15,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
 
     // Subpages
-    const map = routeMap[lang as keyof typeof routeMap];
-    if (map) {
-        for (const slug of Object.values(map)) {
-            // Skip empty slug (home)
-            if (slug && slug !== '') {
+    // Generate URLs for all languages
+    const languages = ['pt', 'en', 'es'] as const;
+
+    for (const lang of languages) {
+        const map = routeMap[lang];
+        if (map) {
+            for (const [id, slug] of Object.entries(map)) {
+                // Determine full URL based on language
+                let fullUrl = baseUrl;
+                if (lang === 'en') fullUrl += '/en';
+                else if (lang === 'es') fullUrl += '/es';
+
+                if (slug && slug !== '') {
+                    fullUrl += `/${slug}`;
+                }
+
                 pages.push({
-                    url: `${baseUrl}/${slug}`,
+                    url: fullUrl,
                     lastModified: new Date(),
                     changeFrequency: 'weekly',
-                    priority: 0.9,
+                    priority: id === 'home' ? 1.0 : 0.9,
                 });
             }
         }

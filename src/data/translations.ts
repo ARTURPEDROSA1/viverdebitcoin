@@ -7,6 +7,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'nav.bitcoin_roi': 'Bitcoin ROI',
         'nav.renda_fixa_btc': 'Strategy STRC',
         'nav.conversor_sats': 'Conversor Sats',
+        'nav.conversor_btc': 'Conversor BTC',
         'nav.sobre': 'Sobre',
         'settings.theme': 'Tema',
         'settings.language': 'Idioma',
@@ -435,6 +436,14 @@ export const translations: Record<Language, Record<string, string>> = {
         // Terms of Use
         'terms.title': 'Termos de Uso',
         'terms.subtitle': 'Termos de Uso — Viver de Bitcoin',
+
+        // BTC Converter
+        'btc_conv.title': 'Conversor de Bitcoin',
+        'btc_conv.subtitle': 'Converta Satoshis, Bitcoin e Moedas Fiduciárias',
+        'btc_conv.amount': 'Valor',
+        'btc_conv.equivalent': 'Equivalente a',
+        'btc_conv.rate': 'Cotação Referência:',
+
         'terms.intro': 'Bem-vindo ao ViverDeBitcoin.com. Ao acessar este site, você concorda com os termos descritos abaixo:',
         'terms.sec1.title': '1. Uso Permitido',
         'terms.sec1.text': 'Você pode utilizar este site para fins pessoais, educacionais e informativos. É proibido:',
@@ -517,6 +526,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'nav.bitcoin_roi': 'Bitcoin ROI',
         'nav.renda_fixa_btc': 'Strategy STRC',
         'nav.conversor_sats': 'Sats Converter',
+        'nav.conversor_btc': 'BTC Converter',
         'nav.sobre': 'About',
         'settings.theme': 'Theme',
         'settings.language': 'Language',
@@ -796,6 +806,14 @@ export const translations: Record<Language, Record<string, string>> = {
 
         // Footer & Legal
         'footer.copyright': 'Viver de Bitcoin. All rights reserved.',
+
+        // BTC Converter
+        'btc_conv.title': 'Bitcoin Converter',
+        'btc_conv.subtitle': 'Convert Satoshis, Bitcoin, and Fiat Currencies',
+        'btc_conv.amount': 'Amount',
+        'btc_conv.equivalent': 'Equivalent to',
+        'btc_conv.rate': 'Reference Rate:',
+
         'footer.legal_notice': 'Legal Notice',
         'footer.terms': 'Terms of Use',
         'footer.privacy': 'Privacy Policy',
@@ -1028,6 +1046,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'nav.bitcoin_roi': 'Bitcoin ROI',
         'nav.renda_fixa_btc': 'Strategy STRC',
         'nav.conversor_sats': 'Conversor Sats',
+        'nav.conversor_btc': 'Conversor BTC',
         'nav.sobre': 'Acerca de',
         'settings.theme': 'Tema',
         'settings.language': 'Idioma',
@@ -1446,6 +1465,13 @@ export const translations: Record<Language, Record<string, string>> = {
 
         // Legal Page
         'legal.title': 'Aviso Legal (Descargo de Responsabilidad)',
+
+        // BTC Converter
+        'btc_conv.title': 'Conversor de Bitcoin',
+        'btc_conv.subtitle': 'Convierte Satoshis, Bitcoin y Monedas Fiduciarias',
+        'btc_conv.amount': 'Cantidad',
+        'btc_conv.equivalent': 'Equivalente a',
+        'btc_conv.rate': 'Tasa de Referencia:',
         'legal.subtitle': 'Aviso Legal — Viver de Bitcoin',
         'legal.text1': 'El contenido disponible en el sitio ViverDeBitcoin.com tiene carácter educativo e informativo. Nada de lo que publicamos debe interpretarse como recomendación de inversión, consultoría financiera, contable, jurídica o fiscal.',
         'legal.text2': 'Bitcoin es un activo volátil e implica riesgos. Cada usuario es responsable de realizar sus propios análisis antes de tomar cualquier decisión financiera.',
