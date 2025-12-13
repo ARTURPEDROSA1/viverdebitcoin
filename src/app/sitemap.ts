@@ -16,28 +16,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Subpages
     // Generate URLs for all languages
-    const languages = ['pt', 'en', 'es'] as const;
+    // Generate URLs for PT only (EN and ES have their own sitemaps)
+    // 'lang' is already defined at the top
+    const map = routeMap[lang];
 
-    for (const lang of languages) {
-        const map = routeMap[lang];
-        if (map) {
-            for (const [id, slug] of Object.entries(map)) {
-                // Determine full URL based on language
-                let fullUrl = baseUrl;
-                if (lang === 'en') fullUrl += '/en';
-                else if (lang === 'es') fullUrl += '/es';
+    if (map) {
+        for (const [id, slug] of Object.entries(map)) {
+            // PT is root, so no prefix needed except for the slug
+            let fullUrl = baseUrl;
 
-                if (slug && slug !== '') {
-                    fullUrl += `/${slug}`;
-                }
-
-                pages.push({
-                    url: fullUrl,
-                    lastModified: new Date(),
-                    changeFrequency: 'weekly',
-                    priority: id === 'home' ? 1.0 : 0.9,
-                });
+            if (slug && slug !== '') {
+                fullUrl += `/${slug}`;
             }
+
+            pages.push({
+                url: fullUrl,
+                lastModified: new Date(),
+                changeFrequency: 'weekly',
+                priority: id === 'home' ? 1.0 : 0.9,
+            });
         }
     }
 

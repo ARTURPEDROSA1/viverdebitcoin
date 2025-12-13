@@ -14,6 +14,7 @@ import RendaFixaAbout from '@/components/RendaFixaAbout';
 import SatsConverter from '@/components/SatsConverter';
 import AboutContent from '@/components/AboutContent';
 import BtcConverter from '@/components/BtcConverter';
+import BitcoinHeatmap from '@/components/BitcoinHeatmap';
 import AvisoLegal from '@/components/AvisoLegal';
 import TermosDeUso from '@/components/TermosDeUso';
 import PoliticaPrivacidade from '@/components/PoliticaPrivacidade';
@@ -33,13 +34,13 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
     const baseUrl = 'https://viverdebitcoin.com';
     const path = locale === 'pt' ? '' : `/${locale}`;
 
-    if (id === 'btc-converter' || id === 'sats-converter') {
+    if (id === 'btc-converter' || id === 'sats-converter' || id === 'heatmap') {
         jsonLdData = {
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            "name": id === 'btc-converter' ? t['btc_conv.title'] : t['converter.title'],
-            "url": `${baseUrl}${path}/${id === 'btc-converter' ? 'conversor-btc' : 'conversor-sats'}`,
-            "description": id === 'btc-converter' ? t['btc_conv.subtitle'] : t['converter.subtitle'],
+            "name": id === 'heatmap' ? t['heatmap.title'] : (id === 'btc-converter' ? t['btc_conv.title'] : t['converter.title']),
+            "url": `${baseUrl}${path}/${id === 'heatmap' ? (locale === 'pt' || locale === 'es' ? 'mapa-calor-bitcoin' : 'bitcoin-heatmap') : (id === 'btc-converter' ? 'conversor-btc' : 'conversor-sats')}`,
+            "description": id === 'heatmap' ? t['heatmap.subtitle'] : (id === 'btc-converter' ? t['btc_conv.subtitle'] : t['converter.subtitle']),
             "applicationCategory": "FinanceApplication",
             "operatingSystem": "Any"
         };
@@ -129,6 +130,14 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
                 </main>
             );
 
+        case 'heatmap':
+            return (
+                <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
+                    <BitcoinHeatmap />
+                </main>
+            );
+
         case 'disclaimer':
             return <main className="about-section"><AvisoLegal /></main>;
 
@@ -143,14 +152,6 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
 
         case 'affiliate':
             return <main className="about-section"><Disclosure /></main>;
-
-        case 'contact':
-            return (
-                <main style={{ padding: '4rem 5%', textAlign: 'center', minHeight: '60vh' }}>
-                    <h1 className="hero-title" style={{ fontSize: '2.5rem' }}>Contato / Contact</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Em breve / Coming soon</p>
-                </main>
-            );
 
         default:
             return notFound();

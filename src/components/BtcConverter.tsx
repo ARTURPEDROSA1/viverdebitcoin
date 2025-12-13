@@ -436,114 +436,6 @@ export default function BtcConverter() {
                     </div>
                 </div>
 
-                {/* Table Section */}
-                <div style={{ marginTop: '3rem', borderTop: '1px solid var(--border-color)', paddingTop: '2rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
-                        <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{t('common.table')}</h3>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <button
-                                onClick={fetchPrices}
-                                disabled={loadingPrice}
-                                className="action-btn"
-                                style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '5px' }}
-                            >
-                                {loadingPrice ? '...' : '🔄 Atualizar'}
-                            </button>
-                            <button
-                                onClick={() => setShowHistory(showHistory === '2' ? 'none' : '2')}
-                                className={`action-btn ${showHistory === '2' ? 'active' : ''}`}
-                                style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                            >
-                                2 Dias
-                            </button>
-                            <button
-                                onClick={() => setShowHistory(showHistory === '7' ? 'none' : '7')}
-                                className={`action-btn ${showHistory === '7' ? 'active' : ''}`}
-                                style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                            >
-                                7 Dias
-                            </button>
-                            <button
-                                onClick={() => setShowHistory(showHistory === '15' ? 'none' : '15')}
-                                className={`action-btn ${showHistory === '15' ? 'active' : ''}`}
-                                style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                            >
-                                15 Dias
-                            </button>
-                            <button
-                                onClick={() => setShowHistory(showHistory === '30' ? 'none' : '30')}
-                                className={`action-btn ${showHistory === '30' ? 'active' : ''}`}
-                                style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                            >
-                                30 Dias
-                            </button>
-                        </div>
-                    </div>
-
-                    <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid var(--border-color)', maxHeight: '400px', overflowY: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'right', minWidth: '600px' }}>
-                            <thead style={{ position: 'sticky', top: 0, background: '#111', zIndex: 5 }}>
-                                <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                                    <th onClick={() => requestSort('date')} style={{ padding: '8px 10px', textAlign: 'left', minWidth: '90px', cursor: 'pointer' }}>Date {getSortIndicator('date')}</th>
-                                    <th onClick={() => requestSort('btcUsd')} style={{ padding: '8px 10px', cursor: 'pointer' }}>BTC (USD) {getSortIndicator('btcUsd')}</th>
-                                    <th onClick={() => requestSort('btcBrl')} style={{ padding: '8px 10px', color: 'var(--bitcoin-orange)', cursor: 'pointer' }}>BTC (BRL) {getSortIndicator('btcBrl')}</th>
-                                    <th onClick={() => requestSort('usdBrl')} style={{ padding: '8px 10px', cursor: 'pointer' }}>USD (BRL) {getSortIndicator('usdBrl')}</th>
-                                    <th onClick={() => requestSort('eurBrl')} style={{ padding: '8px 10px', cursor: 'pointer' }}>EUR (BRL) {getSortIndicator('eurBrl')}</th>
-                                    <th onClick={() => requestSort('eurUsd')} style={{ padding: '8px 10px', cursor: 'pointer' }}>EUR/USD {getSortIndicator('eurUsd')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {(() => {
-                                    // Combine all rows
-                                    let allRows: HistoricalRow[] = [];
-                                    if (todayRow) allRows.push(todayRow);
-                                    if (yesterdayRow) allRows.push(yesterdayRow);
-                                    allRows = [...allRows, ...historyRows];
-
-                                    // Sort
-                                    if (sortConfig) {
-                                        allRows.sort((a, b) => {
-                                            const valA = a[sortConfig.key];
-                                            const valB = b[sortConfig.key];
-
-                                            if (valA === undefined) return 1;
-                                            if (valB === undefined) return -1;
-
-                                            if (valA < valB) {
-                                                return sortConfig.direction === 'asc' ? -1 : 1;
-                                            }
-                                            if (valA > valB) {
-                                                return sortConfig.direction === 'asc' ? 1 : -1;
-                                            }
-                                            return 0;
-                                        });
-                                    }
-
-                                    return allRows.map((row, i) => (
-                                        <tr key={i} style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none', background: !row.isOffline ? 'rgba(39, 174, 96, 0.1)' : 'transparent' }}>
-                                            <td style={{ padding: '8px 10px', textAlign: 'left', fontWeight: !row.isOffline ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>
-                                                {!row.isOffline ? (
-                                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: '1.2' }}>
-                                                        <span>{new Date().toLocaleDateString('pt-BR')}</span>
-                                                        <span style={{ fontSize: '0.7em', color: '#27ae60' }}>●</span>
-                                                    </div>
-                                                ) : (
-                                                    row.date.split('-').reverse().join('/')
-                                                )}
-                                            </td>
-                                            <td style={{ padding: '8px 10px' }}>{row.btcUsd.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
-                                            <td style={{ padding: '8px 10px', fontWeight: !row.isOffline ? 'bold' : 'normal', color: !row.isOffline ? 'var(--bitcoin-orange)' : 'var(--text-secondary)' }}>{row.btcBrl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                                            <td style={{ padding: '8px 10px' }}>{row.usdBrl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                                            <td style={{ padding: '8px 10px' }}>{row.eurBrl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                                            <td style={{ padding: '8px 10px' }}>{row.eurUsd.toFixed(4)}</td>
-                                        </tr>
-                                    ));
-                                })()}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
                 {/* Share Buttons */}
                 <div style={{ marginTop: '2rem', display: 'flex', gap: '10px', width: '100%' }}>
                     <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(t('btc_conv.title'))}&url=https://viverdebitcoin.com/conversor-btc`} target="_blank" rel="noopener noreferrer" style={{ background: '#000', color: '#fff', padding: '12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem', flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -556,7 +448,114 @@ export default function BtcConverter() {
                         WhatsApp
                     </a>
                 </div>
+            </div>
 
+            {/* Table Section - New Card */}
+            <div className="calculator-card" style={{ maxWidth: '100%', margin: '2rem auto 0 auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{t('common.table')}</h3>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                            onClick={fetchPrices}
+                            disabled={loadingPrice}
+                            className="action-btn"
+                            style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '5px' }}
+                        >
+                            {loadingPrice ? '...' : '🔄 Atualizar'}
+                        </button>
+                        <button
+                            onClick={() => setShowHistory(showHistory === '2' ? 'none' : '2')}
+                            className={`action-btn ${showHistory === '2' ? 'active' : ''}`}
+                            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                        >
+                            2 Dias
+                        </button>
+                        <button
+                            onClick={() => setShowHistory(showHistory === '7' ? 'none' : '7')}
+                            className={`action-btn ${showHistory === '7' ? 'active' : ''}`}
+                            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                        >
+                            7 Dias
+                        </button>
+                        <button
+                            onClick={() => setShowHistory(showHistory === '15' ? 'none' : '15')}
+                            className={`action-btn ${showHistory === '15' ? 'active' : ''}`}
+                            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                        >
+                            15 Dias
+                        </button>
+                        <button
+                            onClick={() => setShowHistory(showHistory === '30' ? 'none' : '30')}
+                            className={`action-btn ${showHistory === '30' ? 'active' : ''}`}
+                            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                        >
+                            30 Dias
+                        </button>
+                    </div>
+                </div>
+
+                <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid var(--border-color)', maxHeight: '400px', overflowY: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'right', minWidth: '600px' }}>
+                        <thead style={{ position: 'sticky', top: 0, background: 'var(--card-bg)', zIndex: 5 }}>
+                            <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                <th onClick={() => requestSort('date')} style={{ padding: '8px 10px', textAlign: 'left', minWidth: '90px', cursor: 'pointer' }}>Date {getSortIndicator('date')}</th>
+                                <th onClick={() => requestSort('btcUsd')} style={{ padding: '8px 10px', cursor: 'pointer' }}>BTC (USD) {getSortIndicator('btcUsd')}</th>
+                                <th onClick={() => requestSort('btcBrl')} style={{ padding: '8px 10px', cursor: 'pointer' }}>BTC (BRL) {getSortIndicator('btcBrl')}</th>
+                                <th onClick={() => requestSort('usdBrl')} style={{ padding: '8px 10px', cursor: 'pointer' }}>USD (BRL) {getSortIndicator('usdBrl')}</th>
+                                <th onClick={() => requestSort('eurBrl')} style={{ padding: '8px 10px', cursor: 'pointer' }}>EUR (BRL) {getSortIndicator('eurBrl')}</th>
+                                <th onClick={() => requestSort('eurUsd')} style={{ padding: '8px 10px', cursor: 'pointer' }}>EUR/USD {getSortIndicator('eurUsd')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(() => {
+                                // Combine all rows
+                                let allRows: HistoricalRow[] = [];
+                                if (todayRow) allRows.push(todayRow);
+                                if (yesterdayRow) allRows.push(yesterdayRow);
+                                allRows = [...allRows, ...historyRows];
+
+                                // Sort
+                                if (sortConfig) {
+                                    allRows.sort((a, b) => {
+                                        const valA = a[sortConfig.key];
+                                        const valB = b[sortConfig.key];
+
+                                        if (valA === undefined) return 1;
+                                        if (valB === undefined) return -1;
+
+                                        if (valA < valB) {
+                                            return sortConfig.direction === 'asc' ? -1 : 1;
+                                        }
+                                        if (valA > valB) {
+                                            return sortConfig.direction === 'asc' ? 1 : -1;
+                                        }
+                                        return 0;
+                                    });
+                                }
+
+                                return allRows.map((row, i) => (
+                                    <tr key={i} style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none', background: !row.isOffline ? 'rgba(39, 174, 96, 0.1)' : 'transparent' }}>
+                                        <td style={{ padding: '8px 10px', textAlign: 'left', fontWeight: !row.isOffline ? 'bold' : 'normal', whiteSpace: 'nowrap' }}>
+                                            {!row.isOffline ? (
+                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: '1.2' }}>
+                                                    <span>{new Date().toLocaleDateString('pt-BR')}</span>
+                                                    <span style={{ fontSize: '0.7em', color: '#27ae60' }}>●</span>
+                                                </div>
+                                            ) : (
+                                                row.date.split('-').reverse().join('/')
+                                            )}
+                                        </td>
+                                        <td style={{ padding: '8px 10px' }}>{row.btcUsd.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</td>
+                                        <td style={{ padding: '8px 10px', fontWeight: !row.isOffline ? 'bold' : 'normal', color: !row.isOffline ? 'var(--text-main)' : 'var(--text-secondary)' }}>{row.btcBrl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                                        <td style={{ padding: '8px 10px' }}>{row.usdBrl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                                        <td style={{ padding: '8px 10px' }}>{row.eurBrl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                                        <td style={{ padding: '8px 10px' }}>{row.eurUsd.toFixed(4)}</td>
+                                    </tr>
+                                ));
+                            })()}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

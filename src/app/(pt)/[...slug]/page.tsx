@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getPageIdFromSlug, routeMap, PageId, getPath } from '@/lib/routes';
 import { PageRenderer } from '@/components/PageRenderer';
+import { translations } from '@/data/translations';
 import type { Metadata } from 'next';
 
 // Generate params for PT pages only
@@ -16,10 +17,6 @@ export async function generateStaticParams() {
     }
     return paths;
 }
-
-import { translations } from '@/data/translations';
-
-// ... (keep generateStaticParams)
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
     const { slug } = await params;
@@ -66,6 +63,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             title = t['btc_conv.title'];
             description = t['btc_conv.subtitle'];
             break;
+        case 'heatmap':
+            title = t['heatmap.title'];
+            description = t['heatmap.subtitle'];
+            break;
         case 'about':
             title = t['about.hero_title'];
             description = t['about.sec1_p1'];
@@ -92,10 +93,26 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             break;
     }
 
+    const baseKeywords = ['bitcoin', 'calculadora', 'sats', 'conversor', 'investimento', 'aposentadoria', 'fire', 'criptomoedas', 'viver de bitcoin'];
+
+    const pageKeywords: Record<string, string[]> = {
+        'sats-calculator': ['satoshi', 'preco satoshi', 'quanto vale 1 satoshi', 'investir em bitcoin', 'pequenos aportes'],
+        'dca-calculator': ['dca bitcoin', 'dollar cost averaging', 'aporte recorrente', 'comprar bitcoin todo mes'],
+        'regret-calculator': ['roi bitcoin', 'lucro bitcoin', 'historico preco bitcoin', 'arrependimento bitcoin', 'se eu tivesse comprado bitcoin'],
+        'fixed-income': ['renda fixa bitcoin', 'dividendos bitcoin', 'strc', 'strategy', 'renda passiva em dolar'],
+        'sats-converter': ['converter sats', 'sats para real', 'calculadora satoshi', '1000 sats em reais'],
+        'btc-converter': ['conversor bitcoin', 'btc para brl', 'btc para usd', 'cotacao bitcoin hoje'],
+        'heatmap': ['mapa de calor bitcoin', 'ciclos do bitcoin', 'halving bitcoin', 'bull run', 'bear market', '4 anos bitcoin'],
+        'about': ['o que é bitcoin', 'satoshi nakamoto', 'historia do bitcoin', 'como funciona bitcoin'],
+    };
+
+    const specificKeywords = pageKeywords[pageId] || [];
+    const keywords = [...baseKeywords, ...specificKeywords];
+
     return {
         title,
         description,
-        keywords: ['bitcoin', 'calculadora', 'sats', 'conversor', 'investimento', 'aposentadoria', 'fire', 'criptomoedas', 'viver de bitcoin'],
+        keywords,
         alternates: {
             canonical: `${baseUrl}${ptPath}`,
             languages: {

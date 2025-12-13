@@ -89,12 +89,32 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             title = t['aff.title'];
             description = t['aff.subtitle'];
             break;
+        case 'heatmap':
+            title = t['heatmap.title'];
+            description = t['heatmap.subtitle'];
+            break;
     }
+
+    const baseKeywords = ['bitcoin', 'calculadora', 'sats', 'conversor', 'inversion', 'jubilacion', 'fire', 'criptomonedas', 'vivir de bitcoin'];
+
+    const pageKeywords: Record<string, string[]> = {
+        'sats-calculator': ['satoshi', 'precio satoshi', 'cuanto vale 1 satoshi', 'invertir en bitcoin', 'ahorrar en bitcoin'],
+        'dca-calculator': ['dca bitcoin', 'dollar cost averaging', 'compras recurrentes', 'ahorro bitcoin'],
+        'regret-calculator': ['roi bitcoin', 'beneficio bitcoin', 'precio historico bitcoin', 'arrepentimiento bitcoin', 'si hubiera comprado bitcoin'],
+        'fixed-income': ['renta fija bitcoin', 'dividendos bitcoin', 'strc', 'strategy', 'ingresos pasivos'],
+        'sats-converter': ['convertir sats', 'sats a usd', 'calculadora satoshi', '1000 sats a euros'],
+        'btc-converter': ['conversor bitcoin', 'btc a eur', 'btc a usd', 'precio bitcoin hoy'],
+        'heatmap': ['mapa calor bitcoin', 'ciclos bitcoin', 'halving bitcoin', 'bull run', 'bear market', '4 años bitcoin'],
+        'about': ['que es bitcoin', 'satoshi nakamoto', 'historia bitcoin', 'como funciona bitcoin'],
+    };
+
+    const specificKeywords = pageKeywords[pageId] || [];
+    const keywords = [...baseKeywords, ...specificKeywords];
 
     return {
         title,
         description,
-        keywords: ['bitcoin', 'calculadora', 'sats', 'conversor', 'inversión', 'jubilación', 'fire', 'criptomoneda', 'vivir de bitcoin'],
+        keywords,
         alternates: {
             canonical: `${baseUrl}${esPath}`,
             languages: {
