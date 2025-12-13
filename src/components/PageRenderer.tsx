@@ -22,6 +22,7 @@ import PoliticaCookies from '@/components/PoliticaCookies';
 import Disclosure from '@/components/Disclosure';
 import BitcoinRetirementCalculator from '@/components/BitcoinRetirementCalculator';
 import BitcoinRetirementAbout from '@/components/BitcoinRetirementAbout';
+import MinimumWageChart from '@/components/MinimumWageChart';
 
 import JsonLd from '@/components/JsonLd';
 import { translations } from '@/data/translations';
@@ -135,6 +136,14 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
                 <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
                     {jsonLdData && <JsonLd data={jsonLdData} />}
                     <BitcoinHeatmap />
+                </main>
+            );
+
+        case 'minimum-wage':
+            return (
+                <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
+                    {/* JSON-LD can be added later if needed */}
+                    <MinimumWageChart />
                 </main>
             );
 
