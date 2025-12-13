@@ -31,6 +31,7 @@ export default function Header() {
         { name: t('nav.conversor_sats'), id: 'sats-converter' as PageId },
         { name: t('nav.renda_fixa_btc'), id: 'fixed-income' as PageId },
         { name: t('nav.heatmap'), id: 'heatmap' as PageId },
+        { name: t('nav.minimum_wage'), id: 'minimum-wage' as PageId },
     ];
 
     const currentPath = (id: PageId) => getPath(language, id);

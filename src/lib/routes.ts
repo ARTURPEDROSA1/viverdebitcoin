@@ -14,7 +14,8 @@ export type PageId =
     | 'terms'
     | 'privacy'
     | 'cookies'
-    | 'affiliate';
+    | 'affiliate'
+    | 'minimum-wage';
 
 export const routeMap: Record<Language, Record<PageId, string>> = {
     pt: {
@@ -32,6 +33,7 @@ export const routeMap: Record<Language, Record<PageId, string>> = {
         'privacy': 'politica-privacidade',
         'cookies': 'politica-cookies',
         'affiliate': 'divulgacao-afiliados',
+        'minimum-wage': 'bitcoin-vs-salario-minimo',
     },
     en: {
         home: '',
@@ -48,6 +50,7 @@ export const routeMap: Record<Language, Record<PageId, string>> = {
         'privacy': 'privacy-policy',
         'cookies': 'cookies-policy',
         'affiliate': 'affiliate-disclosure',
+        'minimum-wage': 'bitcoin-vs-minimum-wage',
     },
     es: {
         home: '',
@@ -64,6 +67,7 @@ export const routeMap: Record<Language, Record<PageId, string>> = {
         'privacy': 'politica-privacidad',
         'cookies': 'politica-cookies',
         'affiliate': 'divulgacion-afiliados',
+        'minimum-wage': 'bitcoin-vs-salario-minimo',
     }
 };
 
