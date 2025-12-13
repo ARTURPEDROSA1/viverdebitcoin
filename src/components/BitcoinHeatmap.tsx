@@ -96,8 +96,9 @@ const MANUAL_MONTHLY_DATA: { [year: number]: { [month: number]: { open: number, 
 MANUAL_MONTHLY_DATA[2013][11].open = 953;
 
 export default function BitcoinHeatmap() {
-    const { t, language } = useSettings();
-    const [livePrice, setLivePrice] = useState<number | null>(null);
+    const { t, language, currency } = useSettings();
+    const [livePrice, setLivePrice] = useState<number | null>(null); // Keep as USD for calculations
+    const [prices, setPrices] = useState<{ BRL: number; USD: number; EUR: number } | null>(null);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
     // Type definition for cell data
@@ -110,17 +111,66 @@ export default function BitcoinHeatmap() {
     // Tooltip state
     const [hoverData, setHoverData] = useState<{ x: number, y: number, open: number, close: number } | null>(null);
 
-    // Fetch Live Price
+    // Fetch Live Price (USD, EUR, BRL)
     const fetchLivePrice = async () => {
         try {
-            const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
-            const data = await res.json();
-            if (data.bpi && data.bpi.USD) {
-                setLivePrice(data.bpi.USD.rate_float);
+            const newPrices = { BRL: 0, USD: 0, EUR: 0 };
+
+            // 1. USD & EUR (CoinDesk with CoinGecko fallback)
+            try {
+                const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+                const data = await res.json();
+
+                if (data.bpi && data.bpi.USD) {
+                    newPrices.USD = data.bpi.USD.rate_float;
+                }
+                if (data.bpi && data.bpi.EUR) {
+                    newPrices.EUR = data.bpi.EUR.rate_float;
+                }
+            } catch (e) {
+                console.error("Error fetching USD/EUR from CoinDesk:", e);
+                // Fallback to CoinGecko
+                try {
+                    const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
+                    const dataCoingecko = await resCoingecko.json();
+                    if (dataCoingecko.bitcoin) {
+                        newPrices.USD = dataCoingecko.bitcoin.usd;
+                        newPrices.EUR = dataCoingecko.bitcoin.eur;
+                    }
+                } catch (e2) {
+                    console.error("Error fetching USD/EUR from CoinGecko:", e2);
+                }
+            }
+
+            // 2. Fetch BRL from AwesomeAPI
+            try {
+                const resBRL = await fetch('https://economia.awesomeapi.com.br/last/BTC-BRL');
+                const dataBRL = await resBRL.json();
+                if (dataBRL.BTCBRL) {
+                    newPrices.BRL = parseFloat(dataBRL.BTCBRL.bid);
+                }
+            } catch (e) {
+                console.error("Error fetching BRL:", e);
+            }
+
+            // Update Live Price State (USD) for Heatmap calculations
+            if (newPrices.USD > 0) {
+                setLivePrice(newPrices.USD);
                 setLastUpdated(new Date());
             }
+
+            // Update All Prices State for Tooltip Conversion
+            // We need at least USD to be able to calculate ratios (since historical data is USD-based)
+            if (newPrices.USD > 0) {
+                setPrices(prev => ({
+                    USD: newPrices.USD || (prev?.USD ?? 0),
+                    EUR: newPrices.EUR || (prev?.EUR ?? 0),
+                    BRL: newPrices.BRL || (prev?.BRL ?? 0)
+                }));
+            }
+
         } catch (e) {
-            console.error("Error fetching live price:", e);
+            console.error("Error fetching live prices:", e);
         }
     };
 
@@ -253,6 +303,32 @@ export default function BitcoinHeatmap() {
 
     const handleMouseLeave = () => {
         setHoverData(null);
+    };
+
+    const formatPrice = (valueInUSD: number) => {
+        if (!prices || !currency || currency === 'USD') {
+            return `$${valueInUSD.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+        }
+
+        let convertedValue = valueInUSD;
+        let locale = 'en-US';
+        let currencySymbol = '$';
+
+        if (currency === 'BRL') {
+            if (prices.USD && prices.BRL) {
+                convertedValue = valueInUSD * (prices.BRL / prices.USD);
+            }
+            locale = 'pt-BR';
+            currencySymbol = 'R$';
+        } else if (currency === 'EUR') {
+            if (prices.USD && prices.EUR) {
+                convertedValue = valueInUSD * (prices.EUR / prices.USD);
+            }
+            locale = 'de-DE';
+            currencySymbol = '€';
+        }
+
+        return `${currencySymbol}${convertedValue.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
     };
 
     return (
@@ -425,8 +501,8 @@ export default function BitcoinHeatmap() {
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                     whiteSpace: 'nowrap'
                 }}>
-                    <div style={{ marginBottom: '2px' }}>Open: <span style={{ fontWeight: 'bold' }}>${hoverData.open.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span></div>
-                    <div>Close: <span style={{ fontWeight: 'bold' }}>${hoverData.close.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span></div>
+                    <div style={{ marginBottom: '2px' }}>Open: <span style={{ fontWeight: 'bold' }}>{formatPrice(hoverData.open)}</span></div>
+                    <div>Close: <span style={{ fontWeight: 'bold' }}>{formatPrice(hoverData.close)}</span></div>
                     {/* Small arrow at bottom */}
                     <div style={{
                         position: 'absolute',
