@@ -93,6 +93,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             title = t['heatmap.title'];
             description = t['heatmap.subtitle'];
             break;
+        case 'minimum-wage':
+            title = t['min_wage.title'];
+            description = t['min_wage.subtitle'];
+            break;
     }
 
     const baseKeywords = ['bitcoin', 'calculadora', 'sats', 'conversor', 'inversion', 'jubilacion', 'fire', 'criptomonedas', 'vivir de bitcoin'];
@@ -106,6 +110,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         'btc-converter': ['conversor bitcoin', 'btc a eur', 'btc a usd', 'precio bitcoin hoy'],
         'heatmap': ['mapa calor bitcoin', 'ciclos bitcoin', 'halving bitcoin', 'bull run', 'bear market', '4 años bitcoin'],
         'about': ['que es bitcoin', 'satoshi nakamoto', 'historia bitcoin', 'como funciona bitcoin'],
+        'minimum-wage': ['bitcoin vs salario minimo', 'poder adquisitivo', 'esfuerzo laboral', 'inflacion real', 'accesibilidad bitcoin', 'valor trabajo'],
     };
 
     const specificKeywords = pageKeywords[pageId] || [];
