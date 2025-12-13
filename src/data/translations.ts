@@ -541,7 +541,22 @@ export const translations: Record<Language, Record<string, string>> = {
         'dca.about.why_risk_bold': 'Mitiga Riscos:',
         'dca.about.why_risk': 'Evita comprar tudo no topo do mercado.',
         'dca.about.why_long_term_bold': 'Acumulação de Longo Prazo:',
-        'dca.about.why_long_term': 'Foca na quantidade de Satoshis acumulados, não no preço de curto prazo.'
+        'dca.about.why_long_term': 'Foca na quantidade de Satoshis acumulados, não no preço de curto prazo.',
+
+        // Salário Mínimo
+        'min_wage.title': 'Bitcoin vs Salário Mínimo (Valores Nominais em R$)',
+        'min_wage.subtitle': 'Comparação direta dos valores nominais, sem ajuste por inflação ou poder de compra.',
+        'min_wage.chart_btc_price': 'Bitcoin (R$)',
+        'min_wage.chart_wage': 'Salário Mínimo (R$)',
+        'min_wage.table_year': 'Ano',
+        'min_wage.table_wage': 'Salário Mínimo',
+        'min_wage.table_btc_price': 'Preço Bitcoin (Dez)',
+        'min_wage.table_sats': 'Sats comprados',
+        'min_wage.wage_label': 'Salário Mínimo (R$)',
+        'min_wage.btc_label': 'Bitcoin (R$)',
+        'min_wage.sats_label': 'Sats por Salário',
+        'min_wage.wage_chart_subtitle': 'Valor do salário mínimo definido pelo governo no início de cada ano',
+        'min_wage.btc_chart_subtitle': 'Valor de fechamento do Bitcoin ao final de cada ano',
     },
     en: {
         'nav.aposentadoria_btc': 'BTC Retirement',
@@ -1074,6 +1089,21 @@ export const translations: Record<Language, Record<string, string>> = {
         'heatmap.current_month': 'Current Month',
         'heatmap.open_price': 'Open Price',
         'heatmap.close_price': 'Close Price',
+
+        // Minimum Wage
+        'min_wage.title': 'Bitcoin vs Minimum Wage (Nominal Values in R$)',
+        'min_wage.subtitle': 'Direct comparison of nominal values, without adjustment for inflation or purchasing power.',
+        'min_wage.chart_btc_price': 'Bitcoin (R$)',
+        'min_wage.chart_wage': 'Minimum Wage (R$)',
+        'min_wage.table_year': 'Year',
+        'min_wage.table_wage': 'Minimum Wage',
+        'min_wage.table_btc_price': 'Bitcoin Price (Dec)',
+        'min_wage.table_sats': 'Sats purchased',
+        'min_wage.wage_label': 'Minimum Wage (R$)',
+        'min_wage.btc_label': 'Bitcoin (R$)',
+        'min_wage.sats_label': 'Sats per Wage',
+        'min_wage.wage_chart_subtitle': 'Minimum wage value set by the government at the start of each year',
+        'min_wage.btc_chart_subtitle': 'Bitcoin closing value at the end of each year',
     },
     es: {
         'nav.aposentadoria_btc': 'Jubilación BTC',
@@ -1616,6 +1646,21 @@ export const translations: Record<Language, Record<string, string>> = {
         'heatmap.current_month': 'Mes Actual',
         'heatmap.open_price': 'Precio de Apertura',
         'heatmap.close_price': 'Precio de Cierre',
+
+        // Salario Mínimo
+        'min_wage.title': 'Bitcoin vs Salario Mínimo (Valores Nominales en R$)',
+        'min_wage.subtitle': 'Comparación directa de valores nominales, sin ajuste por inflación o poder adquisitivo.',
+        'min_wage.chart_btc_price': 'Bitcoin (R$)',
+        'min_wage.chart_wage': 'Salario Mínimo (R$)',
+        'min_wage.table_year': 'Año',
+        'min_wage.table_wage': 'Salario Mínimo',
+        'min_wage.table_btc_price': 'Precio Bitcoin (Dic)',
+        'min_wage.table_sats': 'Sats comprados',
+        'min_wage.wage_label': 'Salario Mínimo (R$)',
+        'min_wage.btc_label': 'Bitcoin (R$)',
+        'min_wage.sats_label': 'Sats por Salario',
+        'min_wage.wage_chart_subtitle': 'Valor del salario mínimo definido por el gobierno al inicio de cada año',
+        'min_wage.btc_chart_subtitle': 'Valor de cierre de Bitcoin al final de cada año',
     }
 };
 
