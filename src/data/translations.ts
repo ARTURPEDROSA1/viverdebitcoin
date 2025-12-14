@@ -118,7 +118,7 @@ export const translations: Record<Language, Record<string, string>> = {
         'sats.projected': 'Projetado',
         'sats.sats_per_currency': 'Sats / Moeda',
         'sats.subtitle': 'Bitcoin rendeu ~79% ao ano em 10 anos. Com 30% ao ano, até 2045 1 satoshi pode valer 1 {{currency}}. Hoje, 1 {{currencyName}} ainda compra ~{{sats}} sats — oportunidade única!',
-        'sats.edu_title_1': 'Descubra Quando Você Pode Parar de Trabalhar Guardando Bitcoin',
+        'sats.edu_title_1': 'Descubra Quando Você Pode Parar de Trabalhar Poupando em Satoshi',
         'sats.edu_text_1': 'A Calculadora de Aposentadoria Satoshi é uma ferramenta simples e poderosa criada para ajudar você a visualizar como pequenas economias mensais em Bitcoin podem crescer ao longo dos anos.',
         'sats.edu_title_2': '1. O que é um Satoshi?',
         'sats.edu_text_2': 'Um satoshi é a menor unidade do Bitcoin: 1 BTC = 100.000.000 sats. Isso torna possível que qualquer pessoa comece a economizar em Bitcoin, mesmo com pouco dinheiro.',

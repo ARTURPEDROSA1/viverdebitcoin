@@ -31,32 +31,167 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
     const t = translations[locale as keyof typeof translations] || translations['pt'];
 
     // Generate specific JSON-LD based on page type
-    let jsonLdData: any = null;
+    let jsonLdData: any[] = [];
     const baseUrl = 'https://viverdebitcoin.com';
     const path = locale === 'pt' ? '' : `/${locale}`;
 
+    let pageTitle = '';
+    let pageDescription = '';
+    let pagePath = '';
+
+    // Helper to determine page info
+    if (id === 'home') {
+        pageTitle = t['home.title'];
+        pageDescription = t['home.subtitle'];
+        pagePath = '';
+    } else if (id === 'btc-converter') {
+        pageTitle = t['btc_conv.title'];
+        pageDescription = t['btc_conv.subtitle'];
+        pagePath = 'conversor-btc'; // Default to PT slug for mapping logic if needed, but simplified here
+    } else if (id === 'sats-converter') {
+        pageTitle = t['converter.title'];
+        pageDescription = t['converter.subtitle'];
+        pagePath = 'conversor-sats';
+    } else if (id === 'heatmap') {
+        pageTitle = t['heatmap.title'];
+        pageDescription = t['heatmap.subtitle'];
+        pagePath = 'mapa-calor-bitcoin';
+    } else if (id === 'sats-calculator') {
+        pageTitle = t['sats.title'] || t['nav.aposentadoria_sats'];
+        pageDescription = t['sats.subtitle'];
+        pagePath = 'calculadora-sats';
+    } else if (id === 'dca-calculator') {
+        pageTitle = t['dca.title'];
+        pageDescription = t['dca.subtitle'];
+        pagePath = 'calculadora-dca';
+    } else if (id === 'regret-calculator') {
+        pageTitle = t['roi.title'];
+        pageDescription = t['roi.subtitle'];
+        pagePath = 'calculadora-arrependimento';
+    } else if (id === 'fixed-income') {
+        pageTitle = t['rf.title'];
+        pageDescription = t['rf.subtitle'];
+        pagePath = 'renda-fixa-btc';
+    } else if (id === 'minimum-wage') {
+        pageTitle = t['min_wage.title'];
+        pageDescription = t['min_wage.subtitle'];
+        pagePath = 'bitcoin-vs-salario-minimo';
+    } else if (id === 'about') {
+        pageTitle = t['about.hero_title'];
+        pageDescription = t['about.sec1_p1'];
+        pagePath = 'sobre';
+    }
+
+    // Override path with correct localized slug if possible, or just use ID mapping logic
+    // For simplicity, we can trust the routeMap logic elsewhere, but here we just need a valid URL for JSON-LD.
+    // Ideally we import routeMap but let's just use the current URL structure we know.
+    const getLocalizedSlug = (pid: PageId) => {
+        // Simple mapping for JSON-LD URL construction
+        // Accessing routeMap dynamically or duplicating essential slugs
+        const map: Record<string, string> = {
+            'home': '',
+            'sats-calculator': locale === 'en' ? 'sats-calculator' : 'calculadora-sats',
+            'dca-calculator': locale === 'en' ? 'dca-calculator' : 'calculadora-dca',
+            'regret-calculator': locale === 'en' ? 'regret-calculator' : (locale === 'es' ? 'calculadora-arrepentimiento' : 'calculadora-arrependimento'),
+            'fixed-income': locale === 'en' ? 'fixed-income-btc' : (locale === 'es' ? 'renta-fija-btc' : 'renda-fixa-btc'),
+            'sats-converter': locale === 'en' ? 'sats-converter' : 'conversor-sats',
+            'btc-converter': locale === 'en' ? 'btc-converter' : 'conversor-btc',
+            'heatmap': locale === 'pt' || locale === 'es' ? 'mapa-calor-bitcoin' : 'bitcoin-heatmap',
+            'minimum-wage': locale === 'pt' || locale === 'es' ? 'bitcoin-vs-salario-minimo' : 'bitcoin-vs-minimum-wage',
+            'about': locale === 'pt' ? 'sobre' : (locale === 'es' ? 'acerca-de' : 'about'),
+            'disclaimer': 'aviso-legal', // Simplified
+            'terms': 'termos-uso',
+            'privacy': 'politica-privacidade',
+            'cookies': 'politica-cookies',
+            'affiliate': 'divulgacao-afiliados'
+        };
+        return map[pid] || pid;
+    };
+
+    const currentSlug = getLocalizedSlug(id);
+    const fullUrl = `${baseUrl}${path}${currentSlug ? '/' + currentSlug : ''}`;
+
+    // 1. Main Entity Schema
     if (id === 'btc-converter' || id === 'sats-converter' || id === 'heatmap') {
-        jsonLdData = {
+        jsonLdData.push({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            "name": id === 'heatmap' ? t['heatmap.title'] : (id === 'btc-converter' ? t['btc_conv.title'] : t['converter.title']),
-            "url": `${baseUrl}${path}/${id === 'heatmap' ? (locale === 'pt' || locale === 'es' ? 'mapa-calor-bitcoin' : 'bitcoin-heatmap') : (id === 'btc-converter' ? 'conversor-btc' : 'conversor-sats')}`,
-            "description": id === 'heatmap' ? t['heatmap.subtitle'] : (id === 'btc-converter' ? t['btc_conv.subtitle'] : t['converter.subtitle']),
+            "name": pageTitle,
+            "url": fullUrl,
+            "description": pageDescription,
             "applicationCategory": "FinanceApplication",
             "operatingSystem": "Any"
-        };
+        });
     } else if (id === 'sats-calculator' || id === 'dca-calculator' || id === 'regret-calculator' || id === 'fixed-income' || id === 'home') {
-        jsonLdData = {
+        jsonLdData.push({
             "@context": "https://schema.org",
             "@type": "FinancialProduct",
-            "name": id === 'home' ? t['home.title'] : (id === 'dca-calculator' ? t['dca.title'] : (id === 'regret-calculator' ? t['roi.title'] : t['rf.title'])),
-            "description": id === 'home' ? t['home.subtitle'] : t['dca.subtitle'],
+            "name": pageTitle,
+            "description": pageDescription,
             "brand": {
                 "@type": "Brand",
                 "name": "Viver de Bitcoin"
             }
-        };
+        });
+    } else if (id === 'minimum-wage') {
+        jsonLdData.push({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": pageTitle,
+            "description": pageDescription,
+            "author": {
+                "@type": "Organization",
+                "name": "Viver de Bitcoin"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Viver de Bitcoin",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://viverdebitcoin.com/ViverdeBitcoinfavicon.png"
+                }
+            }
+        });
+    } else if (id === 'about') {
+        jsonLdData.push({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "name": pageTitle,
+            "description": pageDescription,
+            "mainEntity": {
+                "@type": "Organization",
+                "name": "Viver de Bitcoin",
+                "url": "https://viverdebitcoin.com",
+                "logo": "https://viverdebitcoin.com/ViverdeBitcoinfavicon.png"
+            }
+        });
     }
+
+    // 2. Breadcrumb Schema
+    const homeName = locale === 'pt' ? 'Início' : (locale === 'es' ? 'Inicio' : 'Home');
+    const breadcrumbList = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": homeName,
+                "item": `${baseUrl}${path}`
+            }
+        ]
+    };
+
+    if (id !== 'home') {
+        breadcrumbList.itemListElement.push({
+            "@type": "ListItem",
+            "position": 2,
+            "name": pageTitle,
+            "item": fullUrl
+        });
+    }
+
+    jsonLdData.push(breadcrumbList);
 
     switch (id) {
         case 'home':
@@ -69,7 +204,12 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
             );
 
         case 'about':
-            return <AboutContent />;
+            return (
+                <>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
+                    <AboutContent />
+                </>
+            );
 
         case 'dca-calculator':
             return (
@@ -142,7 +282,7 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
         case 'minimum-wage':
             return (
                 <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
-                    {/* JSON-LD can be added later if needed */}
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
                     <MinimumWageChart />
                 </main>
             );
