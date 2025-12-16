@@ -80,7 +80,7 @@ const PRICE_ANCHORS_BEAR = [
     { year: 2075, price: 550000 },
 ];
 
-const DEFAULT_BTC_PRICE_BRL = 610000;
+const DEFAULT_BTC_PRICE_BRL = 466000;
 const DEFAULT_BTC_PRICE_USD = 103000;
 
 export default function BitcoinRetirementCalculator() {

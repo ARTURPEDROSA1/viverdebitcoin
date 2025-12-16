@@ -64,10 +64,16 @@ export default function BtcConverter() {
             } catch (e) {
                 console.error("CoinDesk Error:", e);
                 // Fallback to CoinGecko
-                const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
-                const dataCoingecko = await resCoingecko.json();
-                newPrices.USD = dataCoingecko.bitcoin.usd;
-                newPrices.EUR = dataCoingecko.bitcoin.eur;
+                try {
+                    const resCoingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
+                    const dataCoingecko = await resCoingecko.json();
+                    newPrices.USD = dataCoingecko.bitcoin.usd;
+                    newPrices.EUR = dataCoingecko.bitcoin.eur;
+                } catch (e2) {
+                    console.error("CoinGecko Error:", e2);
+                    newPrices.USD = 96000;
+                    newPrices.EUR = 90000;
+                }
             }
 
             // BRL (AwesomeAPI)
@@ -77,6 +83,7 @@ export default function BtcConverter() {
                 newPrices.BRL = parseFloat(dataBRL.BTCBRL.bid);
             } catch (e) {
                 console.error("BRL Error:", e);
+                newPrices.BRL = 466000;
             }
 
             // Only update if we got valid prices to avoid zeroing out

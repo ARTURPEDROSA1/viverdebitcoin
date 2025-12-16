@@ -26,7 +26,11 @@ export default function AboutContent() {
                     setPrice(parseFloat(data[key].bid));
                 }
             } catch (e) {
-                console.error(e);
+                console.error("Error fetching price, using fallback:", e);
+                // Fallback values
+                if (currency === 'BRL') setPrice(466000);
+                else if (currency === 'EUR') setPrice(90000);
+                else setPrice(96000); // USD
             }
         };
 

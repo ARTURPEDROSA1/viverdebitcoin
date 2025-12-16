@@ -14,13 +14,16 @@ export default function MarketTicker() {
     useEffect(() => {
         const fetchTicker = async () => {
             try {
-                const [awesomeRes, hgRes] = await Promise.all([
-                    fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,EUR-USD,BTC-BRL'),
-                    fetch('/api/ticker')
-                ]);
+                // Fetch independently to avoid Promise.all failure if one blocks
+                const fetchAwesome = fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL,EUR-USD,BTC-BRL')
+                    .then(res => res.ok ? res.json() : null)
+                    .catch(e => { console.warn('AwesomeAPI fetch error:', e); return null; });
 
-                const awesomeData = awesomeRes.ok ? await awesomeRes.json() : null;
-                const tickerData = hgRes.ok ? await hgRes.json() : null;
+                const fetchLocal = fetch('/api/ticker')
+                    .then(res => res.ok ? res.json() : null)
+                    .catch(e => { console.warn('Local Ticker API error:', e); return null; });
+
+                const [awesomeData, tickerData] = await Promise.all([fetchAwesome, fetchLocal]);
 
                 const fmt = (val: string, digits = 2, prefix = 'R$ ') => `${prefix}${parseFloat(val).toLocaleString('pt-BR', { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
                 const getTrend = (pct: string | number) => {
@@ -53,6 +56,14 @@ export default function MarketTicker() {
                     if (awesomeData.USDBRL) newItems.push({ name: 'Dólar', value: fmt(awesomeData.USDBRL.bid, 2), trend: getTrend(awesomeData.USDBRL.pctChange), pct: getPct(awesomeData.USDBRL.pctChange) });
                     if (awesomeData.EURBRL) newItems.push({ name: 'Euro', value: fmt(awesomeData.EURBRL.bid, 2), trend: getTrend(awesomeData.EURBRL.pctChange), pct: getPct(awesomeData.EURBRL.pctChange) });
                     if (awesomeData.EURUSD) newItems.push({ name: 'EUR/USD', value: fmt(awesomeData.EURUSD.bid, 4, '$ '), trend: getTrend(awesomeData.EURUSD.pctChange), pct: getPct(awesomeData.EURUSD.pctChange) });
+                } else {
+                    // Fallback if API fails (e.g.blocked in region)
+                    newItems.push({
+                        name: 'Bitcoin (BRL)',
+                        value: 'R$ 466.000,00', // Approximate fallback
+                        trend: 'down',
+                        pct: '-3.69%'
+                    });
                 }
 
                 // Internal API (S&P 500 & HG Brasil)
@@ -66,7 +77,6 @@ export default function MarketTicker() {
                             pct: getPct(tickerData.sp500.change)
                         });
                     } else {
-                        // Fallback/Mock just in case
                         newItems.push({ name: 'S&P 500', value: '6,047.15', trend: 'up', pct: '+0.25%' });
                     }
 
@@ -84,13 +94,19 @@ export default function MarketTicker() {
                         newItems.push({ name: 'IBOVESPA', value: '126,340', trend: 'down', pct: '-0.50%' });
                     }
                 } else {
+                    // Fallback for missing internal API
                     newItems.push({ name: 'S&P 500', value: '6,047.15', trend: 'up', pct: '+0.25%' });
                     newItems.push({ name: 'IBOVESPA', value: '126,340', trend: 'down', pct: '-0.50%' });
                 }
 
                 setItems(newItems);
             } catch (e) {
-                console.error(e);
+                console.error("Critical error in MarketTicker", e);
+                // Even on critical error, show something
+                setItems([
+                    { name: 'Bitcoin (BRL)', value: 'R$ 466.000,00', trend: 'down', pct: '-3.69%' },
+                    { name: 'Dólar', value: 'R$ 6,00', trend: 'up', pct: '+0.00%' }
+                ]);
             }
         };
 

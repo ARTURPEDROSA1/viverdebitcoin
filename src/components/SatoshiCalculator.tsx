@@ -77,6 +77,7 @@ export default function SatoshiCalculator() {
                 newPrices.BRL = parseFloat(dataBRL.BTCBRL.bid);
             } catch (e) {
                 console.error("Error fetching BRL:", e);
+                newPrices.BRL = 466000; // Manual fallback
             }
 
             // Update state safely (only if values differ significantly or if completely missing)
@@ -563,7 +564,7 @@ export default function SatoshiCalculator() {
                             </div>
                         )}
 
-                        <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>* A projeção é educacional e não representa garantia financeira.</p>
+                        <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>{t('sats.disclaimer_small')}</p>
                     </div>
                 )}
 
@@ -575,59 +576,59 @@ export default function SatoshiCalculator() {
                 <div style={{ marginTop: '3rem', marginBottom: '3rem' }}>
                     <h3 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>{t('sats.edu_title_1')}</h3>
                     <p>{t('sats.edu_text_1')}</p>
-                    <p>Ao informar quanto você guarda por mês (em reais, dólares ou euros), configurar um aumento recorrente dos aportes e definir a data desejada para aposentadoria, o sistema projeta quanto BTC você terá acumulado.</p>
+                    <p>{t('sats.intro_text')}</p>
                     <div style={{ background: 'rgba(39, 174, 96, 0.1)', padding: '1.5rem', borderRadius: '8px', margin: '1.5rem 0', borderLeft: '4px solid var(--primary-green)' }}>
-                        <p><strong>Por exemplo:</strong> Alguém que começa a poupar aos 25 anos, mantendo contribuições regulares e assumindo um crescimento moderado do Bitcoin, pode potencialmente atingir liberdade financeira perto dos 45 anos.</p>
+                        <p dangerouslySetInnerHTML={{ __html: t('sats.example_text') }}></p>
                     </div>
                 </div>
 
                 {/* Educational Content */}
                 <h2>{t('sats.edu_title_2')}</h2>
                 <p>{t('sats.edu_text_2')}</p>
-                <p>Isso torna possível que qualquer pessoa comece a economizar em Bitcoin, mesmo com pouco dinheiro.</p>
+                <p>{t('sats.edu_text_3')}</p>
 
-                <h2>2. Por que economizar em Bitcoin?</h2>
+                <h2>{t('sats.why_title')}</h2>
                 <ul style={{ margin: '1rem 0 1rem 20px', listStyleType: 'disc', lineHeight: '1.6' }}>
-                    <li>Crescimento relevante no longo prazo</li>
-                    <li>Oferta limitada e política monetária imutável</li>
-                    <li>Proteção contra inflação e desvalorização de moedas locais</li>
-                    <li>Adoção crescente por empresas, instituições e governos</li>
-                    <li>Acesso global, sem controle estatal ou bancário</li>
+                    <li>{t('sats.why_li1')}</li>
+                    <li>{t('sats.why_li2')}</li>
+                    <li>{t('sats.why_li3')}</li>
+                    <li>{t('sats.why_li4')}</li>
+                    <li>{t('sats.why_li5')}</li>
                 </ul>
-                <p>Bitcoin é visto por muitos como uma reserva de valor superior, especialmente para quem pensa em aposentadoria.</p>
+                <p>{t('sats.why_desc')}</p>
 
-                <h2>3. Planejamento de aposentadoria com Bitcoin</h2>
-                <p>Enquanto calculadoras tradicionais projetam renda fixa, ações e juros compostos em moeda fiduciária, a <strong>Calculadora de Aposentadoria Satoshi</strong> considera o acúmulo mensal de satoshis, o aporte crescente e a conversão futura do patrimônio para BRL.</p>
-                <p>Ideal para quem acredita que Bitcoin pode ser a base da sua liberdade financeira.</p>
+                <h2>{t('sats.plan_title')}</h2>
+                <p dangerouslySetInnerHTML={{ __html: t('sats.plan_desc1') }}></p>
+                <p>{t('sats.plan_desc2')}</p>
 
-                <h2>7. Por que a taxa de crescimento do Bitcoin é importante</h2>
-                <p>A taxa escolhida define o cenário da projeção.</p>
+                <h2>{t('sats.rate_title')}</h2>
+                <p>{t('sats.rate_desc')}</p>
                 <ul style={{ margin: '1rem 0 1rem 20px', listStyleType: 'disc', lineHeight: '1.6' }}>
-                    <li><strong>10% a.a.</strong> → conservador</li>
-                    <li><strong>15–20% a.a.</strong> → moderado, historicamente razoável</li>
-                    <li><strong>25–30% a.a.</strong> → otimista</li>
-                    <li><strong>40%+ a.a.</strong> → altamente especulativo</li>
+                    <li dangerouslySetInnerHTML={{ __html: t('sats.rate_li1') }}></li>
+                    <li dangerouslySetInnerHTML={{ __html: t('sats.rate_li2') }}></li>
+                    <li dangerouslySetInnerHTML={{ __html: t('sats.rate_li3') }}></li>
+                    <li dangerouslySetInnerHTML={{ __html: t('sats.rate_li4') }}></li>
                 </ul>
 
-                <h2>9. BOAS PRÁTICAS DE SEGURANÇA — AUTOCUSTÓDIA E ENDEREÇOS ANUAIS DIFERENTES</h2>
-                <p>A segurança no armazenamento do Bitcoin é fundamental, especialmente para quem pensa em aposentadoria ou acumulação de longo prazo. Por isso, é altamente recomendado:</p>
+                <h2>{t('sats.sec9_title')}</h2>
+                <p>{t('sats.sec9_text')}</p>
 
-                <h3>→ Guardar os sats acumulados em autocustódia (self-custody)</h3>
-                <p>Isso significa não deixar o Bitcoin em corretoras, utilizar uma carteira fria (cold wallet) e controlar suas próprias chaves privadas.</p>
-                <p><em>“Not your keys, not your coins.”</em></p>
+                <h3>{t('sats.sec9_sub1')}</h3>
+                <p>{t('sats.sec9_sub1_text1')}</p>
+                <p><em>{t('sats.sec9_sub1_text2')}</em></p>
 
-                <h3>→ Usar um endereço Bitcoin diferente para cada ano de economia</h3>
-                <p>Isso é uma prática avançada, mas extremamente importante para <strong>PRIVACIDADE E SEGURANÇA FINANCEIRA</strong>.</p>
+                <h3>{t('sats.sec9_sub2')}</h3>
+                <p dangerouslySetInnerHTML={{ __html: t('sats.sec9_sub2_text1') }}></p>
                 <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '8px', margin: '1.5rem 0' }}>
-                    <h4 style={{ color: 'var(--bitcoin-orange)' }}>🛡️ Por que usar um endereço por ano?</h4>
-                    <p>Porque assim cada ano de economia fica isolado em um endereço diferente.</p>
+                    <h4 style={{ color: 'var(--bitcoin-orange)' }}>{t('sats.sec9_box_title')}</h4>
+                    <p>{t('sats.sec9_box_text')}</p>
                     <ul style={{ margin: '0.5rem 0 0 20px', listStyleType: 'disc', lineHeight: '1.6' }}>
-                        <li>Quando você gastar os sats de um ano específico, somente aquele saldo será exposto publicamente.</li>
-                        <li>O restante do seu patrimônio permanece invisível e protegido.</li>
-                        <li>Ajuda a manter uma boa higiene de privacidade na blockchain.</li>
-                        <li>Reduz o risco de ataque baseado em análises avançadas de chaves públicas no futuro.</li>
+                        <li>{t('sats.sec9_box_li1')}</li>
+                        <li>{t('sats.sec9_box_li2')}</li>
+                        <li>{t('sats.sec9_box_li3')}</li>
+                        <li>{t('sats.sec9_box_li4')}</li>
                     </ul>
-                    <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>🎯 Resultado: Você divide sua aposentadoria em "caixinhas" anuais de BTC, onde cada caixa possui seu próprio endereço na sua cold wallet.</p>
+                    <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>{t('sats.sec9_box_result')}</p>
                 </div>
             </div>
         </main >

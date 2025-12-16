@@ -15,6 +15,7 @@ export type PageId =
     | 'privacy'
     | 'cookies'
     | 'affiliate'
+    | 'modelo-bitcoin24'
     | 'minimum-wage';
 
 export const routeMap: Record<Language, Record<PageId, string>> = {
@@ -29,10 +30,11 @@ export const routeMap: Record<Language, Record<PageId, string>> = {
         'heatmap': 'mapa-calor-bitcoin',
         'about': 'sobre',
         'disclaimer': 'aviso-legal',
-        'terms': 'termos-uso',
-        'privacy': 'politica-privacidade',
-        'cookies': 'politica-cookies',
+        'terms': 'termos-de-uso',
+        'privacy': 'politica-de-privacidade',
+        'cookies': 'politica-de-cookies',
         'affiliate': 'divulgacao-afiliados',
+        'modelo-bitcoin24': 'modelo-bitcoin24',
         'minimum-wage': 'bitcoin-vs-salario-minimo',
     },
     en: {
@@ -50,6 +52,7 @@ export const routeMap: Record<Language, Record<PageId, string>> = {
         'privacy': 'privacy-policy',
         'cookies': 'cookies-policy',
         'affiliate': 'affiliate-disclosure',
+        'modelo-bitcoin24': 'bitcoin24-model',
         'minimum-wage': 'bitcoin-vs-minimum-wage',
     },
     es: {
@@ -67,6 +70,7 @@ export const routeMap: Record<Language, Record<PageId, string>> = {
         'privacy': 'politica-privacidad',
         'cookies': 'politica-cookies',
         'affiliate': 'divulgacion-afiliados',
+        'modelo-bitcoin24': 'modelo-bitcoin24',
         'minimum-wage': 'bitcoin-vs-salario-minimo',
     }
 };

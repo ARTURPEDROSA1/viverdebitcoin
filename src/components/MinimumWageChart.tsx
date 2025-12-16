@@ -1189,10 +1189,10 @@ export default function MinimumWageChart() {
                             {/* CAGR Chart */}
                             <div className="chart-header" style={{ marginBottom: '10px', textAlign: 'center' }}>
                                 <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: isLightMode ? '#333' : '#fff', marginBottom: '4px' }}>
-                                    Crescimento Composto (CAGR)
+                                    {t('min_wage.chart_cagr_title')}
                                 </h3>
                                 <p style={{ fontSize: '0.85rem', color: '#888' }}>
-                                    Comparação da média de crescimento anual contínuo (CAGR histórico).
+                                    {t('min_wage.chart_cagr_subtitle')}
                                 </p>
                             </div>
                             <div className="chart-container" style={{ height: '250px', width: '100%', position: 'relative' }}>

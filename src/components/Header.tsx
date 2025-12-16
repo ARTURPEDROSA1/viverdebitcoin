@@ -24,6 +24,7 @@ export default function Header() {
     const navLinks = [
         { name: t('nav.aposentadoria_btc'), id: 'home' as PageId },
         { name: t('nav.aposentadoria_sats'), id: 'sats-calculator' as PageId },
+        { name: t('nav.modelo_bitcoin24'), id: 'modelo-bitcoin24' as PageId },
         { name: t('nav.bitcoin_dca'), id: 'dca-calculator' as PageId },
         { name: t('nav.bitcoin_roi'), id: 'regret-calculator' as PageId },
 

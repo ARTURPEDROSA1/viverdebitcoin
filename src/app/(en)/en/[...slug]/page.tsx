@@ -97,6 +97,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             title = t['min_wage.title'];
             description = t['min_wage.subtitle'];
             break;
+        case 'modelo-bitcoin24':
+            title = t['modelo24.title'];
+            description = t['modelo24.subtitle'];
+            break;
     }
 
     const baseKeywords = ['bitcoin', 'calculator', 'sats', 'converter', 'investment', 'retirement', 'fire', 'cryptocurrency', 'living on bitcoin'];
@@ -111,6 +115,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         'heatmap': ['bitcoin heatmap', 'bitcoin cycles', 'bitcoin halving', 'bull run', 'bear market', '4 year cycle'],
         'about': ['what is bitcoin', 'satoshi nakamoto', 'bitcoin history', 'how bitcoin works'],
         'minimum-wage': ['bitcoin vs minimum wage', 'purchasing power', 'work effort', 'real inflation', 'bitcoin affordability', 'labor value'],
+        'modelo-bitcoin24': ['bitcoin model', 'bitcoin cycle', 'bitcoin forecast', 'bitcoin adoption', 'bitcoin24', 'bitcoin simulation', 'power law bitcoin'],
     };
 
     const specificKeywords = pageKeywords[pageId] || [];

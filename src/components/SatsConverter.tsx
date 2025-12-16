@@ -37,6 +37,9 @@ export default function SatsConverter() {
                 setLivePriceEUR(dataCoingecko.bitcoin.eur);
             } catch (e2) {
                 console.error("Error fetching USD/EUR from CoinGecko:", e2);
+                // Hard fallback
+                setLivePriceUSD(96000);
+                setLivePriceEUR(90000);
             }
         }
 
@@ -47,6 +50,7 @@ export default function SatsConverter() {
             setLivePriceBRL(parseFloat(dataBRL.BTCBRL.bid));
         } catch (e) {
             console.error("Error fetching BRL:", e);
+            setLivePriceBRL(466000);
         }
         setLoadingPrice(false);
     };
@@ -57,10 +61,6 @@ export default function SatsConverter() {
         const interval = setInterval(fetchPrices, 30000);
         return () => clearInterval(interval);
     }, []);
-
-    useEffect(() => {
-        calculate();
-    }, [amount, currency, livePriceUSD, livePriceBRL, livePriceEUR]);
 
     const calculate = () => {
         if (!amount) {
@@ -87,6 +87,10 @@ export default function SatsConverter() {
         // Format
         setSats(Math.floor(satoshis).toLocaleString(language === 'pt' ? 'pt-BR' : language === 'es' ? 'es-ES' : 'en-US'));
     };
+
+    useEffect(() => {
+        calculate();
+    }, [amount, currency, livePriceUSD, livePriceBRL, livePriceEUR]);
 
     return (
         <div className="calculator-container">

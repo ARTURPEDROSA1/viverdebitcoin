@@ -23,6 +23,7 @@ import Disclosure from '@/components/Disclosure';
 import BitcoinRetirementCalculator from '@/components/BitcoinRetirementCalculator';
 import BitcoinRetirementAbout from '@/components/BitcoinRetirementAbout';
 import MinimumWageChart from '@/components/MinimumWageChart';
+import Bitcoin24Model from '@/components/Bitcoin24Model';
 
 import JsonLd from '@/components/JsonLd';
 import { translations } from '@/data/translations';
@@ -76,6 +77,10 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
         pageTitle = t['min_wage.title'];
         pageDescription = t['min_wage.subtitle'];
         pagePath = 'bitcoin-vs-salario-minimo';
+    } else if (id === 'modelo-bitcoin24') {
+        pageTitle = t['modelo24.title'];
+        pageDescription = t['modelo24.subtitle'];
+        pagePath = 'modelo-bitcoin24';
     } else if (id === 'about') {
         pageTitle = t['about.hero_title'];
         pageDescription = t['about.sec1_p1'];
@@ -284,6 +289,14 @@ export function PageRenderer({ id, locale = 'pt' }: { id: PageId, locale?: strin
                 <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
                     {jsonLdData && <JsonLd data={jsonLdData} />}
                     <MinimumWageChart />
+                </main>
+            );
+
+        case 'modelo-bitcoin24':
+            return (
+                <main style={{ minHeight: 'calc(100vh - 160px)', padding: '2rem 1rem' }}>
+                    {jsonLdData && <JsonLd data={jsonLdData} />}
+                    <Bitcoin24Model />
                 </main>
             );
 
