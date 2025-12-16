@@ -5,12 +5,17 @@ import { translations, Language } from '@/data/translations';
 
 type Currency = 'BRL' | 'USD' | 'EUR';
 
+type Theme = 'light' | 'dark';
+
 interface SettingsContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
     currency: Currency;
     setCurrency: (curr: Currency) => void;
     t: (key: string) => string;
+    theme: Theme;
+    toggleTheme: () => void;
+    isLightMode: boolean;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -18,6 +23,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children, initialLanguage = 'pt' }: { children: React.ReactNode, initialLanguage?: Language }) {
     const [language, setLanguage] = useState<Language>(initialLanguage);
     const [currency, setCurrency] = useState<Currency>('BRL');
+    const [theme, setTheme] = useState<Theme>('dark');
 
     // Sync with initialLanguage if it changes (e.g. navigation)
     useEffect(() => {
@@ -33,6 +39,15 @@ export function SettingsProvider({ children, initialLanguage = 'pt' }: { childre
 
         const savedCurr = localStorage.getItem('viverdebitcoin_curr_v2') as Currency;
         if (savedCurr) setCurrency(savedCurr);
+
+        const savedTheme = localStorage.getItem('theme') as Theme;
+        if (savedTheme === 'light') {
+            setTheme('light');
+            document.body.classList.add('light-mode');
+        } else {
+            setTheme('dark');
+            document.body.classList.remove('light-mode');
+        }
     }, []);
 
     const handleSetLanguage = (lang: Language) => {
@@ -47,12 +62,32 @@ export function SettingsProvider({ children, initialLanguage = 'pt' }: { childre
         localStorage.setItem('viverdebitcoin_curr_v2', curr);
     };
 
+    const toggleTheme = () => {
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+        if (newTheme === 'light') {
+            document.body.classList.add('light-mode');
+        } else {
+            document.body.classList.remove('light-mode');
+        }
+    };
+
     const t = (key: string) => {
         return translations[language]?.[key] || key;
     };
 
     return (
-        <SettingsContext.Provider value={{ language, setLanguage: handleSetLanguage, currency, setCurrency: handleSetCurrency, t }}>
+        <SettingsContext.Provider value={{
+            language,
+            setLanguage: handleSetLanguage,
+            currency,
+            setCurrency: handleSetCurrency,
+            t,
+            theme,
+            toggleTheme,
+            isLightMode: theme === 'light'
+        }}>
             {children}
         </SettingsContext.Provider>
     );
