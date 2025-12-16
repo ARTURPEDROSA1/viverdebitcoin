@@ -237,7 +237,7 @@ export default function SatoshiCalculator() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                             <span style={{ fontSize: '1.2rem' }}>⚙️</span>
-                            <h3 style={{ margin: 0, fontSize: '1rem', color: '#FFFFFF' }}>{t('home.settings')}</h3>
+                            <h2 style={{ margin: 0, fontSize: '1rem', color: '#FFFFFF' }}>{t('home.settings')}</h2>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'flex-end' }}>
@@ -270,12 +270,12 @@ export default function SatoshiCalculator() {
                     <div style={{ marginBottom: '2rem' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                             <div>
-                                <label className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('home.current_age')}</label>
-                                <input type="number" value={currentAge} onChange={(e) => setCurrentAge(parseFloat(e.target.value))} className="calculator-input" />
+                                <label htmlFor="current-age-sats" className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('home.current_age')}</label>
+                                <input id="current-age-sats" type="number" value={currentAge} onChange={(e) => setCurrentAge(parseFloat(e.target.value))} className="calculator-input" />
                             </div>
                             <div>
-                                <label className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('home.retirement_age')}</label>
-                                <input type="number" value={retirementAge} onChange={(e) => setRetirementAge(parseFloat(e.target.value))} className="calculator-input" />
+                                <label htmlFor="retirement-age-sats" className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('home.retirement_age')}</label>
+                                <input id="retirement-age-sats" type="number" value={retirementAge} onChange={(e) => setRetirementAge(parseFloat(e.target.value))} className="calculator-input" />
                             </div>
                         </div>
                     </div>
@@ -285,13 +285,14 @@ export default function SatoshiCalculator() {
                         {/* Initial Investment */}
                         <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', minHeight: '27px' }}>
-                                <label className="input-label" style={{ marginBottom: 0, textAlign: 'left' }}>{t('sats.initial_investment')}</label>
+                                <label htmlFor="initial-investment-sats" className="input-label" style={{ marginBottom: 0, textAlign: 'left' }}>{t('sats.initial_investment')}</label>
                             </div>
                             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <span style={{ position: 'absolute', left: '12px', color: 'var(--text-secondary)', zIndex: 1 }}>
                                     {currency === 'BRL' ? 'R$' : (currency === 'EUR' ? '€' : '$')}
                                 </span>
                                 <input
+                                    id="initial-investment-sats"
                                     type="number"
                                     value={initialInvestment}
                                     onChange={(e) => {
@@ -308,7 +309,7 @@ export default function SatoshiCalculator() {
                         {/* Contribution & Frequency Toggle */}
                         <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', minHeight: '27px' }}>
-                                <label className="input-label" style={{ marginBottom: 0, textAlign: 'left' }}>{t('sats.contribution_value')}</label>
+                                <label htmlFor="contribution-amount-sats" className="input-label" style={{ marginBottom: 0, textAlign: 'left' }}>{t('sats.contribution_value')}</label>
                                 <div style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>
                                     <span
                                         onClick={() => setContributionFrequency('monthly')}
@@ -338,6 +339,7 @@ export default function SatoshiCalculator() {
                                     {currency === 'BRL' ? 'R$' : (currency === 'EUR' ? '€' : '$')}
                                 </span>
                                 <input
+                                    id="contribution-amount-sats"
                                     type="number"
                                     value={inputAmount}
                                     onChange={(e) => {
@@ -352,14 +354,14 @@ export default function SatoshiCalculator() {
 
                         {/* Annual Increase */}
                         <div>
-                            <label className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('sats.annual_increase')}</label>
-                            <input type="number" value={annualIncrease} onChange={(e) => setAnnualIncrease(parseFloat(e.target.value))} className="calculator-input" />
+                            <label htmlFor="annual-increase-sats" className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('sats.annual_increase')}</label>
+                            <input id="annual-increase-sats" type="number" value={annualIncrease} onChange={(e) => setAnnualIncrease(parseFloat(e.target.value))} className="calculator-input" />
                         </div>
 
                         {/* BTC Growth */}
                         <div>
-                            <label className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('sats.btc_growth')}</label>
-                            <input type="number" value={btcGrowthRate} onChange={(e) => setBtcGrowthRate(parseFloat(e.target.value))} className="calculator-input" />
+                            <label htmlFor="btc-growth-sats" className="input-label" style={{ display: 'block', textAlign: 'left' }}>{t('sats.btc_growth')}</label>
+                            <input id="btc-growth-sats" type="number" value={btcGrowthRate} onChange={(e) => setBtcGrowthRate(parseFloat(e.target.value))} className="calculator-input" />
                         </div>
                     </div>
 
@@ -387,7 +389,7 @@ export default function SatoshiCalculator() {
 
                     {resultSummary && (
                         <div style={{ marginTop: '2rem' }}>
-                            <h3 style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '1.5rem' }}>{t('common.results')}</h3>
+                            <h2 style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '1.5rem' }}>{t('common.results')}</h2>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '1.5rem', textAlign: 'center', marginBottom: '1.5rem' }}>
                                 <div style={{ borderRight: '1px solid var(--border-color)' }}>
                                     <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{t('home.chart.years_until_ret')}</div>
@@ -451,7 +453,7 @@ export default function SatoshiCalculator() {
                 {/* Results Section */}
                 {chartData && (
                     <div style={{ margin: '2rem 0', padding: '1.5rem', background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                        <h3 style={{ textAlign: 'center', marginBottom: '1rem', marginTop: '0', fontSize: '1.8rem' }}>{t('sats.results_title')}</h3>
+                        <h2 style={{ textAlign: 'center', marginBottom: '1rem', marginTop: '0', fontSize: '1.8rem' }}>{t('sats.results_title')}</h2>
 
 
 
@@ -574,7 +576,7 @@ export default function SatoshiCalculator() {
 
                 {/* Educational Content */}
                 <div style={{ marginTop: '3rem', marginBottom: '3rem' }}>
-                    <h3 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>{t('sats.edu_title_1')}</h3>
+                    <h2 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>{t('sats.edu_title_1')}</h2>
                     <p>{t('sats.edu_text_1')}</p>
                     <p>{t('sats.intro_text')}</p>
                     <div style={{ background: 'rgba(39, 174, 96, 0.1)', padding: '1.5rem', borderRadius: '8px', margin: '1.5rem 0', borderLeft: '4px solid var(--primary-green)' }}>
@@ -630,7 +632,7 @@ export default function SatoshiCalculator() {
                     </ul>
                     <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>{t('sats.sec9_box_result')}</p>
                 </div>
-            </div>
+            </div >
         </main >
     );
 }

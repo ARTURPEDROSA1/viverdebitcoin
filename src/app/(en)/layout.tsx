@@ -62,6 +62,11 @@ export default function EnLayout({
 
     return (
         <html lang="en">
+            <head>
+                <link rel="preconnect" href="https://api.coindesk.com" />
+                <link rel="preconnect" href="https://api.coingecko.com" />
+                <link rel="preconnect" href="https://economia.awesomeapi.com.br" />
+            </head>
             <body className={inter.className}>
                 <SettingsProvider initialLanguage="en">
                     <JsonLd data={jsonLdData} />

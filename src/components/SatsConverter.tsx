@@ -117,6 +117,7 @@ export default function SatsConverter() {
                         </div>
                         <select
                             id="currency-selector"
+                            aria-label="Selecionar moeda"
                             value={currency}
                             onChange={(e) => setCurrency(e.target.value)}
                         >
@@ -174,7 +175,7 @@ export default function SatsConverter() {
                 </div>
             </div>
 
-            <h4 style={{ marginTop: '3rem', marginBottom: '0.5rem', color: 'var(--text-main)', textAlign: 'center' }}>{t('converter.table_title')}</h4>
+            <h2 style={{ marginTop: '3rem', marginBottom: '0.5rem', color: 'var(--text-main)', textAlign: 'center' }}>{t('converter.table_title')}</h2>
             <p style={{ textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
                 {t('converter.table_subtitle')}
             </p>

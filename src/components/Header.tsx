@@ -1,22 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
-import { useSettings } from '@/contexts/SettingsContext';
-import { getPath, getPageIdFromSlug, PageId, routeMap } from '@/lib/routes';
+import { getPath, getPageIdFromSlug, PageId } from '@/lib/routes';
+import { useSettings, Currency } from '@/contexts/SettingsContext';
 
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
-    const { language, setLanguage, currency, setCurrency, t } = useSettings();
-
-    // Close sidebar on route change (mobile)
-    useEffect(() => {
-        setIsOpen(false);
-    }, [pathname]);
+    const { language, currency, setCurrency, t } = useSettings();
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -91,7 +86,7 @@ export default function Header() {
             {/* Sidebar */}
             <aside className={`main-sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-header">
-                    <Link href={getPath(language, 'home')} className="logo-link-desktop">
+                    <Link href={getPath(language, 'home')} className="logo-link-desktop" onClick={() => setIsOpen(false)}>
                         <div className="brand-name">Viverde<span className="highlight">bitcoin</span></div>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="/ViverdeBitcoinfavicon.png" alt="Viver de Bitcoin" style={{ height: '28px', width: 'auto', marginLeft: '10px' }} />
@@ -108,6 +103,7 @@ export default function Header() {
                                 key={link.id}
                                 href={href}
                                 className={`sidebar-nav-item ${pathname === href ? 'active' : ''}`}
+                                onClick={() => setIsOpen(false)}
                             >
                                 {link.name}
                             </Link>
@@ -116,7 +112,11 @@ export default function Header() {
 
                     <div className="nav-divider" />
 
-                    <Link href={getPath(language, 'about')} className={`sidebar-nav-item ${pathname === getPath(language, 'about') ? 'active' : ''}`}>
+                    <Link
+                        href={getPath(language, 'about')}
+                        className={`sidebar-nav-item ${pathname === getPath(language, 'about') ? 'active' : ''}`}
+                        onClick={() => setIsOpen(false)}
+                    >
                         {t('nav.sobre')}
                     </Link>
                 </nav>
@@ -126,6 +126,7 @@ export default function Header() {
                     {/* Language Selector */}
                     <div style={{ position: 'relative' }}>
                         <select
+                            aria-label="Selecionar idioma"
                             value={language}
                             onChange={(e) => handleLanguageChange(e.target.value)}
                             style={{
@@ -155,8 +156,9 @@ export default function Header() {
                     {/* Currency Selector */}
                     <div style={{ position: 'relative' }}>
                         <select
+                            aria-label="Selecionar moeda"
                             value={currency}
-                            onChange={(e) => setCurrency(e.target.value as any)}
+                            onChange={(e) => setCurrency(e.target.value as Currency)}
                             style={{
                                 appearance: 'none',
                                 background: 'transparent',

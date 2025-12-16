@@ -332,7 +332,7 @@ export default function BitcoinHeatmap() {
     };
 
     return (
-        <div className="heatmap-container" style={{ width: '100%', overflowX: 'auto', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
+        <div className="heatmap-container" style={{ width: '100%', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
             <div style={{ padding: '1.5rem 1.5rem 0.5rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                     <h1 className="section-title" style={{ fontSize: '1.8rem', textAlign: 'left', marginBottom: '0.5rem' }}>{t('heatmap.title')}</h1>
@@ -350,139 +350,141 @@ export default function BitcoinHeatmap() {
                 )}
             </div>
 
-            <table className="heatmap-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-                <thead>
-                    <tr>
-                        <th style={{
-                            padding: '10px',
-                            textAlign: 'left',
-                            color: 'var(--text-secondary)',
-                            position: 'sticky',
-                            left: 0,
-                            top: 0,
-                            zIndex: 30, // Top-left corner on top of everything
-                            background: 'var(--dark-bg)',
-                            minWidth: '70px',
-                            maxWidth: '70px',
-                            borderBottom: '1px solid var(--border-color)'
-                        }}>
-                            {t('heatmap.year')}
-                        </th>
-                        <th style={{
-                            padding: '10px',
-                            textAlign: 'center',
-                            fontWeight: 'bold',
-                            color: 'var(--text-main)',
-                            position: 'sticky',
-                            left: '70px',
-                            top: 0,
-                            zIndex: 30, // Top-left corner on top of everything
-                            background: 'var(--dark-bg)',
-                            borderRight: '2px solid var(--border-color)',
-                            borderBottom: '1px solid var(--border-color)',
-                            minWidth: '90px',
-                            maxWidth: '90px',
-                            boxShadow: '4px 0 8px -4px rgba(0,0,0,0.3)'
-                        }}>
-                            {t('heatmap.annual')}
-                        </th>
-                        {[
-                            t('heatmap.jan'), t('heatmap.feb'), t('heatmap.mar'), t('heatmap.apr'),
-                            t('heatmap.may'), t('heatmap.jun'), t('heatmap.jul'), t('heatmap.aug'),
-                            t('heatmap.sep'), t('heatmap.oct'), t('heatmap.nov'), t('heatmap.dec')
-                        ].map(m => (
-                            <th key={m} style={{
+            <div style={{ overflowX: 'auto', width: '100%' }}>
+                <table className="heatmap-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                    <thead>
+                        <tr>
+                            <th style={{
                                 padding: '10px',
-                                textAlign: 'center',
+                                textAlign: 'left',
                                 color: 'var(--text-secondary)',
-                                minWidth: '70px',
                                 position: 'sticky',
+                                left: 0,
                                 top: 0,
-                                zIndex: 20, // Header row on top of body rows
+                                zIndex: 30, // Top-left corner on top of everything
                                 background: 'var(--dark-bg)',
+                                minWidth: '70px',
+                                maxWidth: '70px',
                                 borderBottom: '1px solid var(--border-color)'
                             }}>
-                                {m}
+                                {t('heatmap.year')}
                             </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {years.map(year => (
-                        <tr key={year} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                            <td style={{
+                            <th style={{
                                 padding: '10px',
+                                textAlign: 'center',
                                 fontWeight: 'bold',
                                 color: 'var(--text-main)',
                                 position: 'sticky',
-                                left: 0,
-                                zIndex: 10,
+                                left: '70px',
+                                top: 0,
+                                zIndex: 30, // Top-left corner on top of everything
                                 background: 'var(--dark-bg)',
-                                minWidth: '70px',
-                                maxWidth: '70px'
+                                borderRight: '2px solid var(--border-color)',
+                                borderBottom: '1px solid var(--border-color)',
+                                minWidth: '90px',
+                                maxWidth: '90px',
+                                boxShadow: '4px 0 8px -4px rgba(0,0,0,0.3)'
                             }}>
-                                {year}
-                            </td>
-                            {/* Annual Cell with composite background for opacity + tint */}
-                            {(() => {
-                                const annualData = monthlyReturns[year].annual;
-                                const val = annualData?.percent;
-                                return (
-                                    <td
-                                        onMouseEnter={(e) => annualData && handleMouseEnter(e, annualData.open, annualData.close)}
-                                        onMouseLeave={handleMouseLeave}
-                                        style={{
-                                            padding: '12px 8px',
-                                            textAlign: 'center',
-                                            backgroundColor: 'var(--dark-bg)', // Opaque base
-                                            backgroundImage: `linear-gradient(${getColor(val)}, ${getColor(val)})`, // Tint overlay
-                                            color: getTextColor(val),
-                                            fontWeight: 'bold',
-                                            position: 'sticky',
-                                            left: '70px',
-                                            zIndex: 10,
-                                            borderRight: '2px solid var(--border-color)', // Divider
-                                            minWidth: '90px',
-                                            maxWidth: '90px',
-                                            cursor: 'pointer',
-                                            boxShadow: '4px 0 8px -4px rgba(0,0,0,0.3)'
-                                        }}
-                                    >
-                                        {val !== undefined ? `${val > 0 ? '+' : ''}${val.toFixed(2)}%` : '-'}
-                                    </td>
-                                );
-                            })()}
-
-                            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(month => {
-                                const data = monthlyReturns[year][month];
-                                // Access percent if data exists, otherwise undefined
-                                const val = data?.percent;
-                                const isCurrentMonth = year === new Date().getFullYear() && month === new Date().getMonth();
-                                return (
-                                    <td
-                                        key={month}
-                                        onMouseEnter={(e) => data && handleMouseEnter(e, data.open, data.close)}
-                                        onMouseLeave={handleMouseLeave}
-                                        style={{
-                                            padding: '12px 8px',
-                                            textAlign: 'center',
-                                            backgroundColor: getColor(val),
-                                            color: getTextColor(val),
-                                            fontWeight: isCurrentMonth ? 'bold' : 'normal',
-                                            border: isCurrentMonth ? '2px solid #fff' : 'none', // Highlight current
-                                            borderRadius: '4px',
-                                            cursor: 'pointer'
-                                        }}
-                                        title={isCurrentMonth ? t('heatmap.current_month') : undefined}
-                                    >
-                                        {val !== undefined ? `${val > 0 ? '+' : ''}${val.toFixed(2)}%` : '-'}
-                                    </td>
-                                );
-                            })}
+                                {t('heatmap.annual')}
+                            </th>
+                            {[
+                                t('heatmap.jan'), t('heatmap.feb'), t('heatmap.mar'), t('heatmap.apr'),
+                                t('heatmap.may'), t('heatmap.jun'), t('heatmap.jul'), t('heatmap.aug'),
+                                t('heatmap.sep'), t('heatmap.oct'), t('heatmap.nov'), t('heatmap.dec')
+                            ].map(m => (
+                                <th key={m} style={{
+                                    padding: '10px',
+                                    textAlign: 'center',
+                                    color: 'var(--text-secondary)',
+                                    minWidth: '70px',
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 20, // Header row on top of body rows
+                                    background: 'var(--dark-bg)',
+                                    borderBottom: '1px solid var(--border-color)'
+                                }}>
+                                    {m}
+                                </th>
+                            ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {years.map(year => (
+                            <tr key={year} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                <td style={{
+                                    padding: '10px',
+                                    fontWeight: 'bold',
+                                    color: 'var(--text-main)',
+                                    position: 'sticky',
+                                    left: 0,
+                                    zIndex: 10,
+                                    background: 'var(--dark-bg)',
+                                    minWidth: '70px',
+                                    maxWidth: '70px'
+                                }}>
+                                    {year}
+                                </td>
+                                {/* Annual Cell with composite background for opacity + tint */}
+                                {(() => {
+                                    const annualData = monthlyReturns[year].annual;
+                                    const val = annualData?.percent;
+                                    return (
+                                        <td
+                                            onMouseEnter={(e) => annualData && handleMouseEnter(e, annualData.open, annualData.close)}
+                                            onMouseLeave={handleMouseLeave}
+                                            style={{
+                                                padding: '12px 8px',
+                                                textAlign: 'center',
+                                                backgroundColor: 'var(--dark-bg)', // Opaque base
+                                                backgroundImage: `linear-gradient(${getColor(val)}, ${getColor(val)})`, // Tint overlay
+                                                color: getTextColor(val),
+                                                fontWeight: 'bold',
+                                                position: 'sticky',
+                                                left: '70px',
+                                                zIndex: 10,
+                                                borderRight: '2px solid var(--border-color)', // Divider
+                                                minWidth: '90px',
+                                                maxWidth: '90px',
+                                                cursor: 'pointer',
+                                                boxShadow: '4px 0 8px -4px rgba(0,0,0,0.3)'
+                                            }}
+                                        >
+                                            {val !== undefined ? `${val > 0 ? '+' : ''}${val.toFixed(2)}%` : '-'}
+                                        </td>
+                                    );
+                                })()}
+
+                                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(month => {
+                                    const data = monthlyReturns[year][month];
+                                    // Access percent if data exists, otherwise undefined
+                                    const val = data?.percent;
+                                    const isCurrentMonth = year === new Date().getFullYear() && month === new Date().getMonth();
+                                    return (
+                                        <td
+                                            key={month}
+                                            onMouseEnter={(e) => data && handleMouseEnter(e, data.open, data.close)}
+                                            onMouseLeave={handleMouseLeave}
+                                            style={{
+                                                padding: '12px 8px',
+                                                textAlign: 'center',
+                                                backgroundColor: getColor(val),
+                                                color: getTextColor(val),
+                                                fontWeight: isCurrentMonth ? 'bold' : 'normal',
+                                                border: isCurrentMonth ? '2px solid #fff' : 'none', // Highlight current
+                                                borderRadius: '4px',
+                                                cursor: 'pointer'
+                                            }}
+                                            title={isCurrentMonth ? t('heatmap.current_month') : undefined}
+                                        >
+                                            {val !== undefined ? `${val > 0 ? '+' : ''}${val.toFixed(2)}%` : '-'}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             {/* Tooltip Popup */}
             {hoverData && (

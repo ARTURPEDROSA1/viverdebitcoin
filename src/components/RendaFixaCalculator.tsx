@@ -443,8 +443,9 @@ export default function RendaFixaCalculator() {
 
                     {/* Start Date Input */}
                     <div className="input-group">
-                        <label>{t('rf.start_date')}</label>
+                        <label htmlFor="start-date">{t('rf.start_date')}</label>
                         <input
+                            id="start-date"
                             type="date"
                             value={inputs.startDate}
                             // Min date is the first historical date available
@@ -455,8 +456,9 @@ export default function RendaFixaCalculator() {
                     </div>
 
                     <div className="input-group">
-                        <label>{t('rf.initial_shares')}</label>
+                        <label htmlFor="initial-shares">{t('rf.initial_shares')}</label>
                         <input
+                            id="initial-shares"
                             type="number"
                             value={inputs.initialShares}
                             onChange={e => handleChange('initialShares', Number(e.target.value))}
@@ -465,8 +467,9 @@ export default function RendaFixaCalculator() {
                     </div>
 
                     <div className="input-group">
-                        <label>{t('rf.horizon')}</label>
+                        <label htmlFor="horizon-select">{t('rf.horizon')}</label>
                         <select
+                            id="horizon-select"
                             value={inputs.horizonMonths}
                             onChange={e => handleChange('horizonMonths', Number(e.target.value))}
                         >
@@ -483,8 +486,9 @@ export default function RendaFixaCalculator() {
                     </div>
 
                     <div className="input-group">
-                        <label>{t('rf.contrib_freq')}</label>
+                        <label htmlFor="contrib-freq">{t('rf.contrib_freq')}</label>
                         <select
+                            id="contrib-freq"
                             value={inputs.contribFreq}
                             onChange={e => handleChange('contribFreq', e.target.value)}
                         >
@@ -497,13 +501,14 @@ export default function RendaFixaCalculator() {
 
                     {inputs.contribFreq !== 'none' && (
                         <div className="input-group">
-                            <label>{t('rf.contrib_value')}</label>
+                            <label htmlFor="contrib-value">{t('rf.contrib_value')}</label>
                             <div className="amount-wrapper">
                                 <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
                                     {inputs.contribType === 'fixed_amount' && (
                                         <span style={{ position: 'absolute', left: '12px', color: 'var(--text-secondary)', zIndex: 1, pointerEvents: 'none' }}>$</span>
                                     )}
                                     <input
+                                        id="contrib-value"
                                         type="number"
                                         value={inputs.contribValue}
                                         onChange={e => handleChange('contribValue', Number(e.target.value))}
@@ -511,6 +516,7 @@ export default function RendaFixaCalculator() {
                                     />
                                 </div>
                                 <select
+                                    aria-label="Tipo de contribuição"
                                     value={inputs.contribType}
                                     onChange={e => handleChange('contribType', e.target.value)}
                                     style={{ maxWidth: '80px' }}
@@ -524,7 +530,7 @@ export default function RendaFixaCalculator() {
 
                     <div className="input-group">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <label>{t('rf.exit_price')}</label>
+                            <label htmlFor="exit-price">{t('rf.exit_price')}</label>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                 <input
                                     type="checkbox"
@@ -539,6 +545,7 @@ export default function RendaFixaCalculator() {
                             </div>
                         </div>
                         <input
+                            id="exit-price"
                             type="number"
                             value={isUntilToday ? lastPrice : inputs.exitPrice}
                             onChange={e => handleChange('exitPrice', Number(e.target.value))}
@@ -550,8 +557,9 @@ export default function RendaFixaCalculator() {
                     </div>
 
                     <div className="input-group">
-                        <label>{t('rf.scenario')}</label>
+                        <label htmlFor="scenario-select">{t('rf.scenario')}</label>
                         <select
+                            id="scenario-select"
                             value={inputs.scenario}
                             onChange={e => handleChange('scenario', e.target.value)}
                             disabled={isUntilToday || !inputs.sellAtEnd}
@@ -603,7 +611,7 @@ export default function RendaFixaCalculator() {
                 showResults && activeInputs && chartData && (
                     <div id="simulation-results" className="result-card fade-in" style={{ display: 'block', marginTop: '2rem' }}>
 
-                        <h3 style={{ color: 'var(--text-main)', fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>{t('rf.projection_title')}</h3>
+                        <h2 style={{ color: 'var(--text-main)', fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>{t('rf.projection_title')}</h2>
 
                         {/* Summary Cards */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px', marginBottom: '2rem' }}>

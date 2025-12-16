@@ -63,6 +63,11 @@ export default function PtLayout({
 
     return (
         <html lang="pt-BR">
+            <head>
+                <link rel="preconnect" href="https://api.coindesk.com" />
+                <link rel="preconnect" href="https://api.coingecko.com" />
+                <link rel="preconnect" href="https://economia.awesomeapi.com.br" />
+            </head>
             <body className={inter.className}>
                 <SettingsProvider initialLanguage="pt">
                     <JsonLd data={jsonLdData} />

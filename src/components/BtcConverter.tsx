@@ -364,13 +364,14 @@ export default function BtcConverter() {
 
                 {/* Input A */}
                 <div className="input-group">
-                    <label>{t('btc_conv.amount')}</label>
+                    <label htmlFor="amount-input-a">{t('btc_conv.amount')}</label>
                     <div className="amount-wrapper">
                         <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
                             <span style={{ position: 'absolute', left: '12px', color: 'var(--text-secondary)', zIndex: 1, pointerEvents: 'none', fontSize: '1.2rem' }}>
                                 {symbols[unitA]}
                             </span>
                             <input
+                                id="amount-input-a"
                                 type="text"
                                 inputMode="decimal"
                                 value={amountA}
@@ -380,6 +381,7 @@ export default function BtcConverter() {
                             />
                         </div>
                         <select
+                            aria-label="Unidade de entrada"
                             value={unitA}
                             onChange={(e) => setUnitA(e.target.value as Unit)}
                             style={{ width: '100px', fontWeight: 'bold' }}
@@ -414,13 +416,14 @@ export default function BtcConverter() {
 
                 {/* Input B */}
                 <div className="input-group">
-                    <label>{t('btc_conv.equivalent')}</label>
+                    <label htmlFor="amount-input-b">{t('btc_conv.equivalent')}</label>
                     <div className="amount-wrapper">
                         <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
                             <span style={{ position: 'absolute', left: '12px', color: 'var(--text-secondary)', zIndex: 1, pointerEvents: 'none', fontSize: '1.2rem' }}>
                                 {symbols[unitB]}
                             </span>
                             <input
+                                id="amount-input-b"
                                 type="text"
                                 inputMode="decimal"
                                 value={amountB}
@@ -430,6 +433,7 @@ export default function BtcConverter() {
                             />
                         </div>
                         <select
+                            aria-label="Unidade de saída"
                             value={unitB}
                             onChange={(e) => setUnitB(e.target.value as Unit)}
                             style={{ width: '100px', fontWeight: 'bold' }}
@@ -460,7 +464,7 @@ export default function BtcConverter() {
             {/* Table Section - New Card */}
             <div className="calculator-card" style={{ maxWidth: '100%', margin: '2rem auto 0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
-                    <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{t('common.table')}</h3>
+                    <h2 style={{ margin: 0, fontSize: '1.2rem' }}>{t('common.table')}</h2>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button
                             onClick={fetchPrices}

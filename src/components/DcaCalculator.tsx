@@ -368,6 +368,7 @@ export default function DcaCalculator() {
                                 />
                             </div>
                             <select
+                                aria-label="Selecionar moeda"
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value as any)}
                                 style={{ width: 'auto', minWidth: '80px', textAlign: 'center' }}

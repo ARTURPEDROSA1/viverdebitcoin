@@ -3,11 +3,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { translations, Language } from '@/data/translations';
 
-type Currency = 'BRL' | 'USD' | 'EUR';
+export type Currency = 'BRL' | 'USD' | 'EUR';
 
-type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
-interface SettingsContextType {
+export interface SettingsContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
     currency: Currency;

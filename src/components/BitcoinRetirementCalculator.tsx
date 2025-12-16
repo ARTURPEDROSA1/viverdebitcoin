@@ -775,7 +775,7 @@ export default function BitcoinRetirementCalculator() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                             <span style={{ fontSize: '1.2rem' }}>⚙️</span>
-                            <h3 style={{ margin: 0, color: '#FFFFFF', fontSize: '1rem' }}>{t('home.settings')}</h3>
+                            <h2 style={{ margin: 0, color: '#FFFFFF', fontSize: '1rem' }}>{t('home.settings')}</h2>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'flex-end' }}>
@@ -792,8 +792,9 @@ export default function BitcoinRetirementCalculator() {
 
                     {/* Moeda */}
                     <div>
-                        <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('settings.currency')}</label>
+                        <label htmlFor="currency-select" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('settings.currency')}</label>
                         <select
+                            id="currency-select"
                             value={currency}
                             onChange={e => setCurrency(e.target.value as any)}
                             className="calculator-input"
@@ -807,8 +808,9 @@ export default function BitcoinRetirementCalculator() {
                     {/* Age Row */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                         <div>
-                            <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.current_age')}</label>
+                            <label htmlFor="current-age" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.current_age')}</label>
                             <input
+                                id="current-age"
                                 type="number"
                                 value={currentAge}
                                 onChange={e => setCurrentAge(Number(e.target.value))}
@@ -817,8 +819,9 @@ export default function BitcoinRetirementCalculator() {
                             />
                         </div>
                         <div>
-                            <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.retirement_age')}</label>
+                            <label htmlFor="retirement-age" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.retirement_age')}</label>
                             <input
+                                id="retirement-age"
                                 type="number"
                                 value={retirementAge}
                                 onChange={e => setRetirementAge(Number(e.target.value))}
@@ -830,7 +833,7 @@ export default function BitcoinRetirementCalculator() {
 
                     {/* Target Income - ANNUAL */}
                     <div>
-                        <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Renda Anual Desejada (Valores de Hoje)</label>
+                        <label htmlFor="target-income" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Renda Anual Desejada (Valores de Hoje)</label>
                         <div style={{ position: 'relative' }}>
                             {currency !== 'EUR' && (
                                 <span style={{
@@ -846,6 +849,7 @@ export default function BitcoinRetirementCalculator() {
                                 </span>
                             )}
                             <input
+                                id="target-income"
                                 type="text"
                                 value={isIncomeFocused
                                     ? targetAnnualIncome
@@ -868,8 +872,9 @@ export default function BitcoinRetirementCalculator() {
                     {/* Life Expectancy & Inflation Row */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                            <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.life_expectancy')}</label>
+                            <label htmlFor="life-expectancy" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.life_expectancy')}</label>
                             <input
+                                id="life-expectancy"
                                 type="number"
                                 value={lifeExpectancy}
                                 onChange={e => setLifeExpectancy(Number(e.target.value))}
@@ -877,8 +882,9 @@ export default function BitcoinRetirementCalculator() {
                             />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                            <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.inflation')}</label>
+                            <label htmlFor="inflation" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.inflation')}</label>
                             <input
+                                id="inflation"
                                 type="number"
                                 value={annualInflation}
                                 onChange={e => setAnnualInflation(Number(e.target.value))}
@@ -889,8 +895,9 @@ export default function BitcoinRetirementCalculator() {
 
                     {/* Safe Withdrawal Rate */}
                     <div>
-                        <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Taxa de Retirada Segura (%)</label>
+                        <label htmlFor="swr" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Taxa de Retirada Segura (%)</label>
                         <input
+                            id="swr"
                             type="number"
                             value={safeWithdrawalRate}
                             onChange={e => setSafeWithdrawalRate(Number(e.target.value))}
@@ -902,12 +909,13 @@ export default function BitcoinRetirementCalculator() {
 
                     {/* BTC Accumulated */}
                     <div>
-                        <label className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.btc_accumulated')}</label>
+                        <label htmlFor="btc-accumulated" className="input-label" style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>{t('home.btc_accumulated')}</label>
                         <div style={{ position: 'relative' }}>
                             <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
                                 ₿
                             </span>
                             <input
+                                id="btc-accumulated"
                                 type="number"
                                 value={btcAccumulated}
                                 onChange={e => setBtcAccumulated(Number(e.target.value))}
@@ -921,7 +929,7 @@ export default function BitcoinRetirementCalculator() {
                     {/* Monthly Contribution - FIXED BTC/SATS MODE */}
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <label className="input-label" style={{ color: 'var(--text-secondary)' }}>
+                            <label htmlFor="contribution" className="input-label" style={{ color: 'var(--text-secondary)' }}>
                                 Aporte ({contributionUnit})
                                 <span
                                     style={{ fontSize: '0.8rem', color: 'var(--bitcoin-orange)', cursor: 'pointer', marginLeft: '10px', textDecoration: 'underline' }}
@@ -967,6 +975,7 @@ export default function BitcoinRetirementCalculator() {
                                 {contributionUnit === 'BTC' ? '₿' : '⚡'}
                             </span>
                             <input
+                                id="contribution"
                                 type="number"
                                 value={monthlyContribution}
                                 onChange={e => setMonthlyContribution(Number(e.target.value))}
@@ -979,6 +988,7 @@ export default function BitcoinRetirementCalculator() {
                             />
                             <input
                                 type="text"
+                                aria-label="Aporte em moeda fiduciária"
                                 value={isFiatContributionFocused
                                     ? localFiatContribution
                                     : `≈ ${formatMoney((contributionUnit === 'BTC' ? monthlyContribution : monthlyContribution / 100000000) * btcPrice)}`}
@@ -1069,7 +1079,7 @@ export default function BitcoinRetirementCalculator() {
                 <div style={{ background: 'var(--card-bg)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                         <span style={{ fontSize: '1.5rem' }}>🌐</span>
-                        <h3 style={{ margin: 0 }}>{t('home.macro_events')}</h3>
+                        <h2 style={{ margin: 0, fontSize: '1.2rem' }}>{t('home.macro_events')}</h2>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -1100,7 +1110,7 @@ export default function BitcoinRetirementCalculator() {
                                             fontSize: '0.7rem',
                                             padding: '2px 6px',
                                             borderRadius: '4px',
-                                            background: event.type === 'bull' ? '#27ae60' : '#e74c3c',
+                                            background: event.type === 'bull' ? '#1e8449' : '#c0392b',
                                             color: 'white',
                                             fontWeight: 'bold'
                                         }}>

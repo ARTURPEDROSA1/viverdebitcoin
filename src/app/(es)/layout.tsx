@@ -62,6 +62,11 @@ export default function EsLayout({
 
     return (
         <html lang="es">
+            <head>
+                <link rel="preconnect" href="https://api.coindesk.com" />
+                <link rel="preconnect" href="https://api.coingecko.com" />
+                <link rel="preconnect" href="https://economia.awesomeapi.com.br" />
+            </head>
             <body className={inter.className}>
                 <SettingsProvider initialLanguage="es">
                     <JsonLd data={jsonLdData} />
